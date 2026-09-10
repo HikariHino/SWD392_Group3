@@ -1,7 +1,7 @@
-using System.Linq.Expressions;
-using SWD392_Group3.Domain.Common;
+﻿using System.Linq.Expressions;
+using Domain.Common;
 
-namespace SWD392_Group3.Application.Interfaces.Repositories;
+namespace Application.Interfaces.Repositories;
 
 public interface IGenericRepository<T> where T : BaseEntity
 {
@@ -14,3 +14,4 @@ public interface IGenericRepository<T> where T : BaseEntity
     void Remove(T entity);
     void RemoveRange(IEnumerable<T> entities);
 }
+

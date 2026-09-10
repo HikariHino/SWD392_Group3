@@ -1,4 +1,4 @@
-namespace SWD392_Group3.Domain.Common;
+﻿namespace Domain.Common;
 
 public abstract class AuditableEntity : BaseEntity
 {
@@ -8,3 +8,4 @@ public abstract class AuditableEntity : BaseEntity
     public string? UpdatedBy { get; set; }
     public bool IsDeleted { get; set; } = false;
 }
+

@@ -1,10 +1,10 @@
-using System.Linq.Expressions;
+﻿using System.Linq.Expressions;
 using Microsoft.EntityFrameworkCore;
-using SWD392_Group3.Application.Interfaces.Repositories;
-using SWD392_Group3.Domain.Common;
-using SWD392_Group3.Infrastructure.Persistence;
+using Application.Interfaces.Repositories;
+using Domain.Common;
+using Infrastructure.Persistence;
 
-namespace SWD392_Group3.Infrastructure.Repositories;
+namespace Infrastructure.Repositories;
 
 public class GenericRepository<T> : IGenericRepository<T> where T : BaseEntity
 {
@@ -57,3 +57,4 @@ public class GenericRepository<T> : IGenericRepository<T> where T : BaseEntity
         _dbSet.RemoveRange(entities);
     }
 }
+

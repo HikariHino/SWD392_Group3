@@ -1,7 +1,7 @@
-using SWD392_Group3.Application.Interfaces.Repositories;
-using SWD392_Group3.Infrastructure.Persistence;
+﻿using Application.Interfaces.Repositories;
+using Infrastructure.Persistence;
 
-namespace SWD392_Group3.Infrastructure.Repositories;
+namespace Infrastructure.Repositories;
 
 public class UnitOfWork : IUnitOfWork
 {
@@ -22,3 +22,4 @@ public class UnitOfWork : IUnitOfWork
         _context.Dispose();
     }
 }
+

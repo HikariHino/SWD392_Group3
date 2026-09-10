@@ -1,8 +1,8 @@
-using System.Reflection;
+﻿using System.Reflection;
 using Microsoft.EntityFrameworkCore;
-using SWD392_Group3.Domain.Common;
+using Domain.Common;
 
-namespace SWD392_Group3.Infrastructure.Persistence;
+namespace Infrastructure.Persistence;
 
 public class AivesDbContext : DbContext
 {
@@ -10,12 +10,12 @@ public class AivesDbContext : DbContext
     {
     }
 
-    // Khai báo các DbSet ở đây sau này, ví dụ:
+    // Khai bÃ¡o cÃ¡c DbSet á»Ÿ Ä‘Ã¢y sau nÃ y, vÃ­ dá»¥:
     // public DbSet<Question> Questions => Set<Question>();
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
-        // Tự động quét và apply các cấu hình (Fluent API) trong thư mục Persistence/Configurations
+        // Tá»± Ä‘á»™ng quÃ©t vÃ  apply cÃ¡c cáº¥u hÃ¬nh (Fluent API) trong thÆ° má»¥c Persistence/Configurations
         builder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
 
         base.OnModelCreating(builder);
@@ -23,7 +23,7 @@ public class AivesDbContext : DbContext
 
     public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
     {
-        // Tự động cập nhật CreatedAt và UpdatedAt mỗi khi SaveChanges được gọi
+        // Tá»± Ä‘á»™ng cáº­p nháº­t CreatedAt vÃ  UpdatedAt má»—i khi SaveChanges Ä‘Æ°á»£c gá»i
         foreach (var entry in ChangeTracker.Entries<AuditableEntity>())
         {
             switch (entry.State)
@@ -39,3 +39,4 @@ public class AivesDbContext : DbContext
         return base.SaveChangesAsync(cancellationToken);
     }
 }
+
