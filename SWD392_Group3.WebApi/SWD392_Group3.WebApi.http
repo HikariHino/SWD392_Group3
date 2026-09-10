@@ -1,0 +1,6 @@
+@SWD392_Group3.WebApi_HostAddress = http://localhost:5110
+
+GET {{SWD392_Group3.WebApi_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

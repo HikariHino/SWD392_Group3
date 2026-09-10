@@ -1,0 +1,6 @@
+<Solution>
+  <Project Path="SWD392_Group3.Application/SWD392_Group3.Application.csproj" />
+  <Project Path="SWD392_Group3.Domain/SWD392_Group3.Domain.csproj" />
+  <Project Path="SWD392_Group3.Infrastructure/SWD392_Group3.Infrastructure.csproj" />
+  <Project Path="SWD392_Group3.WebApi/SWD392_Group3.WebApi.csproj" />
+</Solution>
