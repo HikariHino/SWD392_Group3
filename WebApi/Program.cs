@@ -1,4 +1,5 @@
 using WebApi.Hubs;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -6,6 +7,18 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers(); // Thêm hỗ trợ API Controllers
 builder.Services.AddSignalR();     // Thêm SignalR cho Nhóm chức năng 3
 builder.Services.AddAutoMapper(cfg => cfg.AddMaps(AppDomain.CurrentDomain.GetAssemblies())); // Đăng ký AutoMapper quét toàn bộ Profile
+
+// 1. Cấu hình Database kết nối với SQL Server
+builder.Services.AddDbContext<Infrastructure.Persistence.AivesDbContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+// 2. Đăng ký Dependency Injection cho tầng Application (Logic)
+builder.Services.AddScoped<Application.Interfaces.Services.IQuestionBankService, Application.Services.QuestionBankService>();
+builder.Services.AddScoped<Application.Interfaces.Services.IInterviewService, Application.Services.InterviewService>();
+builder.Services.AddScoped<Application.Interfaces.Services.IGradingService, Application.Services.GradingService>();
+
+// 3. Đăng ký Dependency Injection cho tầng Infrastructure (External API)
+builder.Services.AddScoped<Application.Interfaces.ExternalServices.IOpenAIService, Infrastructure.ExternalServices.OpenAIService>();
 
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
