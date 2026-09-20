@@ -1,9 +1,6 @@
 # 🎓 AIVES - Backend API Service (.NET 8)
 > **SWD392 (Software Architecture and Design) - Group 3**  
 > Backend core engine for the AI-powered Viva Exam System, built with **Onion Architecture**, **SignalR**, and **OpenAI/Azure Integration**.
-# 🎓 AIVES - Backend API Service (.NET 8)
-> **SWD392 (Software Architecture and Design) - Group 3**  
-> Backend core engine for the AI-powered Viva Exam System, built with **Onion Architecture**, **SignalR**, and **OpenAI/Azure Integration**.
 ```text
 SWD392_Group3/
 ├── Domain/                           # Enterprise Core
