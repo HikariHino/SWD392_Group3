@@ -5,18 +5,6 @@
 
 ---
 
-## 👥 Team Members
-
-| No. | Student ID | Full Name | Project Role |
-| :---: | :---: | :--- | :--- |
-| **1** | SE190044 | **Nguyễn Hưng Thái** | Team Leader & Workflow Designer |
-| **2** | SE196220 | **Trần Thường Quang** | Business Analyst & Real-Time Flow |
-| **3** | SE190165 | **Lê Thanh Nhã** | System Analyst & Use Case Designer |
-| **4** | SE193455 | **Vương Hoàng Giang** | Database Architect & ERD Designer |
-| **5** | SE190332 | **Nguyễn Bùi Đăng Khôi** | Software Architect & Tech Lead |
-
----
-
 ## 🏛️ System Architecture: Onion Architecture
 
 Dự án áp dụng chặt chẽ mô hình **Onion Architecture (Clean Architecture)** nhằm bảo vệ phần Lõi nghiệp vụ (Domain & Application) độc lập hoàn toàn với Cơ sở dữ liệu và các API bên ngoài:
@@ -114,5 +102,3 @@ Sau khi chạy thành công, hệ thống sẵn sàng phục vụ tại:
 * **OpenAPI / Swagger:** `https://localhost:7123/openapi`
 
 ---
-
-*SWD392 - Software Architecture and Design | FPT University | Group 3*
