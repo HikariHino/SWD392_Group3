@@ -102,3 +102,5 @@ Sau khi chạy thành công, hệ thống sẵn sàng phục vụ tại:
 * **OpenAPI / Swagger:** `https://localhost:7123/openapi`
 
 ---
+
+Trần Thường Quang - QuangTT SE196220
