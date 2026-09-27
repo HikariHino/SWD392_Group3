@@ -1,10 +1,12 @@
-﻿namespace Application.Interfaces.Repositories;
+using Domain.Entities.QuestionBank;
+
+namespace Application.Interfaces.Repositories;
 
 public interface IUnitOfWork : IDisposable
 {
-    // Cáº§n thÃªm cÃ¡c IRepository cá»¥ thá»ƒ á»Ÿ Ä‘Ã¢y sau nÃ y, vÃ­ dá»¥:
-    // IQuestionRepository Questions { get; }
+    IQuestionRepository Questions { get; }
+    IGenericRepository<Course> Courses { get; }
+    IGenericRepository<Rubric> Rubrics { get; }
     
     Task<int> SaveChangesAsync();
 }
-
