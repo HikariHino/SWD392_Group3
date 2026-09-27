@@ -69,7 +69,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI(c =>
     {
         c.SwaggerEndpoint("/swagger/v1/swagger.json", "AIVES API v1");
-        c.RoutePrefix = "swagger"; // Truy cập tại: https://localhost:7123/swagger
+        c.RoutePrefix = string.Empty; // Mở thẳng Swagger UI ngay tại trang chủ localhost:5110
     });
 
     // Tự động Seed dữ liệu mẫu Course và Question khi khởi động lần đầu

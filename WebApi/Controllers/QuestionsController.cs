@@ -7,8 +7,7 @@ using Application.Interfaces.Services;
 namespace WebApi.Controllers;
 
 [ApiController]
-[Route("api/[controller]")]
-[Route("api/question")] // Alias route for backwards compatibility
+[Route("api/questions")]
 public class QuestionsController : ControllerBase
 {
     private readonly IQuestionBankService _questionBankService;
