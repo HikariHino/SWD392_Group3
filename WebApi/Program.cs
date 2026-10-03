@@ -1,66 +1,99 @@
-using WebApi.Hubs;
 using Microsoft.EntityFrameworkCore;
+using FluentValidation;
+using WebApi.Hubs;
+using Application.Interfaces.Repositories;
+using Application.Interfaces.Services;
+using Application.Services;
+using Application.Validators.QuestionBank;
+using Infrastructure.Persistence;
+using Infrastructure.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-builder.Services.AddControllers(); // Thêm hỗ trợ API Controllers
-builder.Services.AddSignalR();     // Thêm SignalR cho Nhóm chức năng 3
-builder.Services.AddAutoMapper(cfg => cfg.AddMaps(AppDomain.CurrentDomain.GetAssemblies())); // Đăng ký AutoMapper quét toàn bộ Profile
+// 1. Thêm Controllers & Swagger UI
+builder.Services.AddControllers();
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen(c =>
+{
+    c.SwaggerDoc("v1", new Microsoft.OpenApi.OpenApiInfo
+    {
+        Title = "AIVES API - AI-Powered Viva Exam System",
+        Version = "v1",
+        Description = "API hệ thống thi vấn đáp trực tuyến AIVES - SWD392 Group 3 (.NET 8 Onion Architecture)"
+    });
+});
 
-// 1. Cấu hình Database kết nối với SQL Server
-builder.Services.AddDbContext<Infrastructure.Persistence.AivesDbContext>(options =>
+// 2. Thêm CORS cho kết nối Frontend React
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowReactApp", policy =>
+    {
+        policy.WithOrigins("http://localhost:5173", "http://localhost:3000", "https://localhost:5173")
+              .AllowAnyHeader()
+              .AllowAnyMethod()
+              .AllowCredentials();
+    });
+});
+
+// 3. Thêm SignalR
+builder.Services.AddSignalR();
+
+// 4. Đăng ký AutoMapper quét toàn bộ Profile
+builder.Services.AddAutoMapper(cfg => cfg.AddMaps(AppDomain.CurrentDomain.GetAssemblies()));
+
+// 5. Đăng ký FluentValidation
+builder.Services.AddValidatorsFromAssemblyContaining<CreateQuestionRequestValidator>();
+
+// 6. Cấu hình Database SQL Server
+builder.Services.AddDbContext<AivesDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-// 2. Đăng ký Dependency Injection cho tầng Application (Logic)
-builder.Services.AddScoped<Application.Interfaces.Services.IQuestionBankService, Application.Services.QuestionBankService>();
-builder.Services.AddScoped<Application.Interfaces.Services.IInterviewService, Application.Services.InterviewService>();
-builder.Services.AddScoped<Application.Interfaces.Services.IGradingService, Application.Services.GradingService>();
+// 7. Đăng ký Dependency Injection cho tầng Data Access (Repositories & UnitOfWork)
+builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+builder.Services.AddScoped<IQuestionRepository, QuestionRepository>();
 
-// 3. Đăng ký Dependency Injection cho tầng Infrastructure (External API)
+// 8. Đăng ký Dependency Injection cho tầng Application Services
+builder.Services.AddScoped<IQuestionBankService, QuestionBankService>();
+builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IInterviewService, InterviewService>();
+builder.Services.AddScoped<IGradingService, GradingService>();
+
+// 9. Đăng ký Dependency Injection cho External Services
 builder.Services.AddScoped<Application.Interfaces.ExternalServices.IOpenAIService, Infrastructure.ExternalServices.OpenAIService>();
-
-// Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
-builder.Services.AddOpenApi();
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
+// Cấu hình HTTP Request Pipeline
 if (app.Environment.IsDevelopment())
 {
-    app.MapOpenApi();
-    app.MapGet("/", () => Results.Redirect("/openapi/v1.json"))
-        .ExcludeFromDescription();
+    app.UseSwagger();
+    app.UseSwaggerUI(c =>
+    {
+        c.SwaggerEndpoint("/swagger/v1/swagger.json", "AIVES API v1");
+        c.RoutePrefix = string.Empty; // Mở thẳng Swagger UI ngay tại trang chủ localhost:5110
+    });
+
+    // Tự động Seed dữ liệu mẫu Course và Question khi khởi động lần đầu
+    try
+    {
+        using var scope = app.Services.CreateScope();
+        var dbContext = scope.ServiceProvider.GetRequiredService<AivesDbContext>();
+        await DatabaseSeeder.SeedAsync(dbContext);
+    }
+    catch (Exception ex)
+    {
+        Console.WriteLine($"[DatabaseSeeder Error]: {ex.Message}");
+    }
 }
 
 app.UseHttpsRedirection();
+
+app.UseCors("AllowReactApp");
+
+app.UseAuthorization();
 
 // Ánh xạ Endpoint cho Controllers và SignalR Hub
 app.MapControllers();
 app.MapHub<InterviewHub>("/interviewHub");
 
-var summaries = new[]
-{
-    "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-};
-
-app.MapGet("/weatherforecast", () =>
-{
-    var forecast =  Enumerable.Range(1, 5).Select(index =>
-        new WeatherForecast
-        (
-            DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
-            Random.Shared.Next(-20, 55),
-            summaries[Random.Shared.Next(summaries.Length)]
-        ))
-        .ToArray();
-    return forecast;
-})
-.WithName("GetWeatherForecast");
-
 app.Run();
-
-record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
-{
-    public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
-}

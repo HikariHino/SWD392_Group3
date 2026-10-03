@@ -2,6 +2,12 @@
 
 ## Kết quả mới nhất trên nhánh quang — 03/10/2026
 
+Đã tích hợp `khoi` tại `eaab86e` vào `quang` (baseline trước merge `08ab287`). Giữ CRUD Question/Rubric/User, persistence và Swagger của khoi; giải quyết 3 conflict ở IUnitOfWork, Program.cs và WebApi.csproj. Swagger Development mở tại `/`, JSON tại `/swagger/v1/swagger.json`; launchUrl đổi về trang gốc. Cấu hình appsettings.json local được bảo toàn ngoài commit.
+
+Build kiểm chứng dùng output tạm vì API trong Visual Studio đang khóa DLL: PASS, 0 warning / 0 error. C01 đã đạt tiêu chí khôi phục build qua phần sửa `e2672b3` của khoi; chưa xác minh CRUD với DB. C02 tiếp theo: đồng bộ hướng dẫn/SDK; C03 tiếp theo: chốt mapping DB và API. Không đánh dấu các mốc CRUD/Auth hoàn thành chỉ vì đã merge source; password hashing và migration Users còn thiếu.
+
+### Lịch sử kiểm tra trước merge (không còn là trạng thái hiện tại)
+
 Kiểm tra truy cập localhost: HTTPS 7035 `/` trả 404 trước khi sửa; `/openapi/v1.json` và `/weatherforecast` trả 200; HTTP 5110 chuyển sang HTTPS 7035. Chứng chỉ dev đã trusted. Thêm redirect trang gốc Development đến tài liệu OpenAPI và launchUrl cho Visual Studio. Cần restart API để áp dụng. Tài liệu hiện là JSON, chưa có Swagger UI.
 
 Build bản sửa redirect thành công với thư mục output riêng vì Visual Studio đang giữ DLL của server chạy; 0 lỗi source, có cảnh báo NU1900 do không đọc được dữ liệu audit NuGet. Đã xóa output kiểm chứng riêng sau build; không dừng phiên Visual Studio của người dùng.
