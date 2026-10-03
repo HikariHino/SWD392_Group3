@@ -82,7 +82,15 @@ dotnet run --project WebApi/WebApi.csproj --launch-profile https
 
 Dùng instance SQL Server và DB dev riêng của mỗi người; biến môi trường trên chỉ áp dụng cho terminal/tiến trình con đó. Visual Studio cần nhận biến môi trường trước khi mở hoặc dùng cấu hình local riêng. Không commit secret hay cấu hình máy cá nhân.
 
-Startup Development hiện gọi `EnsureCreatedAsync()` rồi seed Course/Question; **không tự áp dụng migration**. InitialCreate chỉ có Courses/Questions/Rubrics, còn model đã có Users. DB tạo bằng EnsureCreated không tự có migration history. Chưa chạy migration lên database có sẵn trước khi đối chiếu C03/C07; không xóa DB hoặc baseline đè dữ liệu. `[DatabaseSeeder Error]` không ngăn Swagger mở, nên cần kiểm tra CRUD riêng.
+Startup Development hiện gọi `EnsureCreatedAsync()` rồi seed Course/Question; **không tự áp dụng migration**. InitialCreate chỉ có Courses/Questions/Rubrics; AddUserTable của Thai bổ sung Users. DB tạo bằng EnsureCreated không tự có migration history. Chưa chạy migration lên database có sẵn trước khi đối chiếu C03/C07; không xóa DB hoặc baseline đè dữ liệu. `[DatabaseSeeder Error]` không ngăn Swagger mở, nên cần kiểm tra CRUD riêng.
+
+Thai đã bổ sung C04–C07: hash password, middleware lỗi, User validator và migration Users. Kiểm tra bổ sung không cần SQL:
+
+```powershell
+dotnet run --project tests/BackendChecks/BackendChecks.csproj
+```
+
+Kiểm tra hash/verify, validator, lỗi 400/404/409/500 có traceId, migration discovery/SQL và snapshot. Exit code khác 0 khi thất bại. Chưa thay thế kiểm tra migration/CRUD SQL thật; C07 cần xác minh trên DB dev riêng. Quyền cấp/đổi role được bảo vệ tại C12.
 
 Profile https dùng **https://localhost:7035** và **http://localhost:5110**; HTTP có thể redirect HTTPS. Swagger Development ở `/`, JSON ở `/swagger/v1/swagger.json`, SignalR ở `/interviewHub`. Profile http chỉ nghe 5110. Luôn dùng cổng trong log `Now listening on`.
 

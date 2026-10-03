@@ -27,6 +27,7 @@ public class ExceptionMiddleware
         }
         catch (Exception ex)
         {
+            if (context.Response.HasStarted) throw;
             _logger.LogError(ex, "An unhandled exception has occurred.");
             await HandleExceptionAsync(context, ex);
         }
@@ -72,6 +73,8 @@ public class ExceptionMiddleware
             Detail = detail,
             Type = $"https://httpstatuses.com/{statusCode}"
         };
+
+        problemDetails.Extensions.Add("traceId", context.TraceIdentifier);
 
         if (errors != null)
         {

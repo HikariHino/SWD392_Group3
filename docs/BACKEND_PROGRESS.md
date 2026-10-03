@@ -2,6 +2,8 @@
 
 ## Kết quả mới nhất trên nhánh quang — 03/10/2026
 
+Đã đồng bộ main `3b8d690` sang quang. **C04–C07 do Thai triển khai** (`8bc56ae`, `4f6030e`, `1977c0c`, `37fed27`). Phiên sửa bổ sung của Quang cùng Codex chỉ thêm traceId/giới hạn validator, bỏ Admin theo C03, chuẩn hóa vị trí migration và kiểm chứng regression; không thay tác giả các mốc. Có 34 kiểm tra offline PASS. C07 chưa kiểm tra apply migration/CRUD SQL thật do máy không có SQL Server/LocalDB chạy; chưa tick DONE. C08 chưa triển khai trong phiên này.
+
 Đã review bản draw.io vừa cập nhật: quan hệ entity/Guid/BloomLevel phù hợp hướng thiết kế; nhãn phiên bản đã sửa thành .NET 10 theo yêu cầu, XML kiểm tra hợp lệ. Wiring repository và một số method/DbSet vẫn không khớp code. Xem [bảng khác biệt UML trong hợp đồng C03](BACKEND_CONTRACTS.md#đối-chiếu-drawio-cập-nhật-ngày-03102026). Không đổi trạng thái mốc hoặc refactor source theo hình; giữ các phần chưa triển khai ở trạng thái dự kiến.
 
 C02/C03 đã hoàn thành tài liệu và cấu hình nền: `global.json` chọn stable .NET 10 từ 10.0.401, README dùng đúng profile/URL; [BACKEND_CONTRACTS.md](BACKEND_CONTRACTS.md) định nghĩa mapping schema, role, vòng đời phiên/bài thi, công thức điểm, API và SignalR. C03 đối chiếu code với ảnh DB, chưa truy vấn SQL live hoặc áp dụng migration. Các nhận xét baseline main cũ ở phía dưới giữ làm lịch sử, ưu tiên trạng thái mới nhất và checklist Cxx.
@@ -101,7 +103,7 @@ Trạng thái: TODO → IN_PROGRESS → REVIEW → DONE; BLOCKED phải ghi lý 
 
 ## Lộ trình commit nhỏ cho hai người
 
-Mỗi mốc có checkbox và tên người làm, không chia cố định A/B. Trước khi bắt đầu, ghi tên thật và trạng thái IN_PROGRESS ở mốc nhận; khi đạt tiêu chí, đổi [ ] thành [x], ghi SHA/PR và kiểm chứng vào nhật ký. Người còn lại review chéo. Không tick chỉ vì AI đã sinh code. C00–C03 đã hoàn thành; các mốc còn lại chưa nhận.
+Mỗi mốc có checkbox và tên người làm, không chia cố định A/B. Trước khi bắt đầu, ghi tên thật và trạng thái IN_PROGRESS ở mốc nhận; khi đạt tiêu chí, đổi [ ] thành [x], ghi SHA/PR và kiểm chứng vào nhật ký. Người còn lại review chéo. Không tick chỉ vì AI đã sinh code. C00–C06 đã có code/tài liệu và kiểm chứng ghi bên dưới; C07 của Thai chờ xác minh DB dev, C08 trở đi chưa nhận.
 
 Mỗi hàng là một commit với một mục tiêu có thể review. Các file interface/entity và implementation liên quan cần đi cùng nhau để commit build được. C01 là mốc khôi phục build; từ C02 trở đi mỗi commit phải build pass. Nếu phát sinh lỗi baseline khác, đóng chúng trong commit sửa build và ghi rõ, không trộn thêm feature.
 
@@ -154,7 +156,7 @@ Sau C03, hai người có thể nhận các mốc không phụ thuộc nhau. Ghi
 
 
 
-- [ ] **C04** — Người làm: Chưa nhận
+- [x] **C04** — Người làm: Thai, commit 8bc56ae
 
   Commit: `feat(user): hash passwords through application abstraction`
 
@@ -162,7 +164,7 @@ Sau C03, hai người có thể nhận các mốc không phụ thuộc nhau. Ghi
 
   Cần trước: C03
 
-- [ ] **C05** — Người làm: Chưa nhận
+- [x] **C05** — Người làm: Thai, commit 4f6030e; controller cập nhật tại 1977c0c
 
   Commit: `fix(api): standardize business error responses`
 
@@ -170,7 +172,7 @@ Sau C03, hai người có thể nhận các mốc không phụ thuộc nhau. Ghi
 
   Cần trước: C04
 
-- [ ] **C06** — Người làm: Chưa nhận
+- [x] **C06** — Người làm: Thai, commit 1977c0c
 
   Commit: `feat(user): validate user input and role changes`
 
@@ -178,13 +180,15 @@ Sau C03, hai người có thể nhận các mốc không phụ thuộc nhau. Ghi
 
   Cần trước: C05
 
-- [ ] **C07** — Người làm: Chưa nhận
+- [ ] **C07** — Người làm: Thai, commit 37fed27; REVIEW — chờ migration/CRUD DB dev
 
   Commit: `feat(db): add user schema migration`
 
   Phạm vi / nghiệm thu: Migration và snapshot đồng bộ model; kiểm tra cập nhật DB dev và CRUD User
 
   Cần trước: C06
+
+  Migration chuyển từ Infrastructure/Infrastructure/Migrations sang Infrastructure/Migrations, giữ ID 20261003125521_AddUserTable và schema của Thai. Discovery, SQL tạo Users/unique username và snapshot đã kiểm tra offline. Không áp dụng migration lên DB thật trong phiên sửa bổ sung.
 
 - [ ] **C08** — Người làm: Chưa nhận
 
@@ -450,7 +454,14 @@ Bước tiếp theo:
 Commit/PR:
 ```
 
-| 03/10/2026 | Thai / C04 / thai | Hash password v?i BCrypt | Build pass 0 error | �� xong C04, sang C05 | 8bc56ae |
-| 03/10/2026 | Thai / C05 / thai | Global Exception Middleware | Build pass 0 error | �� xong C05, chu?n b? C06 | 4f6030e |
-| 03/10/2026 | Thai / C06 / thai | Validation User | Build pass 0 error | �� xong C06 | 1977c0c |
-| 03/10/2026 | Thai / C07 / thai | Migration User | Build pass 0 error | �� xong C07 | 37fed27 |
+### Bàn giao C04–C07 của Thai và phiên sửa bổ sung
+
+Giữ nguyên người làm và SHA gốc của Thai; sửa encoding/hiển thị nhật ký. Dòng C07 là báo cáo triển khai của Thai, không thay thế kiểm chứng DB trực tiếp.
+
+| Ngày | Người / task / branch | Đã làm / file ảnh hưởng | Kiểm chứng | Blocker / bước tiếp theo | Commit / PR |
+| --- | --- | --- | --- | --- | --- |
+| 03/10/2026 | Thai / C04 / thai | Hash password với BCrypt | Thai báo build pass 0 error | Sang C05 | 8bc56ae |
+| 03/10/2026 | Thai / C05 / thai | Global Exception Middleware | Thai báo build pass 0 error | Chuẩn bị C06 | 4f6030e |
+| 03/10/2026 | Thai / C06 / thai | Validation User | Thai báo build pass 0 error | Code C06 đã triển khai | 1977c0c |
+| 03/10/2026 | Thai / C07 / thai | Migration User | Thai báo build pass 0 error | Code C07 đã triển khai; chờ xác minh apply DB | 37fed27 |
+| 03/10/2026 | Quang cùng Codex / sửa bổ sung C04–C07 / quang | TraceId, độ dài input/role, vị trí migration; kiểm tra regression và sửa hiển thị note | 34 kiểm tra offline PASS; không dùng SQL live | C07 kiểm tra DB dev; chưa làm C08 | Commit sửa bổ sung riêng |
