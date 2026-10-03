@@ -2,6 +2,7 @@ using System.Reflection;
 using Microsoft.EntityFrameworkCore;
 using Domain.Common;
 using Domain.Entities.QuestionBank;
+using Domain.Entities.UserManagement;
 
 namespace Infrastructure.Persistence;
 
