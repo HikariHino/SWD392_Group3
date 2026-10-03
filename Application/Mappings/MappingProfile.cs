@@ -1,5 +1,7 @@
 using AutoMapper;
 using Domain.Entities.QuestionBank;
+using Domain.Entities.UserManagement;
+using Application.DTOs.UserManagement;
 using Application.DTOs.QuestionBank;
 
 namespace Application.Mappings
@@ -19,6 +21,9 @@ namespace Application.Mappings
 
             // Rubric Mappings
             CreateMap<Rubric, RubricDto>();
+
+        CreateMap<User, UserDto>();
+        CreateMap<CreateUserDto, User>();
             CreateMap<CreateRubricRequest, Rubric>();
         }
     }
