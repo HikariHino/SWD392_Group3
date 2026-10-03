@@ -25,7 +25,7 @@ public class UserService : IUserService
     public async Task<UserDto> GetUserByIdAsync(Guid id)
     {
         var user = await _unitOfWork.Users.GetByIdAsync(id);
-        if (user == null) throw new Exception("User not found");
+        if (user == null) throw new Application.Exceptions.NotFoundException("User not found");
         return _mapper.Map<UserDto>(user);
     }
 
@@ -38,7 +38,7 @@ public class UserService : IUserService
     public async Task<UserDto> CreateUserAsync(CreateUserDto dto)
     {
         var existingUser = await _unitOfWork.Users.GetByUsernameAsync(dto.Username);
-        if (existingUser != null) throw new Exception("Username already exists");
+        if (existingUser != null) throw new Application.Exceptions.ConflictException("Username already exists");
 
         var user = _mapper.Map<User>(dto);
         user.CreatedAt = DateTime.UtcNow;
@@ -55,7 +55,7 @@ public class UserService : IUserService
     public async Task UpdateUserAsync(Guid id, UpdateUserDto dto)
     {
         var user = await _unitOfWork.Users.GetByIdAsync(id);
-        if (user == null) throw new Exception("User not found");
+        if (user == null) throw new Application.Exceptions.NotFoundException("User not found");
 
         if (!string.IsNullOrEmpty(dto.FullName)) user.FullName = dto.FullName;
         if (!string.IsNullOrEmpty(dto.Role)) user.Role = dto.Role;
@@ -67,7 +67,7 @@ public class UserService : IUserService
     public async Task DeleteUserAsync(Guid id)
     {
         var user = await _unitOfWork.Users.GetByIdAsync(id);
-        if (user == null) throw new Exception("User not found");
+        if (user == null) throw new Application.Exceptions.NotFoundException("User not found");
 
         _unitOfWork.Users.Delete(user);
         await _unitOfWork.SaveChangesAsync();

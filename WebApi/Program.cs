@@ -64,6 +64,8 @@ builder.Services.AddScoped<Application.Interfaces.ExternalServices.IOpenAIServic
 
 var app = builder.Build();
 
+app.UseMiddleware<WebApi.Middleware.ExceptionMiddleware>();
+
 // Cấu hình HTTP Request Pipeline
 if (app.Environment.IsDevelopment())
 {
