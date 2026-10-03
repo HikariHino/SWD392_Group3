@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Application.DTOs.UserManagement;
@@ -41,7 +41,7 @@ public class UserService : IUserService
         var user = _mapper.Map<User>(dto);
         user.CreatedAt = DateTime.UtcNow;
         // NOTE: In real app, password should be hashed!
-        user.PasswordHash = dto.Password; 
+        user.PasswordHash = dto.Password;
 
         await _unitOfWork.Users.AddAsync(user);
         await _unitOfWork.SaveChangesAsync();
