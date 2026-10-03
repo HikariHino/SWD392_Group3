@@ -13,11 +13,13 @@ public class UserService : IUserService
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly IMapper _mapper;
+    private readonly IPasswordHasher _passwordHasher;
 
-    public UserService(IUnitOfWork unitOfWork, IMapper mapper)
+    public UserService(IUnitOfWork unitOfWork, IMapper mapper, IPasswordHasher passwordHasher)
     {
         _unitOfWork = unitOfWork;
         _mapper = mapper;
+        _passwordHasher = passwordHasher;
     }
 
     public async Task<UserDto> GetUserByIdAsync(Guid id)
@@ -40,8 +42,9 @@ public class UserService : IUserService
 
         var user = _mapper.Map<User>(dto);
         user.CreatedAt = DateTime.UtcNow;
-        // NOTE: In real app, password should be hashed!
-        user.PasswordHash = dto.Password;
+        
+        // C04: Hash passwords through application abstraction
+        user.PasswordHash = _passwordHasher.HashPassword(dto.Password);
 
         await _unitOfWork.Users.AddAsync(user);
         await _unitOfWork.SaveChangesAsync();

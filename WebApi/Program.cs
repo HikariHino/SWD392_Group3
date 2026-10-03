@@ -57,6 +57,7 @@ builder.Services.AddScoped<IQuestionBankService, QuestionBankService>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IInterviewService, InterviewService>();
 builder.Services.AddScoped<IGradingService, GradingService>();
+builder.Services.AddScoped<IPasswordHasher, Infrastructure.Security.PasswordHasher>();
 
 // 9. Đăng ký Dependency Injection cho External Services
 builder.Services.AddScoped<Application.Interfaces.ExternalServices.IOpenAIService, Infrastructure.ExternalServices.OpenAIService>();
