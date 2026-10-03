@@ -1,4 +1,5 @@
 using Domain.Entities.QuestionBank;
+using Domain.Entities.UserManagement;
 
 namespace Application.Interfaces.Repositories;
 
