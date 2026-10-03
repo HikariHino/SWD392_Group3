@@ -450,3 +450,4 @@ BÆ°á»›c tiáº¿p theo:
 Commit/PR:
 ```
 
+| 03/10/2026 | Thai / C04 / thai | Hash password v?i BCrypt | Build pass 0 error | Ðã xong C04, sang C05 | 8bc56ae |
