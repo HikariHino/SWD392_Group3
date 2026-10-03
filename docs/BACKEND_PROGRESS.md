@@ -82,7 +82,7 @@ Kiểm tra lần đầu: `dotnet build SWD392_Group3.slnx --no-restore` → FAIL
 Trạng thái: TODO → IN_PROGRESS → REVIEW → DONE; BLOCKED phải ghi lý do. Owner hiện chưa phân công. Mỗi việc chỉ một người chịu trách nhiệm chính.
 
 | Task | Phạm vi file chính | Phụ thuộc | Owner | Trạng thái | Tiêu chí nghiệm thu |
- --- |
+| --- | --- | --- | --- | --- | --- |
 | T01 Sửa tích hợp User | IUnitOfWork, UnitOfWork, AivesDbContext | Chốt SDK để build | Chưa nhận | TODO | BE-01/02 đóng; build pass |
 | T02 Đồng bộ môi trường | *.csproj, README, global.json nếu cần | Nhóm chốt phiên bản | Chưa nhận | TODO | BE-03 đóng; hướng dẫn setup tái lập được |
 | T03 Hoàn thiện User/Auth | User DTO/service/controller/validator; abstraction hash/auth và implementation | T01, T02 | Chưa nhận | TODO | BE-04/06 đóng; CRUD và phân quyền có kiểm chứng |
@@ -423,7 +423,7 @@ Báo diff, kết quả kiểm tra, blocker và commit message đề xuất.
 Thêm một dòng sau mỗi phiên; giữ các dòng cũ. Khi hai branch cùng cập nhật tài liệu, giữ cả hai bản ghi khi giải quyết conflict.
 
 | Ngày | Người / task / branch | Đã làm / file ảnh hưởng | Kiểm chứng | Blocker / bước tiếp theo | Commit / PR |
- --- |
+| --- | --- | --- | --- | --- | --- |
 | 03/10/2026 | Codex / review / main | Kiểm tra 4 layer, source, commit; tạo tài liệu tiến độ | Đã cài SDK 10.0.401; restore pass; build FAIL 6 lỗi CS1014 ở IUnitOfWork | Ưu tiên T01; T02 còn đồng bộ README/setup; chưa kiểm tra runtime DB | Baseline c27221a; tài liệu chưa commit |
 | 03/10/2026 | Quang cùng Codex / C01 tích hợp / quang | Merge backend khoi; chuyển roadmap thành checklist có tên người làm | Build output tạm PASS, 0 warning / 0 error; kiểm tra đủ 31 checkbox | Tiếp tục C02/C03; CRUD DB chưa kiểm chứng; cấu hình local vẫn nằm trong stash đã lưu | Sửa gốc e2672b3; merge f488a34 |
 
