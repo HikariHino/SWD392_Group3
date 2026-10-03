@@ -2,6 +2,8 @@
 
 ## Kết quả mới nhất trên nhánh quang — 03/10/2026
 
+C02/C03 đã hoàn thành tài liệu và cấu hình nền: `global.json` chọn stable .NET 10 từ 10.0.401, README dùng đúng profile/URL; [BACKEND_CONTRACTS.md](BACKEND_CONTRACTS.md) định nghĩa mapping schema, role, vòng đời phiên/bài thi, công thức điểm, API và SignalR. C03 đối chiếu code với ảnh DB, chưa truy vấn SQL live hoặc áp dụng migration. Các nhận xét baseline main cũ ở phía dưới giữ làm lịch sử, ưu tiên trạng thái mới nhất và checklist Cxx.
+
 Đã tích hợp `khoi` tại `eaab86e` vào `quang` (baseline trước merge `08ab287`). Giữ CRUD Question/Rubric/User, persistence và Swagger của khoi; giải quyết 3 conflict ở IUnitOfWork, Program.cs và WebApi.csproj. Swagger Development mở tại `/`, JSON tại `/swagger/v1/swagger.json`; launchUrl đổi về trang gốc. Cấu hình appsettings.json local được bảo toàn ngoài commit.
 
 Build kiểm chứng dùng output tạm vì API trong Visual Studio đang khóa DLL: PASS, 0 warning / 0 error. C01 đã đạt tiêu chí khôi phục build qua phần sửa `e2672b3` của khoi; chưa xác minh CRUD với DB. C02 tiếp theo: đồng bộ hướng dẫn/SDK; C03 tiếp theo: chốt mapping DB và API. Không đánh dấu các mốc CRUD/Auth hoàn thành chỉ vì đã merge source; password hashing và migration Users còn thiếu.
@@ -97,7 +99,7 @@ Trạng thái: TODO → IN_PROGRESS → REVIEW → DONE; BLOCKED phải ghi lý 
 
 ## Lộ trình commit nhỏ cho hai người
 
-Mỗi mốc có checkbox và tên người làm, không chia cố định A/B. Trước khi bắt đầu, ghi tên thật và trạng thái IN_PROGRESS ở mốc nhận; khi đạt tiêu chí, đổi [ ] thành [x], ghi SHA/PR và kiểm chứng vào nhật ký. Người còn lại review chéo. Không tick chỉ vì AI đã sinh code. C00/C01 đã hoàn thành; các mốc còn lại chưa nhận.
+Mỗi mốc có checkbox và tên người làm, không chia cố định A/B. Trước khi bắt đầu, ghi tên thật và trạng thái IN_PROGRESS ở mốc nhận; khi đạt tiêu chí, đổi [ ] thành [x], ghi SHA/PR và kiểm chứng vào nhật ký. Người còn lại review chéo. Không tick chỉ vì AI đã sinh code. C00–C03 đã hoàn thành; các mốc còn lại chưa nhận.
 
 Mỗi hàng là một commit với một mục tiêu có thể review. Các file interface/entity và implementation liên quan cần đi cùng nhau để commit build được. C01 là mốc khôi phục build; từ C02 trở đi mỗi commit phải build pass. Nếu phát sinh lỗi baseline khác, đóng chúng trong commit sửa build và ghi rõ, không trộn thêm feature.
 
@@ -131,13 +133,15 @@ Mỗi hàng là một commit với một mục tiêu có thể review. Các file
 
   Kiểm chứng: SDK 10.0.401 được global.json chọn; build cả solution với output tạm PASS, 0 warning / 0 error. README đồng bộ SDK, URL, profile, cảnh báo EnsureCreated/migration và cách kiểm tra DB. Peer cần chạy lại theo hướng dẫn trên máy riêng.
 
-- [ ] **C03** — Người làm: Chưa nhận
+- [x] **C03** — Người làm: Quang (cùng Codex), 03/10/2026
 
   Commit: `docs: define database and api contracts for aives`
 
   Phạm vi / nghiệm thu: Đối chiếu DB thực tế/ảnh với entity và migration; ghi mapping, trạng thái ca thi, role, cách tính điểm và API request/response
 
   Cần trước: C02
+
+  Bàn giao: [BACKEND_CONTRACTS.md](BACKEND_CONTRACTS.md). Đã đối chiếu source/migration/ảnh, chốt baseline cho code mới và API dự kiến; schema DB live chưa xác minh, bắt buộc kiểm tra read-only trước C07/C13 trên DB có dữ liệu. Không apply migration trong C03.
 
 
 C03 là điểm chốt trước khi thêm schema. Ảnh DB có ExamSessions/Transcripts/Assessments nhưng migration trong baseline chưa có; không suy ra DB đang mở được tạo bởi migration hiện tại. Trong ảnh, Transcript giống bài thi của một sinh viên; Assessment lưu câu trả lời từng câu. Quyết định rõ nơi lưu lượt hội thoại (speaker, nội dung, timestamp, câu hỏi) để hỗ trợ vấn đáp. Xác minh kiểu PK/FK, quan hệ và DB dev cần giữ dữ liệu; không tạo initial migration mới đè DB hoặc tự đổi tên bảng khi chưa có mapping.
@@ -428,6 +432,8 @@ Thêm một dòng sau mỗi phiên; giữ các dòng cũ. Khi hai branch cùng c
 | --- | --- | --- | --- | --- | --- |
 | 03/10/2026 | Codex / review / main | Kiểm tra 4 layer, source, commit; tạo tài liệu tiến độ | Đã cài SDK 10.0.401; restore pass; build FAIL 6 lỗi CS1014 ở IUnitOfWork | Ưu tiên T01; T02 còn đồng bộ README/setup; chưa kiểm tra runtime DB | Baseline c27221a; tài liệu chưa commit |
 | 03/10/2026 | Quang cùng Codex / C01 tích hợp / quang | Merge backend khoi; chuyển roadmap thành checklist có tên người làm | Build output tạm PASS, 0 warning / 0 error; kiểm tra đủ 31 checkbox | Tiếp tục C02/C03; CRUD DB chưa kiểm chứng; cấu hình local vẫn nằm trong stash đã lưu | Sửa gốc e2672b3; merge f488a34 |
+| 03/10/2026 | Quang cùng Codex / C02 / quang | global.json, README, mô tả .NET 10 trong Swagger/seed | SDK 10.0.401; solution build PASS 0 warning / 0 error | Peer xác minh setup máy riêng | fd7f6b2 |
+| 03/10/2026 | Quang cùng Codex / C03 / quang | BACKEND_CONTRACTS.md, liên kết README, checklist | Đối chiếu DTO/route/config/migration/ảnh; kiểm tra công thức và Markdown | C04/C08 có thể bắt đầu; C07/C13 cần xác minh DB live trước migration | Commit docs C03 |
 
 Mẫu bàn giao cho phiên tiếp theo:
 

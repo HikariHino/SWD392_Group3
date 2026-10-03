@@ -62,7 +62,7 @@ SWD392_Group3/
 
 ## ⚙️ Getting Started & Local Setup
 
-Hiện có code CRUD User/Question/Rubric, danh sách Course và Swagger. Import/AI/interview/grading vẫn mock; Auth, Speech và entity ca thi/kết quả chưa triển khai. Cây kiến trúc phía trên mô tả cả phần dự kiến. Hợp đồng chi tiết sẽ được ghi trong `docs/BACKEND_CONTRACTS.md` tại C03.
+Hiện có code CRUD User/Question/Rubric, danh sách Course và Swagger. Import/AI/interview/grading vẫn mock; Auth, Speech và entity ca thi/kết quả chưa triển khai. Cây kiến trúc phía trên mô tả cả phần dự kiến. Đọc [hợp đồng database/API C03](docs/BACKEND_CONTRACTS.md) trước khi đổi entity, migration hoặc DTO.
 
 ### Chính sách SDK và chạy trong Visual Studio — C02
 
