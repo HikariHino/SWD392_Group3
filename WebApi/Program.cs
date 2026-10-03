@@ -29,6 +29,8 @@ var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
+    app.MapGet("/", () => Results.Redirect("/openapi/v1.json"))
+        .ExcludeFromDescription();
 }
 
 app.UseHttpsRedirection();

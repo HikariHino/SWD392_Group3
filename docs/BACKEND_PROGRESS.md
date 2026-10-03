@@ -1,5 +1,20 @@
 # Tiến độ backend và phối hợp coding
 
+## Kết quả mới nhất trên nhánh quang — 03/10/2026
+
+Kiểm tra truy cập localhost: HTTPS 7035 `/` trả 404 trước khi sửa; `/openapi/v1.json` và `/weatherforecast` trả 200; HTTP 5110 chuyển sang HTTPS 7035. Chứng chỉ dev đã trusted. Thêm redirect trang gốc Development đến tài liệu OpenAPI và launchUrl cho Visual Studio. Cần restart API để áp dụng. Tài liệu hiện là JSON, chưa có Swagger UI.
+
+Build bản sửa redirect thành công với thư mục output riêng vì Visual Studio đang giữ DLL của server chạy; 0 lỗi source, có cảnh báo NU1900 do không đọc được dữ liệu audit NuGet. Đã xóa output kiểm chứng riêng sau build; không dừng phiên Visual Studio của người dùng.
+
+Baseline hiện tại: `quang`, commit `51135a6`. Các phần review bên dưới ghi nhận nhánh `main` tại `c27221a`, không mô tả source hiện tại của `quang`.
+
+- Máy đã có SDK .NET 10.0.401. Build ban đầu trên `quang` thành công, 0 lỗi, 1 cảnh báo NU1903 từ Microsoft.OpenApi 2.0.0.
+- Nâng dependency Microsoft.OpenApi lên 2.7.5, bản vá cùng major theo advisory GHSA-v5pm-xwqc-g5wc; giữ Microsoft.AspNetCore.OpenApi hiện tại.
+- Nhánh này mới có service/controller mock, DbContext và UnitOfWork khung; chưa có entity/repository/CRUD User và Question đầy đủ. Lỗi accessor IUnitOfWork ở main không tồn tại tại đây. Không đánh dấu C01 của main là DONE chỉ vì quang build được.
+- Giữ nguyên cấu hình appsettings.json đang được người dùng chỉnh. Chưa kiểm chứng SQL Server hoặc chức năng nghiệp vụ.
+- Sau cập nhật: `dotnet build SWD392_Group3.slnx` PASS, 0 warning / 0 error. API khởi động Development thành công; GET /openapi/v1.json trả tài liệu OpenAPI; POST /interviewHub/negotiate trả HTTP 200. Đã dừng server sau kiểm tra. Commit đề xuất: `fix(api): update vulnerable OpenAPI dependency` (chưa commit).
+
+
 Cập nhật: 03/10/2026 (Asia/Saigon). Baseline: `main`, commit `c27221a`.
 Đây là nguồn tiến độ chung: đọc trước khi code, nhận việc trước khi sửa và cập nhật sau mỗi phiên. Trạng thái dưới đây dựa trên code local và lịch sử Git; không xác nhận công việc chưa push của thành viên hoặc nhánh khác.
 
