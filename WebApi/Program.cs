@@ -19,7 +19,7 @@ builder.Services.AddSwaggerGen(c =>
     {
         Title = "AIVES API - AI-Powered Viva Exam System",
         Version = "v1",
-        Description = "API hệ thống thi vấn đáp trực tuyến AIVES - SWD392 Group 3 (.NET 8 Onion Architecture)"
+        Description = "API hệ thống thi vấn đáp trực tuyến AIVES - SWD392 Group 3 (.NET 10 Onion Architecture)"
     });
 });
 

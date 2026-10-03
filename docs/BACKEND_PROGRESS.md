@@ -121,13 +121,15 @@ Mỗi hàng là một commit với một mục tiêu có thể review. Các file
 
   Cần trước: C00
 
-- [ ] **C02** — Người làm: Chưa nhận
+- [x] **C02** — Người làm: Quang (cùng Codex), 03/10/2026
 
   Commit: `chore: align dotnet sdk and local setup documentation`
 
   Phạm vi / nghiệm thu: Chốt .NET 10, cấu hình SDK theo chính sách nhóm, README đúng SDK/URL; peer build được theo hướng dẫn
 
   Cần trước: C01
+
+  Kiểm chứng: SDK 10.0.401 được global.json chọn; build cả solution với output tạm PASS, 0 warning / 0 error. README đồng bộ SDK, URL, profile, cảnh báo EnsureCreated/migration và cách kiểm tra DB. Peer cần chạy lại theo hướng dẫn trên máy riêng.
 
 - [ ] **C03** — Người làm: Chưa nhận
 
