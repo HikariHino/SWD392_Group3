@@ -15,6 +15,7 @@ public class AivesDbContext : DbContext
     public DbSet<Course> Courses => Set<Course>();
     public DbSet<Question> Questions => Set<Question>();
     public DbSet<Rubric> Rubrics => Set<Rubric>();
+    public DbSet<User> Users => Set<User>();
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
