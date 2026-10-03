@@ -451,3 +451,4 @@ Commit/PR:
 ```
 
 | 03/10/2026 | Thai / C04 / thai | Hash password v?i BCrypt | Build pass 0 error | ау xong C04, sang C05 | 8bc56ae |
+| 03/10/2026 | Thai / C05 / thai | Global Exception Middleware | Build pass 0 error | ау xong C05, chu?n b? C06 | 4f6030e |
