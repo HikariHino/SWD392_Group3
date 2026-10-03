@@ -15,10 +15,10 @@ public class AivesDbContext : DbContext
     public DbSet<Course> Courses => Set<Course>();
     public DbSet<Question> Questions => Set<Question>();
     public DbSet<Rubric> Rubrics => Set<Rubric>();
+    public DbSet<User> Users => Set<User>();
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
-        // Tự động quét và apply các cấu hình (Fluent API) trong thư mục Persistence/Configurations
         builder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
 
         base.OnModelCreating(builder);
@@ -26,7 +26,6 @@ public class AivesDbContext : DbContext
 
     public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
     {
-        // Tự động cập nhật CreatedAt và UpdatedAt mỗi khi SaveChanges được gọi
         foreach (var entry in ChangeTracker.Entries<AuditableEntity>())
         {
             switch (entry.State)
