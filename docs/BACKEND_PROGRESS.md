@@ -82,7 +82,7 @@ Kiểm tra lần đầu: `dotnet build SWD392_Group3.slnx --no-restore` → FAIL
 Trạng thái: TODO → IN_PROGRESS → REVIEW → DONE; BLOCKED phải ghi lý do. Owner hiện chưa phân công. Mỗi việc chỉ một người chịu trách nhiệm chính.
 
 | Task | Phạm vi file chính | Phụ thuộc | Owner | Trạng thái | Tiêu chí nghiệm thu |
-| --- | --- | --- | --- | --- | --- |
+ --- |
 | T01 Sửa tích hợp User | IUnitOfWork, UnitOfWork, AivesDbContext | Chốt SDK để build | Chưa nhận | TODO | BE-01/02 đóng; build pass |
 | T02 Đồng bộ môi trường | *.csproj, README, global.json nếu cần | Nhóm chốt phiên bản | Chưa nhận | TODO | BE-03 đóng; hướng dẫn setup tái lập được |
 | T03 Hoàn thiện User/Auth | User DTO/service/controller/validator; abstraction hash/auth và implementation | T01, T02 | Chưa nhận | TODO | BE-04/06 đóng; CRUD và phân quyền có kiểm chứng |
@@ -97,75 +97,292 @@ Trạng thái: TODO → IN_PROGRESS → REVIEW → DONE; BLOCKED phải ghi lý 
 
 ## Lộ trình commit nhỏ cho hai người
 
-Kế hoạch ngày 03/10/2026. A/B là vai trò đề xuất, chưa gán tên: **A phụ trách nền tảng, User/Auth, persistence và vòng đời ca thi; B phụ trách Question/Rubric, AI và grading**. Hai người review chéo. Các mã Cxx là mốc dự kiến, không phải commit đã tồn tại. Khi hoàn thành, thêm SHA/PR và kết quả kiểm chứng vào nhật ký; không đánh dấu DONE chỉ vì AI đã sinh code.
+Mỗi mốc có checkbox và tên người làm, không chia cố định A/B. Trước khi bắt đầu, ghi tên thật và trạng thái IN_PROGRESS ở mốc nhận; khi đạt tiêu chí, đổi [ ] thành [x], ghi SHA/PR và kiểm chứng vào nhật ký. Người còn lại review chéo. Không tick chỉ vì AI đã sinh code. C00/C01 đã hoàn thành; các mốc còn lại chưa nhận.
 
 Mỗi hàng là một commit với một mục tiêu có thể review. Các file interface/entity và implementation liên quan cần đi cùng nhau để commit build được. C01 là mốc khôi phục build; từ C02 trở đi mỗi commit phải build pass. Nếu phát sinh lỗi baseline khác, đóng chúng trong commit sửa build và ghi rõ, không trộn thêm feature.
 
 ### M0 — Khôi phục nền tảng
 
-| Mốc | Người | Commit message dự kiến | Phạm vi / tiêu chí nghiệm thu | Cần trước |
-| --- | --- | --- | --- | --- |
-| C00 | A | docs: add backend roadmap and collaboration notes | Share file note này và link README; ghi baseline build đang fail | Không |
-| C01 | A | fix(user): repair unit of work and user persistence wiring | Sửa accessor IUnitOfWork, thêm DbSet Users và implementation Users; build toàn solution pass | C00 |
-| C02 | A | chore: align dotnet sdk and local setup documentation | Chốt .NET 10, cấu hình SDK theo chính sách nhóm, README đúng SDK/URL; peer build được theo hướng dẫn | C01 |
-| C03 | A + B review | docs: define database and api contracts for aives | Đối chiếu DB thực tế/ảnh với entity và migration; ghi mapping, trạng thái ca thi, role, cách tính điểm và API request/response | C02 |
+
+
+- [x] **C00** — Người làm: Quang (cùng Codex), commit 51135a6
+
+  Commit: `docs: add backend roadmap and collaboration notes`
+
+  Phạm vi / nghiệm thu: Share file note này và link README; ghi baseline build đang fail
+
+  Cần trước: Không
+
+- [x] **C01** — Người làm: Khoi, sửa e2672b3; Quang tích hợp qua f488a34
+
+  Commit: `fix(user): repair unit of work and user persistence wiring`
+
+  Phạm vi / nghiệm thu: Sửa accessor IUnitOfWork, thêm DbSet Users và implementation Users; build toàn solution pass
+
+  Cần trước: C00
+
+- [ ] **C02** — Người làm: Chưa nhận
+
+  Commit: `chore: align dotnet sdk and local setup documentation`
+
+  Phạm vi / nghiệm thu: Chốt .NET 10, cấu hình SDK theo chính sách nhóm, README đúng SDK/URL; peer build được theo hướng dẫn
+
+  Cần trước: C01
+
+- [ ] **C03** — Người làm: Chưa nhận
+
+  Commit: `docs: define database and api contracts for aives`
+
+  Phạm vi / nghiệm thu: Đối chiếu DB thực tế/ảnh với entity và migration; ghi mapping, trạng thái ca thi, role, cách tính điểm và API request/response
+
+  Cần trước: C02
+
 
 C03 là điểm chốt trước khi thêm schema. Ảnh DB có ExamSessions/Transcripts/Assessments nhưng migration trong baseline chưa có; không suy ra DB đang mở được tạo bởi migration hiện tại. Trong ảnh, Transcript giống bài thi của một sinh viên; Assessment lưu câu trả lời từng câu. Quyết định rõ nơi lưu lượt hội thoại (speaker, nội dung, timestamp, câu hỏi) để hỗ trợ vấn đáp. Xác minh kiểu PK/FK, quan hệ và DB dev cần giữ dữ liệu; không tạo initial migration mới đè DB hoặc tự đổi tên bảng khi chưa có mapping.
 
 ### M1 — CRUD và tài khoản dùng được
 
-Sau C03, A/B có thể chạy song song theo phạm vi dưới đây. A giữ quyền tích hợp các file chung và migration.
+Sau C03, hai người có thể nhận các mốc không phụ thuộc nhau. Ghi tên người giữ quyền tích hợp file chung và migration trong nhật ký trước khi code.
 
-| Mốc | Người | Commit message dự kiến | Phạm vi / tiêu chí nghiệm thu | Cần trước |
-| --- | --- | --- | --- | --- |
-| C04 | A | feat(user): hash passwords through application abstraction | Contract hash ở Application, implementation ở Infrastructure, UserService sử dụng; kiểm tra hash/verify và không lưu password nguyên văn | C03 |
-| C05 | A | fix(api): standardize business error responses | Lỗi nghiệp vụ có loại rõ, xử lý tập trung; lỗi hệ thống không bị báo nhầm 404 và không lộ chi tiết nội bộ | C04 |
-| C06 | A | feat(user): validate user input and role changes | Validator, kiểm tra trùng username và role hợp lệ; request lỗi có phản hồi ổn định | C05 |
-| C07 | A | feat(db): add user schema migration | Migration và snapshot đồng bộ model; kiểm tra cập nhật DB dev và CRUD User | C06 |
-| C08 | B | fix(question): validate paging and course references | PageIndex/PageSize có giới hạn; CourseId tồn tại; kiểm tra input sai và lọc/phân trang | C03 |
-| C09 | B | fix(question): verify rubric replacement and soft deletion | Cập nhật rubric không để dữ liệu cũ sai; tổng trọng số hợp lệ; câu hỏi/rubric đã xóa không xuất hiện | C08 |
-| C10 | B | feat(course): expose course management through dtos | Course DTO/use case/controller, CRUD theo contract; không trả entity trực tiếp; kiểm tra môn không tồn tại | C09 |
-| C11 | A | feat(auth): add login and token verification | Login xác minh hash, token có hạn dùng/cấu hình ngoài source; kiểm tra login sai và token hết hạn | C07 |
-| C12 | A | feat(auth): protect user and question management by role | Áp dụng quyền theo C03 cho API; người dùng không tự nâng role; kiểm tra 401/403 và lecturer/student | C10, C11 |
+
+
+- [ ] **C04** — Người làm: Chưa nhận
+
+  Commit: `feat(user): hash passwords through application abstraction`
+
+  Phạm vi / nghiệm thu: Contract hash ở Application, implementation ở Infrastructure, UserService sử dụng; kiểm tra hash/verify và không lưu password nguyên văn
+
+  Cần trước: C03
+
+- [ ] **C05** — Người làm: Chưa nhận
+
+  Commit: `fix(api): standardize business error responses`
+
+  Phạm vi / nghiệm thu: Lỗi nghiệp vụ có loại rõ, xử lý tập trung; lỗi hệ thống không bị báo nhầm 404 và không lộ chi tiết nội bộ
+
+  Cần trước: C04
+
+- [ ] **C06** — Người làm: Chưa nhận
+
+  Commit: `feat(user): validate user input and role changes`
+
+  Phạm vi / nghiệm thu: Validator, kiểm tra trùng username và role hợp lệ; request lỗi có phản hồi ổn định
+
+  Cần trước: C05
+
+- [ ] **C07** — Người làm: Chưa nhận
+
+  Commit: `feat(db): add user schema migration`
+
+  Phạm vi / nghiệm thu: Migration và snapshot đồng bộ model; kiểm tra cập nhật DB dev và CRUD User
+
+  Cần trước: C06
+
+- [ ] **C08** — Người làm: Chưa nhận
+
+  Commit: `fix(question): validate paging and course references`
+
+  Phạm vi / nghiệm thu: PageIndex/PageSize có giới hạn; CourseId tồn tại; kiểm tra input sai và lọc/phân trang
+
+  Cần trước: C03
+
+- [ ] **C09** — Người làm: Chưa nhận
+
+  Commit: `fix(question): verify rubric replacement and soft deletion`
+
+  Phạm vi / nghiệm thu: Cập nhật rubric không để dữ liệu cũ sai; tổng trọng số hợp lệ; câu hỏi/rubric đã xóa không xuất hiện
+
+  Cần trước: C08
+
+- [ ] **C10** — Người làm: Chưa nhận
+
+  Commit: `feat(course): expose course management through dtos`
+
+  Phạm vi / nghiệm thu: Course DTO/use case/controller, CRUD theo contract; không trả entity trực tiếp; kiểm tra môn không tồn tại
+
+  Cần trước: C09
+
+- [ ] **C11** — Người làm: Chưa nhận
+
+  Commit: `feat(auth): add login and token verification`
+
+  Phạm vi / nghiệm thu: Login xác minh hash, token có hạn dùng/cấu hình ngoài source; kiểm tra login sai và token hết hạn
+
+  Cần trước: C07
+
+- [ ] **C12** — Người làm: Chưa nhận
+
+  Commit: `feat(auth): protect user and question management by role`
+
+  Phạm vi / nghiệm thu: Áp dụng quyền theo C03 cho API; người dùng không tự nâng role; kiểm tra 401/403 và lecturer/student
+
+  Cần trước: C10, C11
+
 
 Gate M1: hai người chạy trên DB dev của mình; tạo user, login, quản lý course/question/rubric và soft delete thành công. Cập nhật SHA các commit và ví dụ gọi API trong note. Không tuyên bố chức năng thi AI đã xong.
 
 ### M2 — Thi bằng văn bản chạy xuyên suốt
 
-| Mốc | Người | Commit message dự kiến | Phạm vi / tiêu chí nghiệm thu | Cần trước |
-| --- | --- | --- | --- | --- |
-| C13 | A | feat(exam): add session and student attempt models | ExamSession, Transcript/bài thi, lượt hội thoại theo C03; EF configuration + migration cùng commit; kiểm tra quan hệ FK | C12 |
-| C14 | A | feat(exam): manage session lifecycle | Tạo/mở/đóng ca thi; validate course, thời gian, trạng thái và quyền lecturer; không cho chuyển trạng thái trái quy tắc | C13 |
-| C15 | A | feat(exam): start attempts and persist answer turns | Student vào phiên hợp lệ; lưu câu trả lời theo đúng user/session/question; không truy cập bài thi người khác | C14 |
-| C16 | B | feat(ai): implement structured ai provider integration | Adapter gọi AI thật, cấu hình secret bên ngoài, timeout/cancellation và lỗi provider; kiểm tra response hợp lệ/lỗi bằng fake provider, smoke test thật khi có key | C03; merge sau C15 |
-| C17 | B | feat(interview): generate follow-up questions from exam context | InterviewService dùng abstraction AI, ngữ cảnh môn/câu hỏi/hội thoại; lưu lượt AI, không dùng chuỗi mock | C15, C16 |
-| C18 | A | feat(signalr): authorize interview messages by attempt | Hub xác thực, kiểm tra ownership/state phía server; gửi đúng người/phiên; không tin studentId do client tự gửi | C17 |
-| C19 | A + B review | test(exam): cover the text viva workflow | Kiểm tra login → vào ca thi → trả lời → nhận câu hỏi tiếp → lưu hội thoại → kết thúc; cả đường lỗi quyền/state/provider | C18 |
+
+
+- [ ] **C13** — Người làm: Chưa nhận
+
+  Commit: `feat(exam): add session and student attempt models`
+
+  Phạm vi / nghiệm thu: ExamSession, Transcript/bài thi, lượt hội thoại theo C03; EF configuration + migration cùng commit; kiểm tra quan hệ FK
+
+  Cần trước: C12
+
+- [ ] **C14** — Người làm: Chưa nhận
+
+  Commit: `feat(exam): manage session lifecycle`
+
+  Phạm vi / nghiệm thu: Tạo/mở/đóng ca thi; validate course, thời gian, trạng thái và quyền lecturer; không cho chuyển trạng thái trái quy tắc
+
+  Cần trước: C13
+
+- [ ] **C15** — Người làm: Chưa nhận
+
+  Commit: `feat(exam): start attempts and persist answer turns`
+
+  Phạm vi / nghiệm thu: Student vào phiên hợp lệ; lưu câu trả lời theo đúng user/session/question; không truy cập bài thi người khác
+
+  Cần trước: C14
+
+- [ ] **C16** — Người làm: Chưa nhận
+
+  Commit: `feat(ai): implement structured ai provider integration`
+
+  Phạm vi / nghiệm thu: Adapter gọi AI thật, cấu hình secret bên ngoài, timeout/cancellation và lỗi provider; kiểm tra response hợp lệ/lỗi bằng fake provider, smoke test thật khi có key
+
+  Cần trước: C03; merge sau C15
+
+- [ ] **C17** — Người làm: Chưa nhận
+
+  Commit: `feat(interview): generate follow-up questions from exam context`
+
+  Phạm vi / nghiệm thu: InterviewService dùng abstraction AI, ngữ cảnh môn/câu hỏi/hội thoại; lưu lượt AI, không dùng chuỗi mock
+
+  Cần trước: C15, C16
+
+- [ ] **C18** — Người làm: Chưa nhận
+
+  Commit: `feat(signalr): authorize interview messages by attempt`
+
+  Phạm vi / nghiệm thu: Hub xác thực, kiểm tra ownership/state phía server; gửi đúng người/phiên; không tin studentId do client tự gửi
+
+  Cần trước: C17
+
+- [ ] **C19** — Người làm: Chưa nhận
+
+  Commit: `test(exam): cover the text viva workflow`
+
+  Phạm vi / nghiệm thu: Kiểm tra login → vào ca thi → trả lời → nhận câu hỏi tiếp → lưu hội thoại → kết thúc; cả đường lỗi quyền/state/provider
+
+  Cần trước: C18
+
 
 Gate M2: demo một ca thi văn bản có dữ liệu lưu thật và AI phản hồi thật khi cấu hình provider. Fake provider phục vụ test phải được phân biệt rõ với môi trường demo.
 
 ### M3 — Chấm điểm và giảng viên duyệt
 
-| Mốc | Người | Commit message dự kiến | Phạm vi / tiêu chí nghiệm thu | Cần trước |
-| --- | --- | --- | --- | --- |
-| C20 | B | feat(grading): add assessment contracts and score rules | Entity Assessment, DTO và quy tắc điểm theo rubric/C03; A review schema, tích hợp configuration/migration trong cùng commit | C19 |
-| C21 | B | feat(grading): persist ai scores and feedback per answer | GradingService bỏ 8.5 cố định; lưu điểm đề xuất/feedback/confidence; kiểm tra cấu trúc và khoảng điểm AI trả về | C20 |
-| C22 | A | feat(assessment): let lecturers review and finalize scores | API giảng viên xem/chốt điểm và comment; audit ai chốt/khi nào; student không thể chốt; không âm thầm ghi đè điểm đã chốt | C21 |
-| C23 | A | feat(result): calculate totals and expose authorized results | Tổng điểm theo quy tắc đã chốt, phân biệt đề xuất/chính thức; quyền xem kết quả và xử lý bài chưa chấm đủ | C22 |
-| C24 | B | test(grading): verify scoring and lecturer decisions | Kiểm tra tính điểm, output AI sai, retry không nhân đôi assessment và quyền chốt; demo kết quả lưu DB | C23 |
+
+
+- [ ] **C20** — Người làm: Chưa nhận
+
+  Commit: `feat(grading): add assessment contracts and score rules`
+
+  Phạm vi / nghiệm thu: Entity Assessment, DTO và quy tắc điểm theo rubric/C03; Người còn lại review schema; tích hợp configuration/migration trong cùng commit
+
+  Cần trước: C19
+
+- [ ] **C21** — Người làm: Chưa nhận
+
+  Commit: `feat(grading): persist ai scores and feedback per answer`
+
+  Phạm vi / nghiệm thu: GradingService bỏ 8.5 cố định; lưu điểm đề xuất/feedback/confidence; kiểm tra cấu trúc và khoảng điểm AI trả về
+
+  Cần trước: C20
+
+- [ ] **C22** — Người làm: Chưa nhận
+
+  Commit: `feat(assessment): let lecturers review and finalize scores`
+
+  Phạm vi / nghiệm thu: API giảng viên xem/chốt điểm và comment; audit ai chốt/khi nào; student không thể chốt; không âm thầm ghi đè điểm đã chốt
+
+  Cần trước: C21
+
+- [ ] **C23** — Người làm: Chưa nhận
+
+  Commit: `feat(result): calculate totals and expose authorized results`
+
+  Phạm vi / nghiệm thu: Tổng điểm theo quy tắc đã chốt, phân biệt đề xuất/chính thức; quyền xem kết quả và xử lý bài chưa chấm đủ
+
+  Cần trước: C22
+
+- [ ] **C24** — Người làm: Chưa nhận
+
+  Commit: `test(grading): verify scoring and lecturer decisions`
+
+  Phạm vi / nghiệm thu: Kiểm tra tính điểm, output AI sai, retry không nhân đôi assessment và quyền chốt; demo kết quả lưu DB
+
+  Cần trước: C23
+
 
 Gate M3: thi văn bản → AI đề xuất điểm → giảng viên duyệt → sinh viên xem kết quả chính thức. Đây là MVP backend trước khi thêm voice.
 
 ### M4 — Voice, import và ổn định bản bàn giao
 
-| Mốc | Người | Commit message dự kiến | Phạm vi / tiêu chí nghiệm thu | Cần trước |
-| --- | --- | --- | --- | --- |
-| C25 | B | feat(import): parse and validate question uploads | Chốt định dạng; upload thật, giới hạn file, lỗi theo dòng; bỏ dummyPath; ghi rõ chính sách import một phần/toàn bộ | C12; có thể làm sớm nếu M2 chưa cần |
-| C26 | B | feat(speech): add speech-to-text provider adapter | Contract ở Application, adapter Infrastructure; kiểm tra audio hợp lệ/lỗi/timeout và tiếng Việt | C24; chốt provider |
-| C27 | B | feat(speech): add text-to-speech provider adapter | Nhận text và tạo audio; kiểm tra cấu hình, lỗi provider và định dạng frontend nhận được | C26 |
-| C28 | A | feat(interview): connect voice input and spoken responses | Nối STT → use case trả lời → AI → TTS; giữ luồng text dự phòng; kiểm tra quyền, lưu lượt, kết thúc phiên | C27 |
-| C29 | A | chore(ci): automate backend build and verification | CI dùng .NET 10, build/test không cần secret thật; cấu hình môi trường demo và health check phù hợp | C24, C25, C28 |
-| C30 | A + B review | docs: publish backend setup and demo acceptance checklist | README đúng code, hướng dẫn migration/config, API/SignalR contract, kết quả demo và giới hạn còn lại | C29 |
+
+
+- [ ] **C25** — Người làm: Chưa nhận
+
+  Commit: `feat(import): parse and validate question uploads`
+
+  Phạm vi / nghiệm thu: Chốt định dạng; upload thật, giới hạn file, lỗi theo dòng; bỏ dummyPath; ghi rõ chính sách import một phần/toàn bộ
+
+  Cần trước: C12; có thể làm sớm nếu M2 chưa cần
+
+- [ ] **C26** — Người làm: Chưa nhận
+
+  Commit: `feat(speech): add speech-to-text provider adapter`
+
+  Phạm vi / nghiệm thu: Contract ở Application, adapter Infrastructure; kiểm tra audio hợp lệ/lỗi/timeout và tiếng Việt
+
+  Cần trước: C24; chốt provider
+
+- [ ] **C27** — Người làm: Chưa nhận
+
+  Commit: `feat(speech): add text-to-speech provider adapter`
+
+  Phạm vi / nghiệm thu: Nhận text và tạo audio; kiểm tra cấu hình, lỗi provider và định dạng frontend nhận được
+
+  Cần trước: C26
+
+- [ ] **C28** — Người làm: Chưa nhận
+
+  Commit: `feat(interview): connect voice input and spoken responses`
+
+  Phạm vi / nghiệm thu: Nối STT → use case trả lời → AI → TTS; giữ luồng text dự phòng; kiểm tra quyền, lưu lượt, kết thúc phiên
+
+  Cần trước: C27
+
+- [ ] **C29** — Người làm: Chưa nhận
+
+  Commit: `chore(ci): automate backend build and verification`
+
+  Phạm vi / nghiệm thu: CI dùng .NET 10, build/test không cần secret thật; cấu hình môi trường demo và health check phù hợp
+
+  Cần trước: C24, C25, C28
+
+- [ ] **C30** — Người làm: Chưa nhận
+
+  Commit: `docs: publish backend setup and demo acceptance checklist`
+
+  Phạm vi / nghiệm thu: README đúng code, hướng dẫn migration/config, API/SignalR contract, kết quả demo và giới hạn còn lại
+
+  Cần trước: C29
+
 
 Gate M4: hai máy dựng backend từ tài liệu được, các kiểm tra pass, demo voice + chấm/duyệt điểm hoàn chỉnh. Không cần đợi cuối dự án mới viết test: thêm kiểm tra nghiệp vụ/rủi ro cùng commit chức năng; C19/C24 bổ sung kiểm tra xuyên suốt.
 
@@ -173,14 +390,14 @@ Gate M4: hai máy dựng backend từ tài liệu được, các kiểm tra pass
 
 - Share một branch/PR chứa một vài commit liên quan theo gate. Peer kéo commit nền tảng đã merge trước khi làm task phụ thuộc; không cherry-pick riêng migration thiếu entity/configuration hoặc service thiếu interface.
 - Mỗi thông báo bàn giao ghi: mã Cxx, SHA thật, branch/PR, contract thay đổi, cách kiểm tra, blocker và mốc peer có thể bắt đầu. Cập nhật bảng Txx tương ứng: T01=C01, T02=C02, T03=C04–06/C11–12, T04=C07, T05=C08–10, T06=C25, T07=C13–15, T08=C16–19, T09=C26–28, T10=C20–24, T11=kiểm tra xuyên suốt/C29–30.
-- Trong một checkout chỉ một người/agent sửa tại một thời điểm. A và B dùng branch cùng checkout riêng; code song song không đồng nghĩa sửa chung file. Với file chung, bên không giữ quyền tích hợp bàn giao yêu cầu cụ thể thay vì tự sửa.
+- Trong một checkout chỉ một người/agent sửa tại một thời điểm. Mỗi người dùng branch và checkout riêng; code song song không đồng nghĩa sửa chung file. Với file chung, bên không giữ quyền tích hợp bàn giao yêu cầu cụ thể thay vì tự sửa.
 - Khi AI hoàn thành, đọc diff và chạy kiểm chứng trước khi commit. Nếu mốc cần chia thêm, dùng Cxx.a/Cxx.b và ghi điều kiện build của từng commit; không gộp các mốc chưa liên quan.
 
 Prompt mẫu cho mỗi phiên:
 
 ```text
 Đọc docs/BACKEND_PROGRESS.md. Thực hiện duy nhất mốc Cxx trên branch hiện tại.
-Owner: A/B. Baseline commit: <SHA thật>. Phụ thuộc đã merge: <SHA thật>.
+Người làm: <tên thật>. Baseline commit: <SHA thật>. Phụ thuộc đã merge: <SHA thật>.
 Phạm vi file được sửa: <ghi cụ thể>. File người khác đang giữ: <ghi cụ thể>.
 Giữ Onion Architecture và contract đã chốt tại C03.
 Triển khai đầy đủ tiêu chí mốc, kiểm tra phù hợp và cập nhật nhật ký bàn giao.
@@ -206,8 +423,9 @@ Báo diff, kết quả kiểm tra, blocker và commit message đề xuất.
 Thêm một dòng sau mỗi phiên; giữ các dòng cũ. Khi hai branch cùng cập nhật tài liệu, giữ cả hai bản ghi khi giải quyết conflict.
 
 | Ngày | Người / task / branch | Đã làm / file ảnh hưởng | Kiểm chứng | Blocker / bước tiếp theo | Commit / PR |
-| --- | --- | --- | --- | --- | --- |
+ --- |
 | 03/10/2026 | Codex / review / main | Kiểm tra 4 layer, source, commit; tạo tài liệu tiến độ | Đã cài SDK 10.0.401; restore pass; build FAIL 6 lỗi CS1014 ở IUnitOfWork | Ưu tiên T01; T02 còn đồng bộ README/setup; chưa kiểm tra runtime DB | Baseline c27221a; tài liệu chưa commit |
+| 03/10/2026 | Quang cùng Codex / C01 tích hợp / quang | Merge backend khoi; chuyển roadmap thành checklist có tên người làm | Build output tạm PASS, 0 warning / 0 error; kiểm tra đủ 31 checkbox | Tiếp tục C02/C03; CRUD DB chưa kiểm chứng; cấu hình local vẫn nằm trong stash đã lưu | Sửa gốc e2672b3; merge f488a34 |
 
 Mẫu bàn giao cho phiên tiếp theo:
 
