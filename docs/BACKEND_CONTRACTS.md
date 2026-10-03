@@ -11,7 +11,7 @@ Baseline: `quang` sau C02 `fd7f6b2`, 03/10/2026. Người lập: Quang cùng Cod
 
 | Điểm | Draw.io mới | Source / contract cần dùng |
 | --- | --- | --- |
-| Phiên bản | Tiêu đề và ghi chú .NET 8 | C02 đã chốt .NET 10; sửa nhãn khi cập nhật sơ đồ |
+| Phiên bản | Tiêu đề và ghi chú đã đổi sang .NET 10 | Đồng bộ C02; các khác biệt implementation phía dưới vẫn cần cập nhật |
 | Controller | Chỉ inject IQuestionBankService; ImportQuestions(IFormFile) | Source còn inject 2 validator; ImportQuestions() không nhận file thật. Upload là C25, chưa có trong code |
 | Service | Inject IQuestionRepository trực tiếp | Source inject IUnitOfWork + IMapper, dùng Questions/Courses và SaveChangesAsync của UoW. Không refactor sang repository trực tiếp chỉ vì hình khác |
 | Repository | Có AddRangeAsync và SaveChangesAsync | AddRangeAsync đã có qua IGenericRepository; SaveChangesAsync chỉ ở IUnitOfWork, không ở IQuestionRepository. Sơ đồ cần thêm generic repository/UoW nếu muốn mô tả implementation |
