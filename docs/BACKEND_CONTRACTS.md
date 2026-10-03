@@ -113,6 +113,12 @@ Auth và lỗi hiện chưa thống nhất: User bắt generic Exception thành 
 
 ## 6. API mục tiêu cho các mốc sau
 
+### C08 — Validation Query/CourseId đã triển khai
+
+QuestionBankService kiểm tra query tại Application trước khi gọi repository, áp dụng cho cả caller ngoài HTTP. PageIndex >= 1, PageSize 1..100, offset `(PageIndex-1)*PageSize` không vượt int.MaxValue; BloomLevel nếu truyền phải 1..6, CourseId nếu truyền không được UUID rỗng, SearchTerm tối đa 2000 ký tự. Bỏ CourseId để lấy tất cả môn; CourseId không tồn tại/soft-deleted trả 400 ProblemDetails với errors.CourseId, không âm thầm bỏ filter. Tạo question cũng kiểm tra request và course đang hoạt động trước khi Add/Save, trả cùng lỗi 400 nếu môn không hợp lệ. Repository phân trang theo CreatedAt giảm dần, Id tăng dần để tránh thứ tự ngẫu nhiên khi CreatedAt trùng nhau.
+
+Bộ kiểm tra C08 nằm trong tests/BackendChecks/QuestionBankChecks.cs: query biên, overflow, service chặn request trước repository, CourseId missing/deleted, chuyển filter/phân trang sang repository, DTO/metadata và create hợp lệ. Dùng repository spy, không kiểm chứng SQL query thực thi hoặc CRUD live. Runtime kiểm tra ở phiên C08 bị Windows Application Control chặn WebApi.dll (0x800711C7); cần chạy lại trên môi trường cho phép trước khi nghiệm thu.
+
 | Mốc / method route | Request chính | Success / quyền |
 | --- | --- | --- |
 | C11 POST /api/auth/login | username, password | 200 {accessToken, expiresAt, user: UserDto}; sai thông tin 401 |

@@ -4,6 +4,7 @@ using Application.DTOs.QuestionBank;
 using Application.Interfaces.Repositories;
 using Application.Interfaces.Services;
 using Domain.Entities.QuestionBank;
+using FluentValidation;
 
 namespace Application.Services;
 
@@ -11,15 +12,24 @@ public class QuestionBankService : IQuestionBankService
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly IMapper _mapper;
+    private readonly IValidator<QuestionQueryParameters> _queryValidator;
+    private readonly IValidator<CreateQuestionRequest> _createValidator;
 
-    public QuestionBankService(IUnitOfWork unitOfWork, IMapper mapper)
+    public QuestionBankService(IUnitOfWork unitOfWork, IMapper mapper,
+        IValidator<QuestionQueryParameters> queryValidator,
+        IValidator<CreateQuestionRequest> createValidator)
     {
         _unitOfWork = unitOfWork;
         _mapper = mapper;
+        _queryValidator = queryValidator;
+        _createValidator = createValidator;
     }
 
     public async Task<PagedResponse<QuestionDto>> GetQuestionsAsync(QuestionQueryParameters query)
     {
+        ThrowIfInvalid(await _queryValidator.ValidateAsync(query));
+        if (query.CourseId.HasValue) await RequireActiveCourseAsync(query.CourseId.Value);
+
         var (items, totalCount) = await _unitOfWork.Questions.GetPagedQuestionsAsync(
             query.CourseId,
             query.BloomLevel,
@@ -42,6 +52,9 @@ public class QuestionBankService : IQuestionBankService
 
     public async Task<QuestionDto> CreateQuestionAsync(CreateQuestionRequest request)
     {
+        ThrowIfInvalid(await _createValidator.ValidateAsync(request));
+        await RequireActiveCourseAsync(request.CourseId);
+
         var question = _mapper.Map<Question>(request);
         question.Id = Guid.NewGuid();
 
@@ -116,5 +129,25 @@ public class QuestionBankService : IQuestionBankService
     public async Task<IEnumerable<Course>> GetCoursesAsync()
     {
         return await _unitOfWork.Courses.GetAllAsync();
+    }
+
+    private async Task RequireActiveCourseAsync(Guid courseId)
+    {
+        var course = await _unitOfWork.Courses.GetByIdAsync(courseId);
+        if (course == null || course.IsDeleted)
+        {
+            throw new Application.Exceptions.ValidationException(new Dictionary<string, string[]>
+            {
+                [nameof(CreateQuestionRequest.CourseId)] = ["Course does not exist or has been deleted."]
+            });
+        }
+    }
+
+    private static void ThrowIfInvalid(FluentValidation.Results.ValidationResult validation)
+    {
+        if (validation.IsValid) return;
+        throw new Application.Exceptions.ValidationException(validation.Errors
+            .GroupBy(error => error.PropertyName)
+            .ToDictionary(group => group.Key, group => group.Select(error => error.ErrorMessage).ToArray()));
     }
 }

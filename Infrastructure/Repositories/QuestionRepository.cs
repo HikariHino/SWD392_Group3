@@ -53,6 +53,7 @@ public class QuestionRepository : GenericRepository<Question>, IQuestionReposito
 
         var items = await query
             .OrderByDescending(q => q.CreatedAt)
+            .ThenBy(q => q.Id)
             .Skip((pageIndex - 1) * pageSize)
             .Take(pageSize)
             .ToListAsync();

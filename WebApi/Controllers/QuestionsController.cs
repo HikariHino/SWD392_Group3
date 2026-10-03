@@ -29,6 +29,7 @@ public class QuestionsController : ControllerBase
     /// </summary>
     [HttpGet]
     [ProducesResponseType(typeof(PagedResponse<QuestionDto>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> GetQuestions([FromQuery] QuestionQueryParameters query)
     {
         var result = await _questionBankService.GetQuestionsAsync(query);

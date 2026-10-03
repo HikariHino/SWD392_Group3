@@ -2,6 +2,8 @@
 
 ## Kết quả mới nhất trên nhánh quang — 03/10/2026
 
+C08 của Quang cùng Codex đã triển khai validation phân trang/filter và kiểm tra CourseId tại Application, bổ sung regression checks. Bộ kiểm tra runtime bị Windows Application Control chặn WebApi.dll (0x800711C7), cả ngoài sandbox; chưa có kết quả test C08 pass, chưa kiểm tra SQL live. Giữ C08 REVIEW đến khi chạy kiểm chứng được. Không đổi credit C04–C07 của Thai.
+
 Đã đồng bộ main `3b8d690` sang quang. **C04–C07 do Thai triển khai** (`8bc56ae`, `4f6030e`, `1977c0c`, `37fed27`). Phiên sửa bổ sung của Quang cùng Codex chỉ thêm traceId/giới hạn validator, bỏ Admin theo C03, chuẩn hóa vị trí migration và kiểm chứng regression; không thay tác giả các mốc. Có 34 kiểm tra offline PASS. C07 chưa kiểm tra apply migration/CRUD SQL thật do máy không có SQL Server/LocalDB chạy; chưa tick DONE. C08 chưa triển khai trong phiên này.
 
 Đã review bản draw.io vừa cập nhật: quan hệ entity/Guid/BloomLevel phù hợp hướng thiết kế; nhãn phiên bản đã sửa thành .NET 10 theo yêu cầu, XML kiểm tra hợp lệ. Wiring repository và một số method/DbSet vẫn không khớp code. Xem [bảng khác biệt UML trong hợp đồng C03](BACKEND_CONTRACTS.md#đối-chiếu-drawio-cập-nhật-ngày-03102026). Không đổi trạng thái mốc hoặc refactor source theo hình; giữ các phần chưa triển khai ở trạng thái dự kiến.
@@ -190,13 +192,15 @@ Sau C03, hai người có thể nhận các mốc không phụ thuộc nhau. Ghi
 
   Migration chuyển từ Infrastructure/Infrastructure/Migrations sang Infrastructure/Migrations, giữ ID 20261003125521_AddUserTable và schema của Thai. Discovery, SQL tạo Users/unique username và snapshot đã kiểm tra offline. Không áp dụng migration lên DB thật trong phiên sửa bổ sung.
 
-- [ ] **C08** — Người làm: Chưa nhận
+- [ ] **C08** — Người làm: Quang (cùng Codex); REVIEW — chờ chạy kiểm tra runtime
 
   Commit: `fix(question): validate paging and course references`
 
   Phạm vi / nghiệm thu: PageIndex/PageSize có giới hạn; CourseId tồn tại; kiểm tra input sai và lọc/phân trang
 
   Cần trước: C03
+
+  Code: pageIndex>=1, pageSize 1..100, offset an toàn; enum/UUID/filter hợp lệ; CourseId tồn tại và chưa xóa trước query/create; ordering ổn định CreatedAt/Id. Có checks cho đường lỗi và persistence hợp lệ với repository spy. Runtime bị Application Control chặn assembly, chưa tick DONE; chạy `dotnet run --project tests/BackendChecks/BackendChecks.csproj` trên môi trường được phép, rồi kiểm tra API/DB dev.
 
 - [ ] **C09** — Người làm: Chưa nhận
 
@@ -465,3 +469,4 @@ Giữ nguyên người làm và SHA gốc của Thai; sửa encoding/hiển th�
 | 03/10/2026 | Thai / C06 / thai | Validation User | Thai báo build pass 0 error | Code C06 đã triển khai | 1977c0c |
 | 03/10/2026 | Thai / C07 / thai | Migration User | Thai báo build pass 0 error | Code C07 đã triển khai; chờ xác minh apply DB | 37fed27 |
 | 03/10/2026 | Quang cùng Codex / sửa bổ sung C04–C07 / quang | TraceId, độ dài input/role, vị trí migration; kiểm tra regression và sửa hiển thị note | 34 kiểm tra offline PASS; không dùng SQL live | C07 kiểm tra DB dev; chưa làm C08 | Commit sửa bổ sung riêng |
+| 03/10/2026 | Quang cùng Codex / C08 / quang | Query validator, course validation trong service, ordering repository, regression checks | Source/build biên dịch; runtime checks bị Application Control 0x800711C7 | REVIEW: chạy lại checks và kiểm tra DB/API; không tính test là pass | Commit C08 riêng |

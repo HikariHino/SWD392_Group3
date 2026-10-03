@@ -3,6 +3,23 @@ using Application.DTOs.QuestionBank;
 
 namespace Application.Validators.QuestionBank;
 
+public class QuestionQueryParametersValidator : AbstractValidator<QuestionQueryParameters>
+{
+    public QuestionQueryParametersValidator()
+    {
+        RuleFor(q => q.PageIndex).GreaterThanOrEqualTo(1);
+        RuleFor(q => q.PageSize).InclusiveBetween(1, 100);
+        RuleFor(q => q).Must(q => (long)(q.PageIndex - 1L) * q.PageSize <= int.MaxValue)
+            .OverridePropertyName(nameof(QuestionQueryParameters.PageIndex))
+            .WithMessage("Page offset exceeds the supported range.")
+            .When(q => q.PageIndex >= 1 && q.PageSize is >= 1 and <= 100);
+        RuleFor(q => q.CourseId).Must(id => !id.HasValue || id.Value != Guid.Empty)
+            .WithMessage("CourseId must be a non-empty UUID when supplied.");
+        RuleFor(q => q.BloomLevel).IsInEnum().When(q => q.BloomLevel.HasValue);
+        RuleFor(q => q.SearchTerm).MaximumLength(2000);
+    }
+}
+
 public class CreateRubricRequestValidator : AbstractValidator<CreateRubricRequest>
 {
     public CreateRubricRequestValidator()

@@ -77,4 +77,5 @@ Check(!db.Database.HasPendingModelChanges(), "migration snapshot matches EF mode
 var script = db.GetService<IMigrator>().GenerateScript("20260927162533_InitialCreate", "20261003125521_AddUserTable");
 Check(script.Contains("CREATE TABLE [Users]") && script.Contains("IX_Users_Username"), "user migration creates table and unique username index");
 Check(!script.Contains("DROP TABLE") && !script.Contains("CREATE TABLE [Courses]"), "user migration preserves existing question-bank tables");
+await QuestionBankChecks.Run(Check);
 Console.WriteLine($"{checks} checks passed. Live SQL migration/CRUD not verified.");
