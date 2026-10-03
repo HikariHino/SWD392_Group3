@@ -1,16 +1,14 @@
 using Domain.Entities.QuestionBank;
+using Domain.Entities.UserManagement;
 
 namespace Application.Interfaces.Repositories;
 
 public interface IUnitOfWork : IDisposable
 {
-    IQuestionRepository Questions { get;     IUserRepository Users { get; }
-}
-    IGenericRepository<Course> Courses { get;     IUserRepository Users { get; }
-}
-    IGenericRepository<Rubric> Rubrics { get;     IUserRepository Users { get; }
-}
+    IQuestionRepository Questions { get; }
+    IUserRepository Users { get; }
+    IGenericRepository<Course> Courses { get; }
+    IGenericRepository<Rubric> Rubrics { get; }
     
     Task<int> SaveChangesAsync();
-    IUserRepository Users { get; }
 }
