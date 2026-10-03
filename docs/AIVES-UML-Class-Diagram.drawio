@@ -1,17 +1,17 @@
 <mxfile host="app.diagrams.net">
   <diagram id="57886012-c539-4445-94c5-1f3a1146e9b0" name="AIVES - Complete UML Class Diagram">
-    <mxGraphModel dx="3495" dy="2120" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="3380" pageHeight="2460" background="#ffffff" math="0" shadow="0">
+    <mxGraphModel dx="3994" dy="2423" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="3380" pageHeight="2460" background="#ffffff" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
         <mxCell id="ctrl" parent="1" style="swimlane;html=0;startSize=48;horizontal=1;collapsible=0;rounded=0;fillColor=#dae8fc;swimlaneFillColor=#ffffff;fontSize=15;fontStyle=1;align=center;whiteSpace=wrap;" value="WEB API&#xa;QuestionsController" vertex="1">
-          <mxGeometry height="208" width="510" x="70" y="272" as="geometry" />
+          <mxGeometry height="280" width="510" x="70" y="272" as="geometry" />
         </mxCell>
         <mxCell id="ctrl-a" parent="ctrl" style="text;html=0;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=10;spacingTop=7;fontSize=13;fontFamily=Consolas;whiteSpace=wrap;overflow=hidden;" value="- _questionBankService: IQuestionBankService" vertex="1">
           <mxGeometry height="36" width="510" y="48" as="geometry" />
         </mxCell>
-        <mxCell id="ctrl-o" parent="ctrl" style="text;html=0;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=10;spacingTop=7;fontSize=13;fontFamily=Consolas;whiteSpace=wrap;overflow=hidden;" value="+ QuestionsController(&#xa;    questionBankService: IQuestionBankService)&#xa;+ ImportQuestions(): Task&lt;IActionResult&gt;&#xa;+ GetById(id: Guid): Task&lt;IActionResult&gt;&#xa;+ GetByCourse(courseId: Guid): Task&lt;IActionResult&gt;" vertex="1">
-          <mxGeometry height="124" width="510" y="84" as="geometry" />
+        <mxCell id="ctrl-o" parent="ctrl" style="text;html=0;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=10;spacingTop=7;fontSize=13;fontFamily=Consolas;whiteSpace=wrap;overflow=hidden;" value="+ QuestionsController(&#xa;    questionBankService: IQuestionBankService)&#xa;+ GetQuestions(query: QuestionQueryParameters)&#xa;    : Task&lt;IActionResult&gt;&#xa;+ GetQuestionById(id: Guid): Task&lt;IActionResult&gt;&#xa;+ CreateQuestion(request: CreateQuestionRequest)&#xa;    : Task&lt;IActionResult&gt;&#xa;+ UpdateQuestion(id: Guid,&#xa;    request: UpdateQuestionRequest): Task&lt;IActionResult&gt;&#xa;+ DeleteQuestion(id: Guid): Task&lt;IActionResult&gt;&#xa;+ GetCourses(): Task&lt;IActionResult&gt;&#xa;+ ImportQuestions(file: IFormFile): Task&lt;IActionResult&gt;" vertex="1">
+          <mxGeometry height="196" width="510" y="84" as="geometry" />
         </mxCell>
         <mxCell id="ctrl-line" edge="1" parent="ctrl" style="endArrow=none;html=0;strokeWidth=1;">
           <mxGeometry relative="1" as="geometry">
@@ -20,13 +20,13 @@
           </mxGeometry>
         </mxCell>
         <mxCell id="isvc" parent="1" style="swimlane;html=0;startSize=48;horizontal=1;collapsible=0;rounded=0;fillColor=#dae8fc;swimlaneFillColor=#ffffff;fontSize=15;fontStyle=1;align=center;whiteSpace=wrap;" value="APPLICATION&#xa;&lt;&lt;interface&gt;&gt; IQuestionBankService" vertex="1">
-          <mxGeometry height="186" width="510" x="710" y="283" as="geometry" />
+          <mxGeometry height="280" width="510" x="710" y="283" as="geometry" />
         </mxCell>
         <mxCell id="isvc-a" parent="isvc" style="text;html=0;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=10;spacingTop=7;fontSize=13;fontFamily=Consolas;whiteSpace=wrap;overflow=hidden;" value="" vertex="1">
           <mxGeometry height="36" width="510" y="48" as="geometry" />
         </mxCell>
-        <mxCell id="isvc-o" parent="isvc" style="text;html=0;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=10;spacingTop=7;fontSize=13;fontFamily=Consolas;whiteSpace=wrap;overflow=hidden;" value="+ ImportQuestionsAsync(filePath: string): Task&lt;bool&gt;&#xa;+ GetByIdAsync(id: Guid): Task&lt;Question?&gt;&#xa;+ GetByCourseAsync(courseId: Guid):&#xa;    Task&lt;IReadOnlyList&lt;Question&gt;&gt;" vertex="1">
-          <mxGeometry height="102" width="510" y="84" as="geometry" />
+        <mxCell id="isvc-o" parent="isvc" style="text;html=0;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=10;spacingTop=7;fontSize=13;fontFamily=Consolas;whiteSpace=wrap;overflow=hidden;" value="+ GetQuestionsAsync(query: QuestionQueryParameters):&#xa;    Task&lt;PagedResponse&lt;QuestionDto&gt;&gt;&#xa;+ GetQuestionByIdAsync(id: Guid): Task&lt;QuestionDto?&gt;&#xa;+ CreateQuestionAsync(request: CreateQuestionRequest):&#xa;    Task&lt;QuestionDto&gt;&#xa;+ UpdateQuestionAsync(id: Guid,&#xa;    request: UpdateQuestionRequest): Task&lt;QuestionDto?&gt;&#xa;+ DeleteQuestionAsync(id: Guid): Task&lt;bool&gt;&#xa;+ ImportQuestionsAsync(filePath: string): Task&lt;bool&gt;&#xa;+ GetCoursesAsync(): Task&lt;IEnumerable&lt;Course&gt;&gt;" vertex="1">
+          <mxGeometry height="196" width="510" y="84" as="geometry" />
         </mxCell>
         <mxCell id="isvc-line" edge="1" parent="isvc" style="endArrow=none;html=0;strokeWidth=1;">
           <mxGeometry relative="1" as="geometry">
@@ -35,13 +35,13 @@
           </mxGeometry>
         </mxCell>
         <mxCell id="svc" parent="1" style="swimlane;html=0;startSize=48;horizontal=1;collapsible=0;rounded=0;fillColor=#dae8fc;swimlaneFillColor=#ffffff;fontSize=15;fontStyle=1;align=center;whiteSpace=wrap;" value="APPLICATION&#xa;QuestionBankService" vertex="1">
-          <mxGeometry height="252" width="510" x="1380" y="250" as="geometry" />
+          <mxGeometry height="280" width="510" x="1380" y="250" as="geometry" />
         </mxCell>
         <mxCell id="svc-a" parent="svc" style="text;html=0;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=10;spacingTop=7;fontSize=13;fontFamily=Consolas;whiteSpace=wrap;overflow=hidden;" value="- _questionRepository: IQuestionRepository" vertex="1">
           <mxGeometry height="36" width="510" y="48" as="geometry" />
         </mxCell>
-        <mxCell id="svc-o" parent="svc" style="text;html=0;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=10;spacingTop=7;fontSize=13;fontFamily=Consolas;whiteSpace=wrap;overflow=hidden;" value="+ QuestionBankService(&#xa;    questionRepository: IQuestionRepository)&#xa;+ ImportQuestionsAsync(filePath: string): Task&lt;bool&gt;&#xa;+ GetByIdAsync(id: Guid): Task&lt;Question?&gt;&#xa;+ GetByCourseAsync(courseId: Guid):&#xa;    Task&lt;IReadOnlyList&lt;Question&gt;&gt;&#xa;- ValidateQuestion(question: Question): bool" vertex="1">
-          <mxGeometry height="168" width="510" y="84" as="geometry" />
+        <mxCell id="svc-o" parent="svc" style="text;html=0;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=10;spacingTop=7;fontSize=13;fontFamily=Consolas;whiteSpace=wrap;overflow=hidden;" value="+ QuestionBankService(&#xa;    questionRepository: IQuestionRepository)&#xa;+ GetQuestionsAsync(query: QuestionQueryParameters):&#xa;    Task&lt;PagedResponse&lt;QuestionDto&gt;&gt;&#xa;+ GetQuestionByIdAsync(id: Guid): Task&lt;QuestionDto?&gt;&#xa;+ CreateQuestionAsync(request: CreateQuestionRequest):&#xa;    Task&lt;QuestionDto&gt;&#xa;+ UpdateQuestionAsync(id: Guid,&#xa;    request: UpdateQuestionRequest): Task&lt;QuestionDto?&gt;&#xa;+ DeleteQuestionAsync(id: Guid): Task&lt;bool&gt;&#xa;+ ImportQuestionsAsync(filePath: string): Task&lt;bool&gt;" vertex="1">
+          <mxGeometry height="196" width="510" y="84" as="geometry" />
         </mxCell>
         <mxCell id="svc-line" edge="1" parent="svc" style="endArrow=none;html=0;strokeWidth=1;">
           <mxGeometry relative="1" as="geometry">
@@ -50,13 +50,13 @@
           </mxGeometry>
         </mxCell>
         <mxCell id="irepo" parent="1" style="swimlane;html=0;startSize=48;horizontal=1;collapsible=0;rounded=0;fillColor=#dae8fc;swimlaneFillColor=#ffffff;fontSize=15;fontStyle=1;align=center;whiteSpace=wrap;" value="APPLICATION&#xa;&lt;&lt;interface&gt;&gt; IQuestionRepository" vertex="1">
-          <mxGeometry height="208" width="540" x="1365" y="592" as="geometry" />
+          <mxGeometry height="230" width="540" x="1365" y="592" as="geometry" />
         </mxCell>
         <mxCell id="irepo-a" parent="irepo" style="text;html=0;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=10;spacingTop=7;fontSize=13;fontFamily=Consolas;whiteSpace=wrap;overflow=hidden;" value="" vertex="1">
           <mxGeometry height="36" width="540" y="48" as="geometry" />
         </mxCell>
-        <mxCell id="irepo-o" parent="irepo" style="text;html=0;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=10;spacingTop=7;fontSize=13;fontFamily=Consolas;whiteSpace=wrap;overflow=hidden;" value="+ GetByIdAsync(id: Guid): Task&lt;Question?&gt;&#xa;+ GetByCourseAsync(courseId: Guid):&#xa;    Task&lt;IReadOnlyList&lt;Question&gt;&gt;&#xa;+ AddRangeAsync(questions: IEnumerable&lt;Question&gt;): Task&#xa;+ SaveChangesAsync(): Task&lt;int&gt;" vertex="1">
-          <mxGeometry height="124" width="540" y="84" as="geometry" />
+        <mxCell id="irepo-o" parent="irepo" style="text;html=0;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=10;spacingTop=7;fontSize=13;fontFamily=Consolas;whiteSpace=wrap;overflow=hidden;" value="+ GetByIdAsync(id: Guid): Task&lt;Question?&gt;&#xa;+ GetWithRubricsAsync(id: Guid): Task&lt;Question?&gt;&#xa;+ GetPagedQuestionsAsync(courseId: Guid?,&#xa;    bloomLevel: BloomLevel?, searchTerm: string?,&#xa;    pageIndex: int, pageSize: int):&#xa;    Task&lt;(IEnumerable&lt;Question&gt;, int)&gt;&#xa;+ AddRangeAsync(questions: IEnumerable&lt;Question&gt;): Task&#xa;+ SaveChangesAsync(): Task&lt;int&gt;" vertex="1">
+          <mxGeometry height="146" width="540" y="84" as="geometry" />
         </mxCell>
         <mxCell id="irepo-line" edge="1" parent="irepo" style="endArrow=none;html=0;strokeWidth=1;">
           <mxGeometry relative="1" as="geometry">
@@ -70,7 +70,7 @@
         <mxCell id="repo-a" parent="repo" style="text;html=0;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=10;spacingTop=7;fontSize=13;fontFamily=Consolas;whiteSpace=wrap;overflow=hidden;" value="- _context: AivesDbContext" vertex="1">
           <mxGeometry height="36" width="540" y="48" as="geometry" />
         </mxCell>
-        <mxCell id="repo-o" parent="repo" style="text;html=0;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=10;spacingTop=7;fontSize=13;fontFamily=Consolas;whiteSpace=wrap;overflow=hidden;" value="+ QuestionRepository(context: AivesDbContext)&#xa;+ GetByIdAsync(id: Guid): Task&lt;Question?&gt;&#xa;+ GetByCourseAsync(courseId: Guid):&#xa;    Task&lt;IReadOnlyList&lt;Question&gt;&gt;&#xa;+ AddRangeAsync(questions: IEnumerable&lt;Question&gt;): Task&#xa;+ SaveChangesAsync(): Task&lt;int&gt;" vertex="1">
+        <mxCell id="repo-o" parent="repo" style="text;html=0;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=10;spacingTop=7;fontSize=13;fontFamily=Consolas;whiteSpace=wrap;overflow=hidden;" value="+ QuestionRepository(context: AivesDbContext)&#xa;+ GetByIdAsync(id: Guid): Task&lt;Question?&gt;&#xa;+ GetWithRubricsAsync(id: Guid): Task&lt;Question?&gt;&#xa;+ GetPagedQuestionsAsync(courseId: Guid?,&#xa;    bloomLevel: BloomLevel?, searchTerm: string?,&#xa;    pageIndex: int, pageSize: int):&#xa;    Task&lt;(IEnumerable&lt;Question&gt;, int)&gt;&#xa;+ AddRangeAsync(questions: IEnumerable&lt;Question&gt;): Task&#xa;+ SaveChangesAsync(): Task&lt;int&gt;" vertex="1">
           <mxGeometry height="146" width="540" y="84" as="geometry" />
         </mxCell>
         <mxCell id="repo-line" edge="1" parent="repo" style="endArrow=none;html=0;strokeWidth=1;">
@@ -209,10 +209,10 @@
         <mxCell id="course" parent="1" style="swimlane;html=0;startSize=48;horizontal=1;collapsible=0;rounded=0;fillColor=#d5e8d4;swimlaneFillColor=#ffffff;fontSize=15;fontStyle=1;align=center;whiteSpace=wrap;" value="Course" vertex="1">
           <mxGeometry height="208" width="510" x="1390" y="1190" as="geometry" />
         </mxCell>
-        <mxCell id="course-a" parent="course" style="text;html=0;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=10;spacingTop=7;fontSize=13;fontFamily=Consolas;whiteSpace=wrap;overflow=hidden;" value="+ CourseCode: string&#xa;+ CourseName: string&#xa;+ Description: string&#xa;+ CreatedAt: DateTime" vertex="1">
+        <mxCell id="course-a" parent="course" style="text;html=0;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=10;spacingTop=7;fontSize=13;fontFamily=Consolas;whiteSpace=wrap;overflow=hidden;" value="+ Code: string&#xa;+ Name: string&#xa;+ Description: string?&#xa;+ CreatedAt: DateTime" vertex="1">
           <mxGeometry height="102" width="510" y="48" as="geometry" />
         </mxCell>
-        <mxCell id="course-o" parent="course" style="text;html=0;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=10;spacingTop=7;fontSize=13;fontFamily=Consolas;whiteSpace=wrap;overflow=hidden;" value="+ UpdateDetails(courseCode: string,&#xa;    courseName: string, description: string): void" vertex="1">
+        <mxCell id="course-o" parent="course" style="text;html=0;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=10;spacingTop=7;fontSize=13;fontFamily=Consolas;whiteSpace=wrap;overflow=hidden;" value="+ UpdateDetails(code: string,&#xa;    name: string, description: string?): void" vertex="1">
           <mxGeometry height="58" width="510" y="150" as="geometry" />
         </mxCell>
         <mxCell id="course-line" edge="1" parent="course" style="endArrow=none;html=0;strokeWidth=1;">
@@ -224,10 +224,10 @@
         <mxCell id="rubric" parent="1" style="swimlane;html=0;startSize=48;horizontal=1;collapsible=0;rounded=0;fillColor=#d5e8d4;swimlaneFillColor=#ffffff;fontSize=15;fontStyle=1;align=center;whiteSpace=wrap;" value="Rubric" vertex="1">
           <mxGeometry height="230" width="540" x="2050" y="1690" as="geometry" />
         </mxCell>
-        <mxCell id="rubric-a" parent="rubric" style="text;html=0;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=10;spacingTop=7;fontSize=13;fontFamily=Consolas;whiteSpace=wrap;overflow=hidden;" value="+ QuestionId: Guid&#xa;+ Criteria: string&#xa;+ MaxScore: decimal&#xa;+ AiGradingPrompt: string" vertex="1">
+        <mxCell id="rubric-a" parent="rubric" style="text;html=0;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=10;spacingTop=7;fontSize=13;fontFamily=Consolas;whiteSpace=wrap;overflow=hidden;" value="+ QuestionId: Guid&#xa;+ Criteria: string&#xa;+ Weight: double&#xa;+ MaxScore: double&#xa;+ CreatedAt: DateTime" vertex="1">
           <mxGeometry height="102" width="540" y="48" as="geometry" />
         </mxCell>
-        <mxCell id="rubric-o" parent="rubric" style="text;html=0;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=10;spacingTop=7;fontSize=13;fontFamily=Consolas;whiteSpace=wrap;overflow=hidden;" value="+ UpdateCriteria(criteria: string,&#xa;    maxScore: decimal): void&#xa;+ UpdateAiGradingPrompt(aiGradingPrompt: string): void" vertex="1">
+        <mxCell id="rubric-o" parent="rubric" style="text;html=0;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=10;spacingTop=7;fontSize=13;fontFamily=Consolas;whiteSpace=wrap;overflow=hidden;" value="+ UpdateCriteria(criteria: string,&#xa;    weight: double, maxScore: double): void" vertex="1">
           <mxGeometry height="80" width="540" y="150" as="geometry" />
         </mxCell>
         <mxCell id="rubric-line" edge="1" parent="rubric" style="endArrow=none;html=0;strokeWidth=1;">
@@ -269,16 +269,16 @@
         <mxCell id="question" parent="1" style="swimlane;html=0;startSize=48;horizontal=1;collapsible=0;rounded=0;fillColor=#d5e8d4;swimlaneFillColor=#ffffff;fontSize=15;fontStyle=1;align=center;whiteSpace=wrap;" value="Question" vertex="1">
           <mxGeometry height="340" width="540" x="1375" y="1690" as="geometry" />
         </mxCell>
-        <mxCell id="question-a" parent="question" style="text;html=0;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=10;spacingTop=7;fontSize=13;fontFamily=Consolas;whiteSpace=wrap;overflow=hidden;" value="+ CourseId: Guid&#xa;+ Content: string&#xa;+ ExpectedAnswer: string&#xa;+ QuestionType: string&#xa;+ Points: decimal&#xa;+ AiModel: string&#xa;+ CreatedAt: DateTime" vertex="1">
-          <mxGeometry height="168" width="540" y="48" as="geometry" />
+        <mxCell id="question-a" parent="question" style="text;html=0;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=10;spacingTop=7;fontSize=13;fontFamily=Consolas;whiteSpace=wrap;overflow=hidden;" value="+ CourseId: Guid&#xa;+ Content: string&#xa;+ BloomLevel: BloomLevel&#xa;+ CreatedAt: DateTime&#xa;+ UpdatedAt: DateTime?" vertex="1">
+          <mxGeometry height="140" width="540" y="48" as="geometry" />
         </mxCell>
-        <mxCell id="question-o" parent="question" style="text;html=0;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=10;spacingTop=7;fontSize=13;fontFamily=Consolas;whiteSpace=wrap;overflow=hidden;" value="+ UpdateContent(content: string,&#xa;    expectedAnswer: string): void&#xa;+ ChangeQuestionType(questionType: string): void&#xa;+ ChangePoints(points: decimal): void&#xa;+ ConfigureAiModel(aiModel: string): void" vertex="1">
-          <mxGeometry height="124" width="540" y="216" as="geometry" />
+        <mxCell id="question-o" parent="question" style="text;html=0;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=10;spacingTop=7;fontSize=13;fontFamily=Consolas;whiteSpace=wrap;overflow=hidden;" value="+ UpdateContent(content: string): void&#xa;+ SetBloomLevel(level: BloomLevel): void&#xa;+ AssignToCourse(courseId: Guid): void" vertex="1">
+          <mxGeometry height="140" width="540" y="188" as="geometry" />
         </mxCell>
         <mxCell id="question-line" edge="1" parent="question" style="endArrow=none;html=0;strokeWidth=1;">
           <mxGeometry relative="1" as="geometry">
-            <mxPoint y="216" as="sourcePoint" />
-            <mxPoint x="540" y="216" as="targetPoint" />
+            <mxPoint y="188" as="sourcePoint" />
+            <mxPoint x="540" y="188" as="targetPoint" />
           </mxGeometry>
         </mxCell>
         <mxCell id="assessment" parent="1" style="swimlane;html=0;startSize=48;horizontal=1;collapsible=0;rounded=0;fillColor=#d5e8d4;swimlaneFillColor=#ffffff;fontSize=15;fontStyle=1;align=center;whiteSpace=wrap;" value="Assessment" vertex="1">
@@ -461,7 +461,7 @@
             <mxPoint as="offset" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="title" parent="1" style="text;html=0;whiteSpace=wrap;align=left;verticalAlign=middle;spacing=10;fontColor=#172554;fontSize=32;fontStyle=1;" value="AIVES | UML CLASS DIAGRAM — .NET 8" vertex="1">
+        <mxCell id="title" parent="1" style="text;html=0;whiteSpace=wrap;align=left;verticalAlign=middle;spacing=10;fontColor=#172554;fontSize=32;fontStyle=1;" value="AIVES | UML CLASS DIAGRAM — .NET 10" vertex="1">
           <mxGeometry height="60" width="2500" x="50" y="20" as="geometry" />
         </mxCell>
         <mxCell id="subtitle" parent="1" style="text;html=0;whiteSpace=wrap;align=left;verticalAlign=middle;spacing=10;fontColor=#172554;fontSize=19;" value="Onion Architecture + mô hình dữ liệu | Thiết kế đề xuất | 14 lớp/interface nghiệp vụ và 2 lớp framework" vertex="1">
@@ -482,7 +482,20 @@
         <mxCell id="notation" parent="1" style="shape=note;html=0;whiteSpace=wrap;align=left;verticalAlign=top;spacing=16;fillColor=#fffbeb;strokeColor=#d6b656;fontSize=16;" value="KÝ HIỆU UML&#xa;&#xa;+ Public     - Private     # Protected&#xa;Tên lớp → Thuộc tính → Phương thức&#xa;&#xa;Nét liền + tam giác rỗng: kế thừa.&#xa;Nét đứt + tam giác rỗng: thực thi interface.&#xa;Nét đứt + mũi tên mở: dependency.&#xa;Nét liền + mũi tên mở: association có hướng.&#xa;Nét liền không mũi tên: association.&#xa;&#xa;1: đúng một. 0..*: không hoặc nhiều.&#xa;Các nhánh kế thừa Domain cùng hướng về BaseEntity." vertex="1">
           <mxGeometry height="400" width="590" x="2700" y="1050" as="geometry" />
         </mxCell>
-        <mxCell id="assumptions" parent="1" style="shape=note;html=0;whiteSpace=wrap;align=left;verticalAlign=top;spacing=16;fillColor=#fffbeb;strokeColor=#d6b656;fontSize=16;" value="GIẢ ĐỊNH THIẾT KẾ&#xa;&#xa;Ảnh database không có kiểu dữ liệu hoặc nullability. Guid, decimal, DateTime và dấu ? là đề xuất.&#xa;&#xa;BaseEntity.Id ánh xạ tới khóa chính từng bảng: UserId, CourseId, SessionId, QuestionId, RubricId, TranscriptId, AssessmentId.&#xa;&#xa;Các FK được giả định bắt buộc. Property entity có thể dùng private setter. Các phương thức nghiệp vụ là đề xuất.&#xa;&#xa;Code hiện tại dùng QuestionController; tên QuestionsController ở đây theo đề bài." vertex="1">
+        <mxCell id="bloom" parent="1" style="swimlane;html=0;startSize=36;horizontal=1;collapsible=0;rounded=0;fillColor=#d5e8d4;swimlaneFillColor=#ffffff;fontSize=14;fontStyle=1;align=center;whiteSpace=wrap;" value="&lt;&lt;enumeration&gt;&gt;&#xa;BloomLevel" vertex="1">
+          <mxGeometry height="180" width="280" x="2080" y="1380" as="geometry" />
+        </mxCell>
+        <mxCell id="bloom-vals" parent="bloom" style="text;html=0;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=10;spacingTop=7;fontSize=12;fontFamily=Consolas;whiteSpace=wrap;overflow=hidden;" value="+ Remember = 1&#xa;+ Understand = 2&#xa;+ Apply = 3&#xa;+ Analyze = 4&#xa;+ Evaluate = 5&#xa;+ Create = 6" vertex="1">
+          <mxGeometry height="144" width="280" y="36" as="geometry" />
+        </mxCell>
+        <mxCell id="e-question-bloom" edge="1" parent="1" source="question" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=0;strokeWidth=1.5;fontSize=12;labelBackgroundColor=#ffffff;dashed=1;endArrow=open;endFill=0;strokeColor=#64748b;jumpStyle=arc;jumpSize=8;exitX=0.85;exitY=0;entryX=0;entryY=0.5;" target="bloom" value="uses">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1834" y="1470" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="assumptions" parent="1" style="shape=note;html=0;whiteSpace=wrap;align=left;verticalAlign=top;spacing=16;fillColor=#fffbeb;strokeColor=#d6b656;fontSize=16;" value="GIẢ ĐỊNH &amp; ĐỒNG BỘ THIẾT KẾ&#xa;&#xa;1. Đồng bộ 100% với Backend .NET 10 &amp; Swagger:&#xa;• QuestionsController &amp; IQuestionBankService đầy đủ CRUD (GetQuestions phân trang, Create, Update, Delete).&#xa;• Question sử dụng BloomLevel (Nhớ, Hiểu, Vận dụng, Phân tích, Đánh giá, Sáng tạo).&#xa;• Rubric có Weight (%) phục vụ validation tổng trọng số = 100%.&#xa;&#xa;2. BaseEntity.Id ánh xạ tới khóa chính Guid từng bảng.&#xa;&#xa;3. Các bảng ExamSession, Transcript, Assessment thiết kế trước cho toàn bộ vòng đời Viva Exam AIVES." vertex="1">
           <mxGeometry height="430" width="590" x="2700" y="1500" as="geometry" />
         </mxCell>
         <mxCell id="ownership" parent="1" style="shape=note;html=0;whiteSpace=wrap;align=left;verticalAlign=top;spacing=16;fillColor=#fffbeb;strokeColor=#d6b656;fontSize=16;" value="VÒNG ĐỜI / SỞ HỮU&#xa;&#xa;◆ Composition: hình thoi đặc ở toàn thể.&#xa;◇ Aggregation: hình thoi rỗng ở toàn thể.&#xa;&#xa;Không suy ra hai quan hệ này chỉ từ FK.&#xa;Nếu Rubric thuộc riêng Question và không tồn tại độc lập, thay association bằng composition, ◆ đặt tại Question." vertex="1">
