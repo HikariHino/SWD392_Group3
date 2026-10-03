@@ -5,6 +5,26 @@ Baseline: `quang` sau C02 `fd7f6b2`, 03/10/2026. Người lập: Quang cùng Cod
 
 ## 1. Nguồn đối chiếu và quyết định schema
 
+### Đối chiếu draw.io cập nhật ngày 03/10/2026
+
+Đã đọc lớp, thuộc tính, phương thức và các cạnh trong [AIVES-UML-Class-Diagram.drawio](AIVES-UML-Class-Diagram.drawio). Sơ đồ là thiết kế đề xuất; dòng “đồng bộ 100%” trong hình chưa phản ánh đúng source. Bản cập nhật không tự thay đổi contract C03 hoặc chứng minh feature đã triển khai.
+
+| Điểm | Draw.io mới | Source / contract cần dùng |
+| --- | --- | --- |
+| Phiên bản | Tiêu đề và ghi chú .NET 8 | C02 đã chốt .NET 10; sửa nhãn khi cập nhật sơ đồ |
+| Controller | Chỉ inject IQuestionBankService; ImportQuestions(IFormFile) | Source còn inject 2 validator; ImportQuestions() không nhận file thật. Upload là C25, chưa có trong code |
+| Service | Inject IQuestionRepository trực tiếp | Source inject IUnitOfWork + IMapper, dùng Questions/Courses và SaveChangesAsync của UoW. Không refactor sang repository trực tiếp chỉ vì hình khác |
+| Repository | Có AddRangeAsync và SaveChangesAsync | AddRangeAsync đã có qua IGenericRepository; SaveChangesAsync chỉ ở IUnitOfWork, không ở IQuestionRepository. Sơ đồ cần thêm generic repository/UoW nếu muốn mô tả implementation |
+| Domain inheritance | Các entity nối thẳng BaseEntity | Course/Question/Rubric thực tế qua AuditableEntity rồi BaseEntity; User qua BaseEntity. Audit/soft delete và navigation chưa được hình thể hiện đủ |
+| Domain methods | UpdateProfile, IsOpen, SubmitAnswer, FinalizeEvaluation... | Chưa có trong entity source; là định hướng đóng gói nghiệp vụ cho mốc sau, không phải feature đã xong |
+| DbContext | 7 DbSet, gồm ExamSessions/Transcripts/Assessments | Source mới có Users/Courses/Questions/Rubrics. Các DbSet thi/chấm điểm triển khai C13/C20 |
+| Transcript / điểm | Transcript.TotalScore decimal; Rubric double | C03 giữ Transcript là bài thi; TotalScore phải nullable trước chốt. Decimal cho điểm/rubric là chuyển đổi dự kiến C20, không làm mất trạng thái chưa chấm |
+| Luồng thi đầy đủ | Chưa có owner/status/turn/snapshot/concurrency | Bổ sung theo phần 2–7: TranscriptTurns, ExamSessionQuestions, trạng thái, audit người chốt, snapshot rubric và version |
+
+Các quan hệ Course→Question/ExamSession, User/ExamSession→Transcript, Transcript/Question→Assessment và Question→Rubric phù hợp hướng C03. Guid và BloomLevel 1..6 cũng thống nhất. Các phần Question.Points/ExpectedAnswer/AiModel, rubric prompt, ownership và hội thoại vẫn là mở rộng dự kiến từ C03/ảnh DB, không được xem là đã chốt bởi draw.io. Sơ đồ hiện chỉ mô tả đường Question Bank và entity, chưa phải toàn bộ API/User/Auth/AI/SignalR của AIVES.
+
+Thứ tự sử dụng: source/Swagger để biết hành vi đang chạy; tài liệu C03 để triển khai mục tiêu đã ghi; draw.io để tham khảo thiết kế và cập nhật theo các mốc. Khi chủ động thay quyết định C03, ghi lý do và ảnh hưởng DTO/schema/peer trong cùng commit.
+
 Đã đọc entity, EF configuration, InitialCreate/snapshot, DTO, controller và ảnh DB người dùng gửi. Ảnh không cung cấp kiểu dữ liệu, index hay migration history; chưa truy vấn SQL Server đang mở. Conceptual_ERD.md dùng int ở mức khái niệm, không phải kiểu khóa chuẩn của implementation.
 
 | Bảng | Code / migration hiện có | Ảnh DB | Baseline cho triển khai |

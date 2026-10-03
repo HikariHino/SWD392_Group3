@@ -2,6 +2,8 @@
 
 ## Kết quả mới nhất trên nhánh quang — 03/10/2026
 
+Đã review bản draw.io vừa cập nhật: quan hệ entity/Guid/BloomLevel phù hợp hướng thiết kế, nhưng nhãn .NET 8, wiring repository và một số method/DbSet không khớp code. Xem [bảng khác biệt UML trong hợp đồng C03](BACKEND_CONTRACTS.md#đối-chiếu-drawio-cập-nhật-ngày-03102026). Không đổi trạng thái mốc hoặc refactor source theo hình; giữ các phần chưa triển khai ở trạng thái dự kiến. Bản review này chỉ sửa note, không chỉnh draw.io của người dùng.
+
 C02/C03 đã hoàn thành tài liệu và cấu hình nền: `global.json` chọn stable .NET 10 từ 10.0.401, README dùng đúng profile/URL; [BACKEND_CONTRACTS.md](BACKEND_CONTRACTS.md) định nghĩa mapping schema, role, vòng đời phiên/bài thi, công thức điểm, API và SignalR. C03 đối chiếu code với ảnh DB, chưa truy vấn SQL live hoặc áp dụng migration. Các nhận xét baseline main cũ ở phía dưới giữ làm lịch sử, ưu tiên trạng thái mới nhất và checklist Cxx.
 
 Đã tích hợp `khoi` tại `eaab86e` vào `quang` (baseline trước merge `08ab287`). Giữ CRUD Question/Rubric/User, persistence và Swagger của khoi; giải quyết 3 conflict ở IUnitOfWork, Program.cs và WebApi.csproj. Swagger Development mở tại `/`, JSON tại `/swagger/v1/swagger.json`; launchUrl đổi về trang gốc. Cấu hình appsettings.json local được bảo toàn ngoài commit.
