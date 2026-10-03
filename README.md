@@ -1,5 +1,7 @@
 # 🎓 AIVES - Backend API Service
 
+> Tiến độ thực tế, lỗi đang mở và quy tắc nhận việc backend: [docs/BACKEND_PROGRESS.md](docs/BACKEND_PROGRESS.md). Đọc và cập nhật file này trước/sau mỗi phiên coding chung.
+
 > **SWD392 (Software Architecture and Design) - Group 3**  
 > An intelligent oral examination platform (AI-powered Viva Exam System) built with **.NET 8 (LTS)**, **Onion Architecture**, **SignalR**, and **OpenAI / Azure Speech**.
 
