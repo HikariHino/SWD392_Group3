@@ -49,6 +49,7 @@ Check(!update.Validate(new UpdateUserDto { FullName = new string('a', 101) }).Is
 foreach (var (error, status) in new (Exception, int)[]
 {
     (new NotFoundException("Missing user"), 404),
+    (new InvalidCredentialsException(), 401),
     (new ConflictException("Duplicate username"), 409),
     (new ValidationException(new Dictionary<string, string[]> { ["Username"] = ["Invalid"] }), 400),
     (new InvalidOperationException("SENSITIVE_INTERNAL_DETAIL"), 500)
@@ -77,6 +78,7 @@ Check(!db.Database.HasPendingModelChanges(), "migration snapshot matches EF mode
 var script = db.GetService<IMigrator>().GenerateScript("20260927162533_InitialCreate", "20261003125521_AddUserTable");
 Check(script.Contains("CREATE TABLE [Users]") && script.Contains("IX_Users_Username"), "user migration creates table and unique username index");
 Check(!script.Contains("DROP TABLE") && !script.Contains("CREATE TABLE [Courses]"), "user migration preserves existing question-bank tables");
+await AuthChecks.Run(Check);
 await QuestionBankChecks.Run(Check);
 await RubricChecks.Run(Check);
 await CourseChecks.Run(Check);

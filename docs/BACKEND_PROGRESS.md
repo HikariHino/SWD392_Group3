@@ -2,6 +2,12 @@
 
 ## Kết quả mới nhất trên nhánh quang — 03/10/2026
 
+### Cập nhật 04/10/2026 — C11 và kiểm chứng lại C08–C10
+
+Quang cùng Codex hoàn thành C11: POST `/api/auth/login` xác minh BCrypt, trả JWT HS256 30 phút mặc định và UserDto; GET `/api/auth/me` yêu cầu Bearer. Application giữ contract/use case/validation, Infrastructure ký token, WebApi xác thực issuer/audience/signature/lifetime. JWT lấy cấu hình ngoài source, thiếu cấu hình sẽ dừng startup với thông báo rõ. Không tạo migration hay đổi connection string. Xem README để setup user-secrets trước khi chạy.
+
+Build PASS 0 warning/error; **134 checks PASS**, gồm HTTP login/me/401, token sai issuer/audience/chữ ký/hết hạn/chưa có hiệu lực, tài khoản deleted/role sai/hash plaintext và toàn bộ regression C04–C10. Bộ SQLite C08–C10 đã chạy được, cập nhật checklist DONE theo phạm vi module; giữ nguyên người làm và các ghi nhận blocker trước đây làm lịch sử. Test auth dùng repository giả và HTTP thật trên loopback, không truy vấn SQL Server; apply migration/login SQL thật vẫn phụ thuộc C07 (REVIEW của Thai). C12 chưa triển khai: API quản lý và Hub hiện chưa được bảo vệ bằng role. Không có refresh/revocation; claim role/deleted có thể cũ đến hết hạn token.
+
 ### Cập nhật 04/10/2026 — C10
 
 Quang cùng Codex đã thêm CourseDto, create/update request, validator, ICourseService/CourseService và CoursesController. `/api/questions/courses` giữ route, đổi response thành CourseDto[]; API CRUD mới ở `/api/courses`. Code chuẩn hóa mã uppercase/trim, kiểm tra trùng active case-insensitive, lỗi validation/not-found/conflict qua middleware. Delete chỉ soft-delete môn không còn câu hỏi hoạt động. Quyền lecturer triển khai C12, chưa bảo vệ endpoint trong C10. Bộ kiểm tra C10 SQLite/controller đã viết nhưng bị Application Control chặn Infrastructure.dll (0x800711C7), cả ngoài sandbox; không ghi tests pass. C10 giữ REVIEW. Không thay credit các mốc của Thai.
@@ -200,7 +206,7 @@ Sau C03, hai người có thể nhận các mốc không phụ thuộc nhau. Ghi
 
   Migration chuyển từ Infrastructure/Infrastructure/Migrations sang Infrastructure/Migrations, giữ ID 20261003125521_AddUserTable và schema của Thai. Discovery, SQL tạo Users/unique username và snapshot đã kiểm tra offline. Không áp dụng migration lên DB thật trong phiên sửa bổ sung.
 
-- [ ] **C08** — Người làm: Quang (cùng Codex); REVIEW — chờ chạy kiểm tra runtime
+- [x] **C08** — Người làm: Quang (cùng Codex); kiểm chứng runtime 04/10/2026
 
   Commit: `fix(question): validate paging and course references`
 
@@ -208,7 +214,7 @@ Sau C03, hai người có thể nhận các mốc không phụ thuộc nhau. Ghi
 
   Cần trước: C03
 
-  Code: pageIndex>=1, pageSize 1..100, offset an toàn; enum/UUID/filter hợp lệ; CourseId tồn tại và chưa xóa trước query/create; ordering ổn định CreatedAt/Id. Có checks cho đường lỗi và persistence hợp lệ với repository spy. Runtime bị Application Control chặn assembly, chưa tick DONE; chạy `dotnet run --project tests/BackendChecks/BackendChecks.csproj` trên môi trường được phép, rồi kiểm tra API/DB dev.
+  Code: pageIndex>=1, pageSize 1..100, offset an toàn; enum/UUID/filter hợp lệ; CourseId tồn tại và chưa xóa trước query/create; ordering ổn định CreatedAt/Id. Checks repository spy và SQLite relational filter/pagination đã PASS trong bộ 134 checks ngày 04/10. SQL Server live thuộc kiểm chứng C07, chưa chạy.
 
 - [x] **C09** — Người làm: Quang (cùng Codex), 04/10/2026
 
@@ -218,9 +224,9 @@ Sau C03, hai người có thể nhận các mốc không phụ thuộc nhau. Ghi
 
   Cần trước: C08
 
-  Kiểm chứng: 79 checks pass, bao gồm SQLite lưu/thay rubric nhiều lần, giữ row cũ, chỉ trả rubric active, soft delete và query count. Build pass 0 warning/error. Checks C08 cũ đã chạy được trong lần đó; C08 vẫn REVIEW cho 2 checks relational mới bị Application Control chặn. Không dùng SQL Server live và không đổi schema/credit của Thai.
+  Kiểm chứng ban đầu: 79 checks pass. Ngày 04/10 khi làm C11: toàn bộ 134 checks pass, bao gồm 2 checks relational filter/pagination bổ sung, SQLite lưu/thay rubric nhiều lần, giữ row cũ và soft delete. Build pass 0 warning/error. Không dùng SQL Server live và không đổi schema/credit của Thai.
 
-- [ ] **C10** — Người làm: Quang (cùng Codex), 04/10/2026; REVIEW — chờ runtime checks
+- [x] **C10** — Người làm: Quang (cùng Codex), 04/10/2026
 
   Commit: `feat(course): expose course management through dtos`
 
@@ -228,13 +234,15 @@ Sau C03, hai người có thể nhận các mốc không phụ thuộc nhau. Ghi
 
   Cần trước: C09
 
-  Code CRUD/DTO đã triển khai, thêm tests/BackendChecks/CourseChecks.cs. Kiểm tra runtime bị Application Control chặn, cần chạy lại và kiểm tra DB dev trước tick DONE. Không có migration mới trong C10; duplicate code kiểm tra tại use case, chưa có unique index chống race khi tạo đồng thời.
+  CourseChecks.cs đã PASS trong bộ 134 checks ngày 04/10: SQLite persistence, controller response, duplicate/not-found/validation và soft delete. Không có migration mới trong C10; SQL Server live chưa chạy. Duplicate code kiểm tra tại use case, chưa có unique index chống race khi tạo đồng thời.
 
-- [ ] **C11** — Người làm: Chưa nhận
+- [x] **C11** — Người làm: Quang (cùng Codex), 04/10/2026
 
   Commit: `feat(auth): add login and token verification`
 
   Phạm vi / nghiệm thu: Login xác minh hash, token có hạn dùng/cấu hình ngoài source; kiểm tra login sai và token hết hạn
+
+  Kiểm chứng: AuthChecks.cs (use case, JWT validation, Bearer middleware và HTTP controller) PASS trong bộ 134 checks. BCrypt hash legacy/plaintext bị từ chối. Cấu hình user-secrets/env bắt buộc; không lưu khóa ký source. Login SQL live chờ C07; role authorization theo C12.
 
   Cần trước: C07
 
@@ -484,3 +492,4 @@ Giữ nguyên người làm và SHA gốc của Thai; sửa encoding/hiển th�
 | 03/10/2026 | Quang cùng Codex / C08 / quang | Query validator, course validation trong service, ordering repository, regression checks | Source/build biên dịch; runtime checks bị Application Control 0x800711C7 | REVIEW: chạy lại checks và kiểm tra DB/API; không tính test là pass | Commit C08 riêng |
 | 04/10/2026 | Quang cùng Codex / C09 / quang | Soft delete rubric cũ, Add rubric mới, mapping active và validation service; SQLite persistence checks | 79 checks pass; build 0 warning/error; 2 checks relational C08 thêm sau chưa chạy vì Application Control | Kiểm tra lại 2 checks; C07/SQL Server dev vẫn chưa xác minh | Commit C09 riêng |
 | 04/10/2026 | Quang cùng Codex / C10 / quang | Course CRUD/DTO/validator, route cũ trả DTO, controller/SQLite regression checks | Runtime bị Application Control 0x800711C7; không báo pass | REVIEW: chạy checks, xác minh DB; auth tại C12 | Commit C10 riêng |
+| 04/10/2026 | Quang cùng Codex / C11 / quang | BCrypt login, JWT HS256, Bearer middleware, me endpoint và cấu hình ngoài source | Build 0 warning/error; 134 checks PASS gồm HTTP auth và SQLite C08–C10 | C12 bảo vệ API theo role; SQL Server live/C07 vẫn REVIEW; giữ credit Thai | Commit C11 riêng |

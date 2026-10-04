@@ -12,6 +12,15 @@ public class PasswordHasher : IPasswordHasher
 
     public bool VerifyPassword(string password, string passwordHash)
     {
-        return BCrypt.Net.BCrypt.Verify(password, passwordHash);
+        // Legacy/plaintext or corrupt stored values must never authenticate.
+        if (string.IsNullOrEmpty(passwordHash)) return false;
+        try
+        {
+            return BCrypt.Net.BCrypt.Verify(password, passwordHash);
+        }
+        catch (SaltParseException)
+        {
+            return false;
+        }
     }
 }

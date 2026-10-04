@@ -42,6 +42,11 @@ public class ExceptionMiddleware
 
         switch (exception)
         {
+            case InvalidCredentialsException:
+                statusCode = StatusCodes.Status401Unauthorized;
+                title = "Authentication failed.";
+                context.Response.Headers.WWWAuthenticate = "Bearer";
+                break;
             case NotFoundException notFoundEx:
                 statusCode = StatusCodes.Status404NotFound;
                 title = "The specified resource was not found.";

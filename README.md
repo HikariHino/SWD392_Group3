@@ -2,6 +2,8 @@
 
 > Tiến độ thực tế, lỗi đang mở và quy tắc nhận việc backend: [docs/BACKEND_PROGRESS.md](docs/BACKEND_PROGRESS.md). Đọc và cập nhật file này trước/sau mỗi phiên coding chung.
 
+> Từ C11, cần cấu hình JWT ngoài source trước khi khởi động WebApi. Xem mục **C11: thiết lập đăng nhập JWT** cuối file. Thiếu cấu hình sẽ khiến startup dừng.
+
 > **SWD392 (Software Architecture and Design) - Group 3**  
 > An intelligent oral examination platform (AI-powered Viva Exam System) built with **.NET 10**, **Onion Architecture**, **SignalR**, and **OpenAI / Azure Speech**.
 
@@ -145,3 +147,24 @@ Sau khi chạy thành công, hệ thống sẵn sàng phục vụ tại:
 
 Trần Thường Quang - QuangTT SE196220
 Vương Hoàng Giang - GiangVH SE193455
+
+## C11: thiết lập đăng nhập JWT
+
+WebApi yêu cầu JWT config trước startup. Development dùng user-secrets (không commit vào repo). Chạy PowerShell tại thư mục solution:
+
+```powershell
+dotnet user-secrets set "Jwt:Issuer" "AIVES" --project WebApi
+dotnet user-secrets set "Jwt:Audience" "AIVES-Client" --project WebApi
+$aivesSigningKey = [Convert]::ToBase64String([System.Security.Cryptography.RandomNumberGenerator]::GetBytes(48))
+dotnet user-secrets set "Jwt:SigningKey" "$aivesSigningKey" --project WebApi
+dotnet user-secrets set "Jwt:ExpiryMinutes" "30" --project WebApi
+dotnet run --project WebApi --launch-profile https
+```
+
+Mỗi máy dev tự tạo khóa riêng; không gửi khóa qua note/commit. Môi trường triển khai dùng secret store hoặc environment `Jwt__Issuer`, `Jwt__Audience`, `Jwt__SigningKey`, `Jwt__ExpiryMinutes`. Khóa cần ít nhất 32 UTF-8 bytes; thời hạn 1–120 phút, mặc định 30. Thiếu/sai config thì startup dừng với hướng dẫn. Xem [hướng dẫn JWT Bearer của Microsoft](https://learn.microsoft.com/en-us/aspnet/core/security/authentication/configure-jwt-bearer-authentication?view=aspnetcore-10.0).
+
+POST `/api/auth/login` với `{"username":"<user đã có trong DB>","password":"<mật khẩu>"}`. Thành công trả `accessToken`, `expiresAt`, `user` (không có password hash). GET `/api/auth/me` với header `Authorization: Bearer <accessToken>` trả id/username/role. Login sai trả 401 ProblemDetails, input sai 400; token thiếu/sai/hết hạn trả 401. Swagger có khai báo Bearer; có thể thử bằng Postman/curl với header trên. `/me` phản ánh claims lúc cấp token, chưa đọc lại tài khoản.
+
+Tài khoản cần BCrypt hash hợp lệ; plaintext cũ không đăng nhập được. C11 không tạo tài khoản hay chạy migration mới. Chưa bảo vệ API quản lý theo role (C12), chưa có refresh/revocation. Các thay đổi role/deleted sau cấp token có thể chỉ phản ánh khi token hết hạn.
+
+Kiểm chứng ngày 04/10/2026: `dotnet build` 0 warning/error; `dotnet run --project tests/BackendChecks` **134 checks PASS** (HTTP login/me, BCrypt/JWT/Bearer và SQLite C08–C10). Auth tests dùng repository giả, không cần user-secrets hay SQL Server. Migration và login trên SQL Server dev thật vẫn cần kiểm chứng C07.

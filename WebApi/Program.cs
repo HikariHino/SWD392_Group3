@@ -10,11 +10,30 @@ using Infrastructure.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
 
+var jwt = builder.Configuration.GetSection("Jwt").Get<Infrastructure.Security.JwtSettings>()
+    ?? new Infrastructure.Security.JwtSettings();
+jwt.Validate();
+builder.Services.AddSingleton(jwt);
+builder.Services.AddSingleton(TimeProvider.System);
+builder.Services.AddScoped<IAccessTokenIssuer, Infrastructure.Security.JwtTokenIssuer>();
+builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddAuthentication(Microsoft.AspNetCore.Authentication.JwtBearer.JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
+    {
+        options.MapInboundClaims = false;
+        options.TokenValidationParameters = jwt.ValidationParameters();
+    });
+builder.Services.AddAuthorization();
+
 // 1. Thêm Controllers & Swagger UI
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
 {
+    c.AddSecurityDefinition("Bearer", new Microsoft.OpenApi.OpenApiSecurityScheme
+    {
+        Type = Microsoft.OpenApi.SecuritySchemeType.Http, Scheme = "bearer", BearerFormat = "JWT"
+    });
     c.SwaggerDoc("v1", new Microsoft.OpenApi.OpenApiInfo
     {
         Title = "AIVES API - AI-Powered Viva Exam System",
@@ -94,6 +113,7 @@ app.UseHttpsRedirection();
 
 app.UseCors("AllowReactApp");
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 // Ánh xạ Endpoint cho Controllers và SignalR Hub

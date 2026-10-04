@@ -155,6 +155,16 @@ PUT question thay toàn bộ bộ rubric hoạt động: row cũ giữ ID/FK và
 
 Validation update thực hiện tại service trước khi sửa dữ liệu: tổng Weight=100 theo tolerance hiện có, danh sách không rỗng/null hoặc chứa phần tử null, Weight/MaxScore phải hữu hạn và đúng khoảng. Question đã soft-delete trả null/false cho read/update/delete, bao gồm same-context và reload. DELETE giữ question và toàn bộ rubric trong DB; query filter ẩn chúng khỏi list/detail/count. SQLite checks xác minh behavior relational; chưa kiểm chứng trên SQL Server live. Đây là lịch sử rubric, chưa thay thế snapshot đề thi sẽ làm ở C13.
 
+## 7.1. Auth C11 đã triển khai (04/10/2026)
+
+POST `/api/auth/login`: JSON `{username,password}`, trả 200 `{accessToken,expiresAt,user:{id,username,fullName,role,createdAt}}`. Username trim, password giữ nguyên và giới hạn 72 UTF-8 bytes. Validation trả 400 ProblemDetails; username/password sai, tài khoản deleted, role ngoài Student/Lecturer hoặc hash legacy/plaintext trả 401 cùng thông báo `Invalid username or password.`. Không trả PasswordHash. UserRepository chỉ đọc user active.
+
+GET `/api/auth/me`: Bearer JWT, trả 200 `{id,username,role}` theo claims; thiếu/sai/hết hạn token trả 401. Đây là thông tin token, chưa truy vấn lại trạng thái user. Các endpoint quản lý/Hub sẽ áp dụng quyền ở C12/C18.
+
+JWT HS256 gồm sub (Guid), name (username), role, jti, nbf, exp; xác thực signature/issuer/audience/lifetime, chỉ cho HS256, ClockSkew=0. `Jwt:ExpiryMinutes` mặc định 30, cho phép 1–120. `Jwt:Issuer`, `Jwt:Audience`, `Jwt:SigningKey` (ít nhất 32 UTF-8 bytes) bắt buộc cấu hình bên ngoài source. Startup từ chối cấu hình thiếu/sai; không có secret fallback. Dùng khóa ngẫu nhiên đủ mạnh, tránh passphrase ngắn. Không có refresh/revocation trong C11: role/deleted thay đổi sau cấp token có thể chưa phản ánh đến hết hạn; các use case cần quyền/trạng thái hiện tại phải kiểm tra DB khi triển khai.
+
+134 checks PASS gồm HTTP auth loopback, JWT/Bearer và SQLite regression C08–C10. HTTP test dùng repository giả, chưa kiểm tra login SQL Server live (C07). Không có migration mới.
+
 ## 8. SignalR contract
 
 Hiện tại: `/interviewHub`, method SendStudentAnswer(studentId, answerText), event ReceiveAIFollowUp(string); service trả chuỗi mock. C18 chuyển contract sang SendStudentAnswer(attemptId, questionId, answerText, clientMessageId). Frontend phải cập nhật cùng mốc, không giữ studentId tự khai là căn cứ quyền.
