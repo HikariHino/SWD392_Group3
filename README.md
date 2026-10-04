@@ -92,6 +92,8 @@ dotnet run --project tests/BackendChecks/BackendChecks.csproj
 
 Kiểm tra hash/verify, validator, lỗi 400/404/409/500 có traceId, migration discovery/SQL và snapshot. Exit code khác 0 khi thất bại. Chưa thay thế kiểm tra migration/CRUD SQL thật; C07 cần xác minh trên DB dev riêng. Quyền cấp/đổi role được bảo vệ tại C12.
 
+C09 thêm SQLite in-memory để kiểm tra lưu/thay rubric và soft delete, không kết nối DB của bạn. Có 79 checks đã pass ngày 04/10; hai checks query relational thêm sau chưa chạy được do Windows Application Control. Nếu gặp 0x800711C7, ghi nhận test bị chặn, không xem là pass hoặc tắt chính sách bảo vệ để vượt kiểm tra.
+
 Profile https dùng **https://localhost:7035** và **http://localhost:5110**; HTTP có thể redirect HTTPS. Swagger Development ở `/`, JSON ở `/swagger/v1/swagger.json`, SignalR ở `/interviewHub`. Profile http chỉ nghe 5110. Luôn dùng cổng trong log `Now listening on`.
 
 Kiểm tra: mở Swagger, gọi GET `/api/questions/courses` và GET `/api/questions` để kiểm tra DB. User cần schema Users phù hợp. Import còn mock nên không dùng làm bằng chứng hoàn thành. Nếu HTTPS bị chặn, trust dev certificate rồi khởi động lại.

@@ -29,10 +29,12 @@ public class CreateRubricRequestValidator : AbstractValidator<CreateRubricReques
             .MaximumLength(500).WithMessage("Tiêu chí Rubric không được vượt quá 500 ký tự.");
 
         RuleFor(r => r.Weight)
+            .Must(double.IsFinite).WithMessage("Weight must be finite.")
             .GreaterThan(0).WithMessage("Trọng số (Weight) của tiêu chí phải lớn hơn 0.")
             .LessThanOrEqualTo(100).WithMessage("Trọng số (Weight) không được vượt quá 100%.");
 
         RuleFor(r => r.MaxScore)
+            .Must(double.IsFinite).WithMessage("MaxScore must be finite.")
             .GreaterThan(0).WithMessage("Điểm tối đa (MaxScore) phải lớn hơn 0.")
             .LessThanOrEqualTo(100).WithMessage("Điểm tối đa không được vượt quá 100.");
     }
@@ -54,10 +56,11 @@ public class CreateQuestionRequestValidator : AbstractValidator<CreateQuestionRe
 
         RuleFor(q => q.Rubrics)
             .NotEmpty().WithMessage("Câu hỏi phải có ít nhất 1 tiêu chí Rubric đánh giá.")
-            .Must(rubrics => rubrics == null || Math.Abs(rubrics.Sum(r => r.Weight) - 100.0) < 0.01)
+            .Must(RubricValidation.HasValidTotalWeight)
             .WithMessage("Tổng trọng số (%) của tất cả các tiêu chí Rubric phải bằng đúng 100%.");
 
         RuleForEach(q => q.Rubrics)
+            .NotNull().WithMessage("Rubric must not be null.")
             .SetValidator(new CreateRubricRequestValidator());
     }
 }
@@ -75,10 +78,18 @@ public class UpdateQuestionRequestValidator : AbstractValidator<UpdateQuestionRe
 
         RuleFor(q => q.Rubrics)
             .NotEmpty().WithMessage("Câu hỏi phải có ít nhất 1 tiêu chí Rubric đánh giá.")
-            .Must(rubrics => rubrics == null || Math.Abs(rubrics.Sum(r => r.Weight) - 100.0) < 0.01)
+            .Must(RubricValidation.HasValidTotalWeight)
             .WithMessage("Tổng trọng số (%) của tất cả các tiêu chí Rubric phải bằng đúng 100%.");
 
         RuleForEach(q => q.Rubrics)
+            .NotNull().WithMessage("Rubric must not be null.")
             .SetValidator(new CreateRubricRequestValidator());
     }
+}
+
+internal static class RubricValidation
+{
+    public static bool HasValidTotalWeight(List<CreateRubricRequest>? rubrics) =>
+        rubrics is { Count: > 0 } && rubrics.All(r => r != null && double.IsFinite(r.Weight)) &&
+        Math.Abs(rubrics.Sum(r => r.Weight) - 100.0) < 0.01;
 }

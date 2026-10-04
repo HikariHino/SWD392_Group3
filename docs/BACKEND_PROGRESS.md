@@ -2,6 +2,10 @@
 
 ## Kết quả mới nhất trên nhánh quang — 03/10/2026
 
+### Cập nhật 04/10/2026 — C09
+
+Đã merge/push quang vào main tới `70e6cdd`, quay lại quang làm C09. C09: thay rubric bằng soft delete bộ cũ và AddAsync bộ mới; mapper chỉ trả rubric hoạt động; validation update ở Application và xử lý null/NaN/Infinity; question đã xóa không được đọc/update lại. Build PASS 0 warning / 0 error; 79 checks đã PASS, gồm SQLite relational tests cho replacement/history/soft delete và toàn bộ checks C08 cũ. Hai checks bổ sung sau đó về query filter/pagination relational chưa chạy được vì Application Control chặn BackendChecks.dll. Không ghi 81 checks pass. SQL Server live chưa kiểm chứng; C07 vẫn chờ DB dev. Credit Thai ở C04–C07 giữ nguyên.
+
 C08 của Quang cùng Codex đã triển khai validation phân trang/filter và kiểm tra CourseId tại Application, bổ sung regression checks. Bộ kiểm tra runtime bị Windows Application Control chặn WebApi.dll (0x800711C7), cả ngoài sandbox; chưa có kết quả test C08 pass, chưa kiểm tra SQL live. Giữ C08 REVIEW đến khi chạy kiểm chứng được. Không đổi credit C04–C07 của Thai.
 
 Đã đồng bộ main `3b8d690` sang quang. **C04–C07 do Thai triển khai** (`8bc56ae`, `4f6030e`, `1977c0c`, `37fed27`). Phiên sửa bổ sung của Quang cùng Codex chỉ thêm traceId/giới hạn validator, bỏ Admin theo C03, chuẩn hóa vị trí migration và kiểm chứng regression; không thay tác giả các mốc. Có 34 kiểm tra offline PASS. C07 chưa kiểm tra apply migration/CRUD SQL thật do máy không có SQL Server/LocalDB chạy; chưa tick DONE. C08 chưa triển khai trong phiên này.
@@ -202,13 +206,15 @@ Sau C03, hai người có thể nhận các mốc không phụ thuộc nhau. Ghi
 
   Code: pageIndex>=1, pageSize 1..100, offset an toàn; enum/UUID/filter hợp lệ; CourseId tồn tại và chưa xóa trước query/create; ordering ổn định CreatedAt/Id. Có checks cho đường lỗi và persistence hợp lệ với repository spy. Runtime bị Application Control chặn assembly, chưa tick DONE; chạy `dotnet run --project tests/BackendChecks/BackendChecks.csproj` trên môi trường được phép, rồi kiểm tra API/DB dev.
 
-- [ ] **C09** — Người làm: Chưa nhận
+- [x] **C09** — Người làm: Quang (cùng Codex), 04/10/2026
 
   Commit: `fix(question): verify rubric replacement and soft deletion`
 
   Phạm vi / nghiệm thu: Cập nhật rubric không để dữ liệu cũ sai; tổng trọng số hợp lệ; câu hỏi/rubric đã xóa không xuất hiện
 
   Cần trước: C08
+
+  Kiểm chứng: 79 checks pass, bao gồm SQLite lưu/thay rubric nhiều lần, giữ row cũ, chỉ trả rubric active, soft delete và query count. Build pass 0 warning/error. Checks C08 cũ đã chạy được trong lần đó; C08 vẫn REVIEW cho 2 checks relational mới bị Application Control chặn. Không dùng SQL Server live và không đổi schema/credit của Thai.
 
 - [ ] **C10** — Người làm: Chưa nhận
 
@@ -470,3 +476,4 @@ Giữ nguyên người làm và SHA gốc của Thai; sửa encoding/hiển th�
 | 03/10/2026 | Thai / C07 / thai | Migration User | Thai báo build pass 0 error | Code C07 đã triển khai; chờ xác minh apply DB | 37fed27 |
 | 03/10/2026 | Quang cùng Codex / sửa bổ sung C04–C07 / quang | TraceId, độ dài input/role, vị trí migration; kiểm tra regression và sửa hiển thị note | 34 kiểm tra offline PASS; không dùng SQL live | C07 kiểm tra DB dev; chưa làm C08 | Commit sửa bổ sung riêng |
 | 03/10/2026 | Quang cùng Codex / C08 / quang | Query validator, course validation trong service, ordering repository, regression checks | Source/build biên dịch; runtime checks bị Application Control 0x800711C7 | REVIEW: chạy lại checks và kiểm tra DB/API; không tính test là pass | Commit C08 riêng |
+| 04/10/2026 | Quang cùng Codex / C09 / quang | Soft delete rubric cũ, Add rubric mới, mapping active và validation service; SQLite persistence checks | 79 checks pass; build 0 warning/error; 2 checks relational C08 thêm sau chưa chạy vì Application Control | Kiểm tra lại 2 checks; C07/SQL Server dev vẫn chưa xác minh | Commit C09 riêng |

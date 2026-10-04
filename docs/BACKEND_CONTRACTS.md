@@ -141,13 +141,19 @@ Upload C25: multipart file, chọn CSV UTF-8 với header courseCode,content,blo
 
 C05 chuẩn lỗi: application/problem+json với type,title,status,detail an toàn,traceId; validation thêm errors keyed by field. 400 input sai, 401 thiếu token, 403 thiếu quyền, 404 resource không thuộc phạm vi truy cập, 409 conflict/trùng username/sai state/concurrency, 502 output provider sai, 503 provider chưa cấu hình/không khả dụng, 504 timeout, 500 lỗi hệ thống. Không trả stack trace/password/token vào log hoặc response lỗi.
 
-## 7. SignalR contract
+## 7. C09 — Cập nhật và soft delete Question/Rubric (04/10/2026)
+
+PUT question thay toàn bộ bộ rubric hoạt động: row cũ giữ ID/FK và được đánh IsDeleted=true, mỗi rubric mới nhận ID mới và được thêm qua repository ở trạng thái Added. Question/rubric được lưu cùng một SaveChanges; không Clear collection gây orphan delete và không Update toàn graph khiến rubric mới có Guid bị coi là Modified. GetWithRubricsAsync có contract trả entity tracked; DTO luôn lọc IsDeleted để tránh EF navigation fixup đưa rubric cũ trở lại response.
+
+Validation update thực hiện tại service trước khi sửa dữ liệu: tổng Weight=100 theo tolerance hiện có, danh sách không rỗng/null hoặc chứa phần tử null, Weight/MaxScore phải hữu hạn và đúng khoảng. Question đã soft-delete trả null/false cho read/update/delete, bao gồm same-context và reload. DELETE giữ question và toàn bộ rubric trong DB; query filter ẩn chúng khỏi list/detail/count. SQLite checks xác minh behavior relational; chưa kiểm chứng trên SQL Server live. Đây là lịch sử rubric, chưa thay thế snapshot đề thi sẽ làm ở C13.
+
+## 8. SignalR contract
 
 Hiện tại: `/interviewHub`, method SendStudentAnswer(studentId, answerText), event ReceiveAIFollowUp(string); service trả chuỗi mock. C18 chuyển contract sang SendStudentAnswer(attemptId, questionId, answerText, clientMessageId). Frontend phải cập nhật cùng mốc, không giữ studentId tự khai là căn cứ quyền.
 
 Mục tiêu: xác thực JWT; check owner/state/time giống HTTP use case; cả HTTP và Hub dùng cùng logic lưu answer. Response event ReceiveAIFollowUp({attemptId,turnId,questionId,contentText,sequence}); lỗi nghiệp vụ dùng InterviewError({code,message,clientMessageId}); đóng bài dùng AttemptStatusChanged({attemptId,status}). Gửi vào group bài thi do server quản lý sau authorize; không cho client tùy ý join bài người khác. Retry clientMessageId không tạo hai lượt/AI response trùng. Reconnect tải lịch sử đã lưu; không dựa hoàn toàn vào event realtime.
 
-## 8. Kế hoạch migration và checklist bàn giao
+## 9. Kế hoạch migration và checklist bàn giao
 
 1. C07/C13 trước khi đụng DB có sẵn: đọc read-only INFORMATION_SCHEMA và sys.foreign_keys/indexes, __EFMigrationsHistory nếu tồn tại; ghi kết quả kiểu khóa/tên cột và số bản ghi, không dump dữ liệu người dùng.
 2. So sánh với model/snapshot. DB mới: tạo/apply migrations đủ schema; thay EnsureCreated bằng migration flow rõ ở mốc persistence. DB ảnh: chọn mapping/chuyển đổi có bảo toàn dữ liệu, review SQL migration trước khi apply.

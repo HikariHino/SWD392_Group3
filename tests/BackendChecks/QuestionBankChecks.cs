@@ -24,7 +24,7 @@ internal static class QuestionBankChecks
 
         using var uow = new SpyUnitOfWork();
         var mapper = new MapperConfiguration(config => config.AddProfile<MappingProfile>(), NullLoggerFactory.Instance).CreateMapper();
-        var service = new QuestionBankService(uow, mapper, validator, new CreateQuestionRequestValidator());
+        var service = new QuestionBankService(uow, mapper, validator, new CreateQuestionRequestValidator(), new UpdateQuestionRequestValidator());
         async Task Rejected(Func<Task> operation, string field, string name)
         {
             try { await operation(); check(false, name); }

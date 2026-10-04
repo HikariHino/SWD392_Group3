@@ -14,15 +14,18 @@ public class QuestionBankService : IQuestionBankService
     private readonly IMapper _mapper;
     private readonly IValidator<QuestionQueryParameters> _queryValidator;
     private readonly IValidator<CreateQuestionRequest> _createValidator;
+    private readonly IValidator<UpdateQuestionRequest> _updateValidator;
 
     public QuestionBankService(IUnitOfWork unitOfWork, IMapper mapper,
         IValidator<QuestionQueryParameters> queryValidator,
-        IValidator<CreateQuestionRequest> createValidator)
+        IValidator<CreateQuestionRequest> createValidator,
+        IValidator<UpdateQuestionRequest> updateValidator)
     {
         _unitOfWork = unitOfWork;
         _mapper = mapper;
         _queryValidator = queryValidator;
         _createValidator = createValidator;
+        _updateValidator = updateValidator;
     }
 
     public async Task<PagedResponse<QuestionDto>> GetQuestionsAsync(QuestionQueryParameters query)
@@ -75,28 +78,32 @@ public class QuestionBankService : IQuestionBankService
 
     public async Task<QuestionDto?> UpdateQuestionAsync(Guid id, UpdateQuestionRequest request)
     {
+        ThrowIfInvalid(await _updateValidator.ValidateAsync(request));
         var existingQuestion = await _unitOfWork.Questions.GetWithRubricsAsync(id);
-        if (existingQuestion == null) return null;
+        if (existingQuestion == null || existingQuestion.IsDeleted) return null;
 
         // Update question attributes
         existingQuestion.Content = request.Content;
         existingQuestion.BloomLevel = request.BloomLevel;
 
-        // Clear and replace rubrics
-        existingQuestion.Rubrics.Clear();
+        // Keep the old rows for history; only the replacement set remains active.
+        foreach (var rubric in existingQuestion.Rubrics) rubric.IsDeleted = true;
         foreach (var rReq in request.Rubrics)
         {
-            existingQuestion.Rubrics.Add(new Rubric
+            var rubric = new Rubric
             {
                 Id = Guid.NewGuid(),
                 QuestionId = id,
                 Criteria = rReq.Criteria,
                 Weight = rReq.Weight,
                 MaxScore = rReq.MaxScore
-            });
+            };
+            existingQuestion.Rubrics.Add(rubric);
+            // Explicitly mark replacements Added even though their Guid is assigned.
+            await _unitOfWork.Rubrics.AddAsync(rubric);
         }
 
-        _unitOfWork.Questions.Update(existingQuestion);
+        // Save the tracked question and explicitly-added replacements together.
         await _unitOfWork.SaveChangesAsync();
 
         var updated = await _unitOfWork.Questions.GetWithRubricsAsync(id);
@@ -106,7 +113,7 @@ public class QuestionBankService : IQuestionBankService
     public async Task<bool> DeleteQuestionAsync(Guid id)
     {
         var question = await _unitOfWork.Questions.GetWithRubricsAsync(id);
-        if (question == null) return false;
+        if (question == null || question.IsDeleted) return false;
 
         // Soft delete question and rubrics
         question.IsDeleted = true;
@@ -115,7 +122,7 @@ public class QuestionBankService : IQuestionBankService
             rubric.IsDeleted = true;
         }
 
-        _unitOfWork.Questions.Update(question);
+        // The loaded graph is tracked; retain soft-deleted rows without removing them.
         await _unitOfWork.SaveChangesAsync();
         return true;
     }
