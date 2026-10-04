@@ -2,6 +2,10 @@
 
 ## Kết quả mới nhất trên nhánh quang — 03/10/2026
 
+### Cập nhật 04/10/2026 — C10
+
+Quang cùng Codex đã thêm CourseDto, create/update request, validator, ICourseService/CourseService và CoursesController. `/api/questions/courses` giữ route, đổi response thành CourseDto[]; API CRUD mới ở `/api/courses`. Code chuẩn hóa mã uppercase/trim, kiểm tra trùng active case-insensitive, lỗi validation/not-found/conflict qua middleware. Delete chỉ soft-delete môn không còn câu hỏi hoạt động. Quyền lecturer triển khai C12, chưa bảo vệ endpoint trong C10. Bộ kiểm tra C10 SQLite/controller đã viết nhưng bị Application Control chặn Infrastructure.dll (0x800711C7), cả ngoài sandbox; không ghi tests pass. C10 giữ REVIEW. Không thay credit các mốc của Thai.
+
 ### Cập nhật 04/10/2026 — C09
 
 Đã merge/push quang vào main tới `70e6cdd`, quay lại quang làm C09. C09: thay rubric bằng soft delete bộ cũ và AddAsync bộ mới; mapper chỉ trả rubric hoạt động; validation update ở Application và xử lý null/NaN/Infinity; question đã xóa không được đọc/update lại. Build PASS 0 warning / 0 error; 79 checks đã PASS, gồm SQLite relational tests cho replacement/history/soft delete và toàn bộ checks C08 cũ. Hai checks bổ sung sau đó về query filter/pagination relational chưa chạy được vì Application Control chặn BackendChecks.dll. Không ghi 81 checks pass. SQL Server live chưa kiểm chứng; C07 vẫn chờ DB dev. Credit Thai ở C04–C07 giữ nguyên.
@@ -216,13 +220,15 @@ Sau C03, hai người có thể nhận các mốc không phụ thuộc nhau. Ghi
 
   Kiểm chứng: 79 checks pass, bao gồm SQLite lưu/thay rubric nhiều lần, giữ row cũ, chỉ trả rubric active, soft delete và query count. Build pass 0 warning/error. Checks C08 cũ đã chạy được trong lần đó; C08 vẫn REVIEW cho 2 checks relational mới bị Application Control chặn. Không dùng SQL Server live và không đổi schema/credit của Thai.
 
-- [ ] **C10** — Người làm: Chưa nhận
+- [ ] **C10** — Người làm: Quang (cùng Codex), 04/10/2026; REVIEW — chờ runtime checks
 
   Commit: `feat(course): expose course management through dtos`
 
   Phạm vi / nghiệm thu: Course DTO/use case/controller, CRUD theo contract; không trả entity trực tiếp; kiểm tra môn không tồn tại
 
   Cần trước: C09
+
+  Code CRUD/DTO đã triển khai, thêm tests/BackendChecks/CourseChecks.cs. Kiểm tra runtime bị Application Control chặn, cần chạy lại và kiểm tra DB dev trước tick DONE. Không có migration mới trong C10; duplicate code kiểm tra tại use case, chưa có unique index chống race khi tạo đồng thời.
 
 - [ ] **C11** — Người làm: Chưa nhận
 
@@ -477,3 +483,4 @@ Giữ nguyên người làm và SHA gốc của Thai; sửa encoding/hiển th�
 | 03/10/2026 | Quang cùng Codex / sửa bổ sung C04–C07 / quang | TraceId, độ dài input/role, vị trí migration; kiểm tra regression và sửa hiển thị note | 34 kiểm tra offline PASS; không dùng SQL live | C07 kiểm tra DB dev; chưa làm C08 | Commit sửa bổ sung riêng |
 | 03/10/2026 | Quang cùng Codex / C08 / quang | Query validator, course validation trong service, ordering repository, regression checks | Source/build biên dịch; runtime checks bị Application Control 0x800711C7 | REVIEW: chạy lại checks và kiểm tra DB/API; không tính test là pass | Commit C08 riêng |
 | 04/10/2026 | Quang cùng Codex / C09 / quang | Soft delete rubric cũ, Add rubric mới, mapping active và validation service; SQLite persistence checks | 79 checks pass; build 0 warning/error; 2 checks relational C08 thêm sau chưa chạy vì Application Control | Kiểm tra lại 2 checks; C07/SQL Server dev vẫn chưa xác minh | Commit C09 riêng |
+| 04/10/2026 | Quang cùng Codex / C10 / quang | Course CRUD/DTO/validator, route cũ trả DTO, controller/SQLite regression checks | Runtime bị Application Control 0x800711C7; không báo pass | REVIEW: chạy checks, xác minh DB; auth tại C12 | Commit C10 riêng |

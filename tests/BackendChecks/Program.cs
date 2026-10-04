@@ -79,4 +79,5 @@ Check(script.Contains("CREATE TABLE [Users]") && script.Contains("IX_Users_Usern
 Check(!script.Contains("DROP TABLE") && !script.Contains("CREATE TABLE [Courses]"), "user migration preserves existing question-bank tables");
 await QuestionBankChecks.Run(Check);
 await RubricChecks.Run(Check);
+await CourseChecks.Run(Check);
 Console.WriteLine($"{checks} checks passed. Live SQL migration/CRUD not verified.");

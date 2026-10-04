@@ -133,9 +133,9 @@ public class QuestionBankService : IQuestionBankService
         return await Task.FromResult(true);
     }
 
-    public async Task<IEnumerable<Course>> GetCoursesAsync()
+    public async Task<IEnumerable<CourseDto>> GetCoursesAsync()
     {
-        return await _unitOfWork.Courses.GetAllAsync();
+        return _mapper.Map<IEnumerable<CourseDto>>((await _unitOfWork.Courses.GetAllAsync()).Where(c => !c.IsDeleted));
     }
 
     private async Task RequireActiveCourseAsync(Guid courseId)

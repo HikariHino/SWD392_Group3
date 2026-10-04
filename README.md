@@ -94,6 +94,8 @@ Kiểm tra hash/verify, validator, lỗi 400/404/409/500 có traceId, migration 
 
 C09 thêm SQLite in-memory để kiểm tra lưu/thay rubric và soft delete, không kết nối DB của bạn. Có 79 checks đã pass ngày 04/10; hai checks query relational thêm sau chưa chạy được do Windows Application Control. Nếu gặp 0x800711C7, ghi nhận test bị chặn, không xem là pass hoặc tắt chính sách bảo vệ để vượt kiểm tra.
 
+C10 có code CRUD Course ở `/api/courses`; `/api/questions/courses` trả CourseDto cùng kiểu với route mới. Tạo/cập nhật chuẩn hóa code uppercase, kiểm tra trùng môn active và độ dài input; xóa môn có câu hỏi active trả 409, còn lại soft-delete. Runtime tests C10 đang bị Application Control chặn; endpoint chưa có auth (C12). Không dùng API quản lý này như bản production.
+
 Profile https dùng **https://localhost:7035** và **http://localhost:5110**; HTTP có thể redirect HTTPS. Swagger Development ở `/`, JSON ở `/swagger/v1/swagger.json`, SignalR ở `/interviewHub`. Profile http chỉ nghe 5110. Luôn dùng cổng trong log `Now listening on`.
 
 Kiểm tra: mở Swagger, gọi GET `/api/questions/courses` và GET `/api/questions` để kiểm tra DB. User cần schema Users phù hợp. Import còn mock nên không dùng làm bằng chứng hoàn thành. Nếu HTTPS bị chặn, trust dev certificate rồi khởi động lại.

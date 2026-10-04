@@ -11,6 +11,7 @@ namespace Application.Mappings
         public MappingProfile()
         {
             // Question Mappings
+            CreateMap<Course, CourseDto>();
             CreateMap<Question, QuestionDto>()
                 .ForMember(dest => dest.CourseCode, opt => opt.MapFrom(src => src.Course != null ? src.Course.Code : null))
                 .ForMember(dest => dest.CourseName, opt => opt.MapFrom(src => src.Course != null ? src.Course.Name : null))

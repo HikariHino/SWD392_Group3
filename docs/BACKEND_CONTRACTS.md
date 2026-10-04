@@ -143,6 +143,14 @@ C05 chuẩn lỗi: application/problem+json với type,title,status,detail an to
 
 ## 7. C09 — Cập nhật và soft delete Question/Rubric (04/10/2026)
 
+### C10 — Course API đã triển khai (04/10/2026)
+
+GET/POST `/api/courses`, GET/PUT/DELETE `/api/courses/{id}` đã có code. Request create/update: code, name, description?; PUT thay toàn bộ giá trị, description bỏ qua thành null. Response CourseDto gồm id/code/name/description, không navigation/audit. Route cũ GET `/api/questions/courses` vẫn giữ nhưng trả cùng DTO.
+
+Code trim + uppercase invariant, name/description trim; giới hạn 50/200/1000 ký tự theo model; blank code/name trả 400 ProblemDetails. Mã trùng trong môn active (case-insensitive) trả 409, update bỏ qua chính ID đang sửa. Môn thiếu/đã xóa trả 404, kể cả entity còn tracked. Delete soft-delete, không cascade; nếu có câu hỏi active trả 409. Khi đã xóa môn, cho phép tái sử dụng code với ID mới; dữ liệu cũ giữ nguyên.
+
+Chưa đổi schema hoặc thêm unique index vào Courses: duplicate check hiện ở Application, không bảo đảm độc nhất nếu hai request đồng thời. Cần chốt index/transaction khi triển khai concurrency, đối chiếu legacy duplicate trước migration. Auth lecturer theo C12, chưa có trong C10. ExamSession chưa triển khai nên delete mới kiểm tra Question; khi thêm session cần chặn các phiên đang hoạt động. Bộ checks SQLite/controller C10 chưa chạy được vì Application Control; không suy ra runtime/SQL Server đã pass từ build.
+
 PUT question thay toàn bộ bộ rubric hoạt động: row cũ giữ ID/FK và được đánh IsDeleted=true, mỗi rubric mới nhận ID mới và được thêm qua repository ở trạng thái Added. Question/rubric được lưu cùng một SaveChanges; không Clear collection gây orphan delete và không Update toàn graph khiến rubric mới có Guid bị coi là Modified. GetWithRubricsAsync có contract trả entity tracked; DTO luôn lọc IsDeleted để tránh EF navigation fixup đưa rubric cũ trở lại response.
 
 Validation update thực hiện tại service trước khi sửa dữ liệu: tổng Weight=100 theo tolerance hiện có, danh sách không rỗng/null hoặc chứa phần tử null, Weight/MaxScore phải hữu hạn và đúng khoảng. Question đã soft-delete trả null/false cho read/update/delete, bao gồm same-context và reload. DELETE giữ question và toàn bộ rubric trong DB; query filter ẩn chúng khỏi list/detail/count. SQLite checks xác minh behavior relational; chưa kiểm chứng trên SQL Server live. Đây là lịch sử rubric, chưa thay thế snapshot đề thi sẽ làm ở C13.

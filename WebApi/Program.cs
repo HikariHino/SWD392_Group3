@@ -55,6 +55,7 @@ builder.Services.AddScoped<IQuestionRepository, QuestionRepository>();
 // 8. Đăng ký Dependency Injection cho tầng Application Services
 builder.Services.AddScoped<IQuestionBankService, QuestionBankService>();
 builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<ICourseService, CourseService>();
 builder.Services.AddScoped<IInterviewService, InterviewService>();
 builder.Services.AddScoped<IGradingService, GradingService>();
 builder.Services.AddScoped<IPasswordHasher, Infrastructure.Security.PasswordHasher>();
