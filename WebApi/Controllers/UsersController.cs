@@ -6,10 +6,12 @@ using Application.Interfaces.Services;
 using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
 using Application.Exceptions;
+using Microsoft.AspNetCore.Authorization;
 
 namespace WebApi.Controllers;
 
 [ApiController]
+[Authorize(Roles = "Lecturer,Student")]
 [Route("api/[controller]")]
 public class UsersController : ControllerBase
 {
@@ -28,6 +30,7 @@ public class UsersController : ControllerBase
     }
 
     [HttpGet]
+    [Authorize(Roles = "Lecturer")]
     public async Task<IActionResult> GetAllUsers()
     {
         var users = await _userService.GetAllUsersAsync();
@@ -42,6 +45,7 @@ public class UsersController : ControllerBase
     }
 
     [HttpPost]
+    [Authorize(Roles = "Lecturer")]
     public async Task<IActionResult> CreateUser([FromBody] CreateUserDto dto)
     {
         var validationResult = await _createValidator.ValidateAsync(dto);
@@ -74,6 +78,7 @@ public class UsersController : ControllerBase
     }
 
     [HttpDelete("{id}")]
+    [Authorize(Roles = "Lecturer")]
     public async Task<IActionResult> DeleteUser(Guid id)
     {
         await _userService.DeleteUserAsync(id);

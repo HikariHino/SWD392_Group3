@@ -1,10 +1,12 @@
 using Application.DTOs.QuestionBank;
 using Application.Interfaces.Services;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 
 namespace WebApi.Controllers;
 
 [ApiController]
+[Authorize(Roles = "Lecturer,Student")]
 [Route("api/courses")]
 public class CoursesController : ControllerBase
 {
@@ -19,6 +21,7 @@ public class CoursesController : ControllerBase
     public async Task<ActionResult<CourseDto>> GetCourseById(Guid id) => Ok(await _service.GetCourseByIdAsync(id));
 
     [HttpPost]
+    [Authorize(Roles = "Lecturer")]
     [ProducesResponseType(typeof(CourseDto), 201)]
     [ProducesResponseType(typeof(ProblemDetails), 400)]
     [ProducesResponseType(typeof(ProblemDetails), 409)]
@@ -29,12 +32,14 @@ public class CoursesController : ControllerBase
     }
 
     [HttpPut("{id:guid}")]
+    [Authorize(Roles = "Lecturer")]
     [ProducesResponseType(typeof(ProblemDetails), 400)]
     [ProducesResponseType(typeof(ProblemDetails), 404)]
     [ProducesResponseType(typeof(ProblemDetails), 409)]
     public async Task<ActionResult<CourseDto>> UpdateCourse(Guid id, UpdateCourseRequest request) => Ok(await _service.UpdateCourseAsync(id, request));
 
     [HttpDelete("{id:guid}")]
+    [Authorize(Roles = "Lecturer")]
     [ProducesResponseType(204)]
     [ProducesResponseType(typeof(ProblemDetails), 404)]
     [ProducesResponseType(typeof(ProblemDetails), 409)]

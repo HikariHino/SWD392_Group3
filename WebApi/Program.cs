@@ -7,6 +7,8 @@ using Application.Services;
 using Application.Validators.QuestionBank;
 using Infrastructure.Persistence;
 using Infrastructure.Repositories;
+using WebApi.Security;
+using WebApi.Swagger;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -17,30 +19,11 @@ builder.Services.AddSingleton(jwt);
 builder.Services.AddSingleton(TimeProvider.System);
 builder.Services.AddScoped<IAccessTokenIssuer, Infrastructure.Security.JwtTokenIssuer>();
 builder.Services.AddScoped<IAuthService, AuthService>();
-builder.Services.AddAuthentication(Microsoft.AspNetCore.Authentication.JwtBearer.JwtBearerDefaults.AuthenticationScheme)
-    .AddJwtBearer(options =>
-    {
-        options.MapInboundClaims = false;
-        options.TokenValidationParameters = jwt.ValidationParameters();
-    });
-builder.Services.AddAuthorization();
+builder.Services.AddAivesAuthentication(jwt);
 
 // 1. Thêm Controllers & Swagger UI
 builder.Services.AddControllers();
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen(c =>
-{
-    c.AddSecurityDefinition("Bearer", new Microsoft.OpenApi.OpenApiSecurityScheme
-    {
-        Type = Microsoft.OpenApi.SecuritySchemeType.Http, Scheme = "bearer", BearerFormat = "JWT"
-    });
-    c.SwaggerDoc("v1", new Microsoft.OpenApi.OpenApiInfo
-    {
-        Title = "AIVES API - AI-Powered Viva Exam System",
-        Version = "v1",
-        Description = "API hệ thống thi vấn đáp trực tuyến AIVES - SWD392 Group 3 (.NET 10 Onion Architecture)"
-    });
-});
+builder.Services.AddAivesSwagger();
 
 // 2. Thêm CORS cho kết nối Frontend React
 builder.Services.AddCors(options =>

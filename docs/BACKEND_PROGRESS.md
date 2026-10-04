@@ -2,6 +2,14 @@
 
 ## Kết quả mới nhất trên nhánh quang — 03/10/2026
 
+### Cập nhật 04/10/2026 — C12
+
+Quang cùng Codex hoàn thành bảo vệ HTTP API: Lecturer quản lý User và toàn bộ Question/Rubric (kể cả route import placeholder); Student chỉ đọc/sửa FullName của mình và đọc Course/dropdown. Course mutation chỉ Lecturer. UserService kiểm tra ownership/role bằng ICurrentUser của Application, không phụ thuộc ASP.NET. Không cho Student gửi Role, không cho Lecturer đổi role chính mình; Lecturer được cấp/đổi role cho tài khoản khác theo quy trình quản lý nhóm. Thiếu token trả 401, thiếu quyền trả 403 ProblemDetails có traceId. Swagger tự gửi Bearer sau Authorize; login vẫn anonymous.
+
+TokenValidated đối chiếu UserId và role hiện tại với DB: user thiếu/deleted hoặc role đã thay đổi trả 401, yêu cầu login lại. Không tạo migration, không đổi connection string hay tài khoản trên DB thật. Hub còn là mock và ownership/session auth làm ở C18, ngoài demo M1. Import chưa thật, xử lý file thuộc C25.
+
+**261 checks PASS**, gồm HTTP trên loopback + SQLite thật: login, CRUD User/Course/Question-Rubric, ownership, chặn nâng role, 401/403/ProblemDetails, token sau đổi role/xóa user và Swagger security từng endpoint; toàn bộ regression cũ pass. Build 0 warning/error. C12 DONE về code/kiểm chứng module. **Gate M1 vẫn chờ C07 và hai người kiểm tra SQL Server dev**, chưa tuyên bố M1 nghiệm thu live. Credit Thai C04–C07 giữ nguyên. Xem README phần demo M1 để nối FE hoặc Swagger.
+
 ### Cập nhật 04/10/2026 — C11 và kiểm chứng lại C08–C10
 
 Quang cùng Codex hoàn thành C11: POST `/api/auth/login` xác minh BCrypt, trả JWT HS256 30 phút mặc định và UserDto; GET `/api/auth/me` yêu cầu Bearer. Application giữ contract/use case/validation, Infrastructure ký token, WebApi xác thực issuer/audience/signature/lifetime. JWT lấy cấu hình ngoài source, thiếu cấu hình sẽ dừng startup với thông báo rõ. Không tạo migration hay đổi connection string. Xem README để setup user-secrets trước khi chạy.
@@ -246,16 +254,20 @@ Sau C03, hai người có thể nhận các mốc không phụ thuộc nhau. Ghi
 
   Cần trước: C07
 
-- [ ] **C12** — Người làm: Chưa nhận
+- [x] **C12** — Người làm: Quang (cùng Codex), 04/10/2026
 
   Commit: `feat(auth): protect user and question management by role`
 
   Phạm vi / nghiệm thu: Áp dụng quyền theo C03 cho API; người dùng không tự nâng role; kiểm tra 401/403 và lecturer/student
 
+  Kiểm chứng: AuthorizationChecks.cs chạy HTTP + SQLite, 261 checks tổng PASS. Student owner chỉ đổi FullName; Lecturer CRUD và cấp/đổi role người khác; role/deleted DB kiểm tra lại trên mỗi Bearer request; Swagger security gắn đúng endpoint. Không thay DB thật; C07/Gate M1 live còn mở.
+
   Cần trước: C10, C11
 
 
 Gate M1: hai người chạy trên DB dev của mình; tạo user, login, quản lý course/question/rubric và soft delete thành công. Cập nhật SHA các commit và ví dụ gọi API trong note. Không tuyên bố chức năng thi AI đã xong.
+
+Trạng thái 04/10: code C08–C12 và HTTP/SQLite checks hoàn tất; C07 SQL Server dev chưa xác minh, do đó Gate M1 chưa đóng. Tài khoản Lecturer đầu tiên phải được nhóm provision an toàn với BCrypt hash; API POST User nay yêu cầu Lecturer, không có public signup hoặc tài khoản/mật khẩu mặc định.
 
 ### M2 — Thi bằng văn bản chạy xuyên suốt
 
@@ -493,3 +505,4 @@ Giữ nguyên người làm và SHA gốc của Thai; sửa encoding/hiển th�
 | 04/10/2026 | Quang cùng Codex / C09 / quang | Soft delete rubric cũ, Add rubric mới, mapping active và validation service; SQLite persistence checks | 79 checks pass; build 0 warning/error; 2 checks relational C08 thêm sau chưa chạy vì Application Control | Kiểm tra lại 2 checks; C07/SQL Server dev vẫn chưa xác minh | Commit C09 riêng |
 | 04/10/2026 | Quang cùng Codex / C10 / quang | Course CRUD/DTO/validator, route cũ trả DTO, controller/SQLite regression checks | Runtime bị Application Control 0x800711C7; không báo pass | REVIEW: chạy checks, xác minh DB; auth tại C12 | Commit C10 riêng |
 | 04/10/2026 | Quang cùng Codex / C11 / quang | BCrypt login, JWT HS256, Bearer middleware, me endpoint và cấu hình ngoài source | Build 0 warning/error; 134 checks PASS gồm HTTP auth và SQLite C08–C10 | C12 bảo vệ API theo role; SQL Server live/C07 vẫn REVIEW; giữ credit Thai | Commit C11 riêng |
+| 04/10/2026 | Quang cùng Codex / C12 / quang | Role/ownership HTTP, active account JWT check, Swagger Bearer và demo docs | 261 checks PASS HTTP/SQLite; build 0 warning/error | C12 DONE; Gate M1 chờ C07 và SQL dev hai máy; giữ credit Thai | Commit C12 riêng |

@@ -165,6 +165,28 @@ JWT HS256 gồm sub (Guid), name (username), role, jti, nbf, exp; xác thực si
 
 134 checks PASS gồm HTTP auth loopback, JWT/Bearer và SQLite regression C08–C10. HTTP test dùng repository giả, chưa kiểm tra login SQL Server live (C07). Không có migration mới.
 
+## 7.2. C12 HTTP authorization đã triển khai (04/10/2026)
+
+| API / thao tác | Lecturer | Student | Anonymous |
+| --- | --- | --- | --- |
+| POST /api/auth/login | Cho phép | Cho phép | Cho phép |
+| GET /api/auth/me | Claims tài khoản hiện tại | Claims tài khoản hiện tại | 401 |
+| GET /api/Users | Cho phép | 403 | 401 |
+| GET /api/Users/{id} | Cho phép | Chỉ id của mình; người khác 403 | 401 |
+| POST /api/Users | Cấp tài khoản Student/Lecturer theo quy trình quản lý nhóm | 403 | 401 |
+| PUT /api/Users/{id} | Sửa FullName/Role người khác; chính mình không gửi Role | Chỉ FullName của mình; gửi Role trả 403 | 401 |
+| DELETE /api/Users/{id} | Cho phép | 403 | 401 |
+| GET /api/courses và /api/courses/{id} | Cho phép | Cho phép | 401 |
+| POST/PUT/DELETE /api/courses | Cho phép | 403 | 401 |
+| GET /api/questions/courses | Cho phép | Cho phép | 401 |
+| Question/Rubric CRUD, GET list/detail, POST import | Cho phép | 403 | 401 |
+
+Ownership User dùng ICurrentUser tại Application/UserService, identity lấy từ principal đã xác thực. Student đọc/sửa user khác trả 403 trước query; không chấp nhận UserId/Role do client khai làm căn cứ quyền. Chưa có Admin/public signup. Lecturer đầu tiên được nhóm provision với BCrypt hash qua quy trình DB dev được kiểm soát, không có tài khoản mặc định. Course/Question dùng authorization metadata tại HTTP controller; quyền sở hữu ca thi triển khai C14/C18.
+
+JWT Bearer từ C12 kiểm tra lại UserId và role trên DB mỗi request: user không tồn tại/deleted, subject không hợp lệ, hoặc role khác claim trả 401. Login lại sau thay đổi role. `/me` trả claims chỉ sau đối chiếu tài khoản. Điều này thay thế hạn chế role/deleted stale ghi ở C11; chưa có refresh token hay danh sách revoke token riêng. JWT/authorization 401/403 trả ProblemDetails và traceId, không lộ lý do token nội bộ. Swagger đánh dấu Bearer cho endpoint có Authorize, không gắn login; public Swagger chỉ bật Development trong Program.
+
+261 checks PASS gồm HTTP + SQLite CRUD đầy đủ, role/owner guard, dữ liệu không bị sửa sau request bị từ chối, token sau role/deleted và security trên Swagger JSON. Chưa chạy SQL Server live; C07/Gate M1 còn mở. Import vẫn placeholder C25; Hub vẫn mock C18, không thuộc phạm vi HTTP M1.
+
 ## 8. SignalR contract
 
 Hiện tại: `/interviewHub`, method SendStudentAnswer(studentId, answerText), event ReceiveAIFollowUp(string); service trả chuỗi mock. C18 chuyển contract sang SendStudentAnswer(attemptId, questionId, answerText, clientMessageId). Frontend phải cập nhật cùng mốc, không giữ studentId tự khai là căn cứ quyền.

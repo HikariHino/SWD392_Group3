@@ -163,8 +163,33 @@ dotnet run --project WebApi --launch-profile https
 
 Mỗi máy dev tự tạo khóa riêng; không gửi khóa qua note/commit. Môi trường triển khai dùng secret store hoặc environment `Jwt__Issuer`, `Jwt__Audience`, `Jwt__SigningKey`, `Jwt__ExpiryMinutes`. Khóa cần ít nhất 32 UTF-8 bytes; thời hạn 1–120 phút, mặc định 30. Thiếu/sai config thì startup dừng với hướng dẫn. Xem [hướng dẫn JWT Bearer của Microsoft](https://learn.microsoft.com/en-us/aspnet/core/security/authentication/configure-jwt-bearer-authentication?view=aspnetcore-10.0).
 
-POST `/api/auth/login` với `{"username":"<user đã có trong DB>","password":"<mật khẩu>"}`. Thành công trả `accessToken`, `expiresAt`, `user` (không có password hash). GET `/api/auth/me` với header `Authorization: Bearer <accessToken>` trả id/username/role. Login sai trả 401 ProblemDetails, input sai 400; token thiếu/sai/hết hạn trả 401. Swagger có khai báo Bearer; có thể thử bằng Postman/curl với header trên. `/me` phản ánh claims lúc cấp token, chưa đọc lại tài khoản.
+POST `/api/auth/login` với `{"username":"<user đã có trong DB>","password":"<mật khẩu>"}`. Thành công trả `accessToken`, `expiresAt`, `user` (không có password hash). GET `/api/auth/me` với header `Authorization: Bearer <accessToken>` trả id/username/role. Login sai trả 401 ProblemDetails, input sai 400; token thiếu/sai/hết hạn trả 401. Từ C12, Swagger tự gửi Bearer cho endpoint được bảo vệ và mỗi request đối chiếu account/role với DB.
 
-Tài khoản cần BCrypt hash hợp lệ; plaintext cũ không đăng nhập được. C11 không tạo tài khoản hay chạy migration mới. Chưa bảo vệ API quản lý theo role (C12), chưa có refresh/revocation. Các thay đổi role/deleted sau cấp token có thể chỉ phản ánh khi token hết hạn.
+Tài khoản cần BCrypt hash hợp lệ; plaintext cũ không đăng nhập được. C11/C12 không tự tạo tài khoản hay chạy migration mới. C12 đã bảo vệ API quản lý theo role và từ chối token khi account bị xóa/đổi role. Chưa có refresh token hoặc danh sách revoke riêng.
 
 Kiểm chứng ngày 04/10/2026: `dotnet build` 0 warning/error; `dotnet run --project tests/BackendChecks` **134 checks PASS** (HTTP login/me, BCrypt/JWT/Bearer và SQLite C08–C10). Auth tests dùng repository giả, không cần user-secrets hay SQL Server. Migration và login trên SQL Server dev thật vẫn cần kiểm chứng C07.
+
+## C12: demo CRUD M1 bằng Swagger hoặc FE
+
+C12 đã có **261 checks PASS**, gồm HTTP + SQLite CRUD User/Course/Question-Rubric và phân quyền; SQL Server thật/Gate M1 vẫn cần nhóm xác minh C07. Các mốc C09–C12 hiện nằm trên `quang`; peer cần lấy nhánh có các commit này để tích hợp.
+
+Trước demo, cấu hình JWT ở trên và connection string tới DB dev đã có schema đúng. Nhóm cần provision tài khoản Lecturer đầu tiên với BCrypt hash qua quy trình DB dev được kiểm soát. API tạo user yêu cầu Lecturer; không có public signup hay tài khoản/mật khẩu mặc định.
+
+1. Chạy WebApi với profile `https`, mở Swagger ở `https://localhost:7035/` (JSON `/swagger/v1/swagger.json`). Dùng URL thực tế trong log nếu đổi profile/port.
+2. POST `/api/auth/login` với tài khoản Lecturer. Copy `accessToken`, bấm **Authorize**, dán riêng token (không thêm chữ `Bearer`), xác nhận. Swagger tự thêm header vào API cần xác thực.
+3. POST `/api/courses` với `{"code":"DEMO392","name":"Môn demo"}`; copy `id` trả về.
+4. POST `/api/questions` với JSON dưới đây, thay courseId bằng id vừa tạo; thử GET list/detail, PUT thay câu hỏi/rubric, DELETE câu hỏi rồi DELETE môn. Môn còn câu hỏi hoạt động sẽ trả 409 khi xóa.
+5. Thử User CRUD với Lecturer; tạo Student rồi login Student và Authorize lại. Student đọc Course, GET user chính mình và PUT `{"fullName":"Tên mới"}` được; đọc user khác/ngân hàng câu hỏi, tạo/xóa hoặc gửi Role bị 403. Bỏ token trả 401. Lecturer không được đổi role chính mình, được cấp/đổi role người khác.
+
+```json
+{
+  "courseId": "<id từ bước tạo môn>",
+  "content": "Giải thích Onion Architecture",
+  "bloomLevel": 2,
+  "rubrics": [{ "criteria": "Giải thích đúng", "weight": 100, "maxScore": 10 }]
+}
+```
+
+FE repo riêng dùng base URL backend, gọi login, gửi `Authorization: Bearer <accessToken>` ở các request tiếp theo. CORS hiện cho phép `http://localhost:5173`, `http://localhost:3000`, `https://localhost:5173`; port/origin khác cần cập nhật cấu hình CORS. FE xử lý 401 bằng login lại, 403 bằng thông báo thiếu quyền. Role đổi hoặc account deleted khiến token hiện tại bị từ chối từ request kế tiếp.
+
+Quyền và ownership User được kiểm tra tại Application qua ICurrentUser; ASP.NET chỉ cung cấp identity đã xác thực. Xem [ma trận quyền C12](docs/BACKEND_CONTRACTS.md#72-c12-http-authorization-đã-triển-khai-04102026) và [hướng dẫn role authorization của Microsoft](https://learn.microsoft.com/en-us/aspnet/core/security/authorization/roles?view=aspnetcore-10.0). Import file còn placeholder (C25), Hub/thi AI/chấm điểm nằm ở các mốc tiếp theo; chưa thuộc demo CRUD M1.

@@ -3,10 +3,12 @@ using FluentValidation;
 using Application.Common;
 using Application.DTOs.QuestionBank;
 using Application.Interfaces.Services;
+using Microsoft.AspNetCore.Authorization;
 
 namespace WebApi.Controllers;
 
 [ApiController]
+[Authorize(Roles = "Lecturer,Student")]
 [Route("api/questions")]
 public class QuestionsController : ControllerBase
 {
@@ -28,6 +30,7 @@ public class QuestionsController : ControllerBase
     /// Lấy danh sách câu hỏi có phân trang, tìm kiếm và lọc theo Bloom Level / Môn học
     /// </summary>
     [HttpGet]
+    [Authorize(Roles = "Lecturer")]
     [ProducesResponseType(typeof(PagedResponse<QuestionDto>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> GetQuestions([FromQuery] QuestionQueryParameters query)
@@ -40,6 +43,7 @@ public class QuestionsController : ControllerBase
     /// Lấy chi tiết một câu hỏi kèm toàn bộ tiêu chí Rubric
     /// </summary>
     [HttpGet("{id:guid}")]
+    [Authorize(Roles = "Lecturer")]
     [ProducesResponseType(typeof(QuestionDto), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> GetQuestionById(Guid id)
@@ -56,6 +60,7 @@ public class QuestionsController : ControllerBase
     /// Tạo mới một câu hỏi kèm danh sách tiêu chí Rubric (Tổng trọng số Rubric phải = 100%)
     /// </summary>
     [HttpPost]
+    [Authorize(Roles = "Lecturer")]
     [ProducesResponseType(typeof(QuestionDto), StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> CreateQuestion([FromBody] CreateQuestionRequest request)
@@ -78,6 +83,7 @@ public class QuestionsController : ControllerBase
     /// Cập nhật câu hỏi và tiêu chí Rubric
     /// </summary>
     [HttpPut("{id:guid}")]
+    [Authorize(Roles = "Lecturer")]
     [ProducesResponseType(typeof(QuestionDto), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -106,6 +112,7 @@ public class QuestionsController : ControllerBase
     /// Xóa câu hỏi (Soft Delete) khỏi ngân hàng đề
     /// </summary>
     [HttpDelete("{id:guid}")]
+    [Authorize(Roles = "Lecturer")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> DeleteQuestion(Guid id)
@@ -134,6 +141,7 @@ public class QuestionsController : ControllerBase
     /// Import câu hỏi từ file
     /// </summary>
     [HttpPost("import")]
+    [Authorize(Roles = "Lecturer")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     public async Task<IActionResult> ImportQuestions()
     {

@@ -20,6 +20,7 @@ using Microsoft.AspNetCore.Hosting.Server.Features;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
+using WebApi.Security;
 
 internal static class AuthChecks
 {
@@ -110,12 +111,9 @@ internal static class AuthChecks
         builder.Logging.ClearProviders();
         builder.WebHost.UseUrls("http://127.0.0.1:0");
         builder.Services.AddSingleton<Application.Interfaces.Services.IAuthService>(service);
+        builder.Services.AddSingleton<IUnitOfWork>(uow);
         builder.Services.AddControllers().AddApplicationPart(typeof(WebApi.Controllers.AuthController).Assembly);
-        builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(o =>
-        {
-            o.MapInboundClaims = false; o.TokenValidationParameters = settings.ValidationParameters();
-        });
-        builder.Services.AddAuthorization();
+        builder.Services.AddAivesAuthentication(settings);
         await using var app = builder.Build();
         app.UseMiddleware<WebApi.Middleware.ExceptionMiddleware>();
         app.UseAuthentication();
@@ -165,7 +163,7 @@ internal static class AuthChecks
     {
         public User? User;
         public Task<User?> GetByUsernameAsync(string username) => Task.FromResult(User?.Username == username ? User : null);
-        public Task<User?> GetByIdAsync(Guid id) => throw new NotSupportedException();
+        public Task<User?> GetByIdAsync(Guid id) => Task.FromResult(User?.Id == id ? User : null);
         public Task<IEnumerable<User>> GetAllAsync() => throw new NotSupportedException();
         public Task AddAsync(User user) => throw new NotSupportedException();
         public void Update(User user) => throw new NotSupportedException();

@@ -42,6 +42,10 @@ public class ExceptionMiddleware
 
         switch (exception)
         {
+            case ForbiddenException:
+                statusCode = StatusCodes.Status403Forbidden;
+                title = "Access denied.";
+                break;
             case InvalidCredentialsException:
                 statusCode = StatusCodes.Status401Unauthorized;
                 title = "Authentication failed.";
