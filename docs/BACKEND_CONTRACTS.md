@@ -195,6 +195,8 @@ Mục tiêu: xác thực JWT; check owner/state/time giống HTTP use case; cả
 
 ## 9. Kế hoạch migration và checklist bàn giao
 
+Cập nhật kiểm chứng M1 04/10/2026: C07 của Thai đã apply và kiểm tra trên SQL Server LocalDB thật, DB test riêng. InitialCreate → AddUserTable giữ Course cũ, Guid/unique username đúng, migration repeat idempotent; 134 SQL Server HTTP/migration checks PASS, 263 regression checks PASS. Source migration giữ nguyên. Bộ test `--sql-server` luôn tạo/dọn DB LocalDB riêng và không dùng appsettings Azure SQL. Điều này kiểm chứng baseline mới, chưa xác minh mapping của DB Azure/DB trong ảnh có dữ liệu; các bước bên dưới vẫn áp dụng trước khi chuyển sang DB dùng chung. Peer cần chạy lại cùng lệnh để đóng gate hai máy.
+
 1. C07/C13 trước khi đụng DB có sẵn: đọc read-only INFORMATION_SCHEMA và sys.foreign_keys/indexes, __EFMigrationsHistory nếu tồn tại; ghi kết quả kiểu khóa/tên cột và số bản ghi, không dump dữ liệu người dùng.
 2. So sánh với model/snapshot. DB mới: tạo/apply migrations đủ schema; thay EnsureCreated bằng migration flow rõ ở mốc persistence. DB ảnh: chọn mapping/chuyển đổi có bảo toàn dữ liệu, review SQL migration trước khi apply.
 3. Không sửa InitialCreate đã chia sẻ để giả vờ có Users; thêm migration C07 và cập nhật snapshot. Kiểm tra trên DB dev mới và bản sao DB hiện hữu khi có dữ liệu.

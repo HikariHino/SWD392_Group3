@@ -1,6 +1,14 @@
 # Tiến độ backend và phối hợp coding
 
-## Kết quả mới nhất trên nhánh quang — 03/10/2026
+## Kết quả mới nhất trên nhánh quang — 04/10/2026
+
+### Kiểm tra đóng checkbox M1 — 04/10/2026
+
+M1 C04–C12: **9/9 checkbox đã kiểm chứng**. Mốc còn mở C07 của Thai đã chạy được trên SQL Server LocalDB 17 do VS cài tại `C:/Program Files/Microsoft SQL Server/170/Tools/Binn/SqlLocalDB.exe` (không có trong PATH). Quang cùng Codex chỉ bổ sung kiểm chứng, giữ nguyên migration và credit Thai.
+
+Kết quả: build 0 warning/error; **263 checks regression/SQLite PASS** và **134 checks SQL Server LocalDB + HTTP PASS**. Migration InitialCreate → AddUserTable thực thi thành công, giữ Course có sẵn, Guid UserId/unique username index đúng, migration lặp idempotent và không pending. User CRUD/login/BCrypt, Course/Question-Rubric CRUD, soft delete, role/owner, 401/403 và Swagger Bearer đã kiểm chứng trên SQL Server thật. Database `AIVES_M1Checks_<Guid>` được tạo riêng và dọn sau test. Không đọc/ghi Azure SQL nhóm hoặc đổi connection string.
+
+Gate M1: máy Quang đã đạt kiểm chứng SQL dev. Peer vẫn cần chạy lại cùng lệnh trên máy mình; Azure SQL dùng chung và mapping với DB trong ảnh chưa được xác minh trong phiên này. Do đó code/checkbox M1 đã đóng, gate bàn giao hai máy còn chờ xác nhận peer. Các ghi nhận blocker bên dưới là lịch sử, xem cập nhật này để biết trạng thái mới nhất.
 
 ### Cập nhật 04/10/2026 — C12
 
@@ -107,9 +115,9 @@ Lịch sử gần nhất: `iamnhtf` thêm User từ entity đến controller (57
 
 Kiểm tra lần đầu: `dotnet build SWD392_Group3.slnx --no-restore` → FAIL, NETSDK1045. Theo yêu cầu người dùng, đã cài SDK 10.0.401 thành công. Build lại bằng `dotnet build SWD392_Group3.slnx`: restore cả 4 project thành công, Domain build thành công, Application FAIL với 6 lỗi CS1014 tại IUnitOfWork.cs dòng 7/9/11. BE-01 đã được compiler xác nhận; BE-02 vẫn là phát hiện qua đọc source, cần kiểm tra lại sau khi sửa BE-01. Chưa xác minh runtime, migration hay kết nối SQL Server. Không thay target framework hoặc sửa code nghiệp vụ trong phiên review này.
 
-## Bảng nhận việc chung
+## Bảng nhận việc chung (baseline ban đầu)
 
-Trạng thái: TODO → IN_PROGRESS → REVIEW → DONE; BLOCKED phải ghi lý do. Owner hiện chưa phân công. Mỗi việc chỉ một người chịu trách nhiệm chính.
+Trạng thái: TODO → IN_PROGRESS → REVIEW → DONE; BLOCKED phải ghi lý do. Bảng Txx bên dưới giữ snapshot phân việc lúc review ban đầu; trạng thái/người làm hiện tại theo checklist Cxx và cập nhật mới nhất ở đầu file, không dùng TODO trong bảng này để suy ra M1 chưa làm. Mỗi việc chỉ một người chịu trách nhiệm chính.
 
 | Task | Phạm vi file chính | Phụ thuộc | Owner | Trạng thái | Tiêu chí nghiệm thu |
 | --- | --- | --- | --- | --- | --- |
@@ -204,7 +212,7 @@ Sau C03, hai người có thể nhận các mốc không phụ thuộc nhau. Ghi
 
   Cần trước: C05
 
-- [ ] **C07** — Người làm: Thai, commit 37fed27; REVIEW — chờ migration/CRUD DB dev
+- [x] **C07** — Người làm: Thai, commit 37fed27; SQL dev kiểm chứng 04/10/2026
 
   Commit: `feat(db): add user schema migration`
 
@@ -212,7 +220,7 @@ Sau C03, hai người có thể nhận các mốc không phụ thuộc nhau. Ghi
 
   Cần trước: C06
 
-  Migration chuyển từ Infrastructure/Infrastructure/Migrations sang Infrastructure/Migrations, giữ ID 20261003125521_AddUserTable và schema của Thai. Discovery, SQL tạo Users/unique username và snapshot đã kiểm tra offline. Không áp dụng migration lên DB thật trong phiên sửa bổ sung.
+  Migration chuyển từ Infrastructure/Infrastructure/Migrations sang Infrastructure/Migrations, giữ ID 20261003125521_AddUserTable và schema của Thai. Ngày 04/10 Quang cùng Codex kiểm chứng trên LocalDB SQL Server thật: apply InitialCreate → AddUserTable, giữ dữ liệu Course cũ, unique username/Guid đúng, không pending/snapshot drift, chạy lại idempotent và HTTP CRUD/login pass (134 checks). DB test riêng đã dọn. Không sửa migration của Thai, không dùng Azure SQL nhóm.
 
 - [x] **C08** — Người làm: Quang (cùng Codex); kiểm chứng runtime 04/10/2026
 
@@ -267,7 +275,10 @@ Sau C03, hai người có thể nhận các mốc không phụ thuộc nhau. Ghi
 
 Gate M1: hai người chạy trên DB dev của mình; tạo user, login, quản lý course/question/rubric và soft delete thành công. Cập nhật SHA các commit và ví dụ gọi API trong note. Không tuyên bố chức năng thi AI đã xong.
 
-Trạng thái 04/10: code C08–C12 và HTTP/SQLite checks hoàn tất; C07 SQL Server dev chưa xác minh, do đó Gate M1 chưa đóng. Tài khoản Lecturer đầu tiên phải được nhóm provision an toàn với BCrypt hash; API POST User nay yêu cầu Lecturer, không có public signup hoặc tài khoản/mật khẩu mặc định.
+Trạng thái mới nhất 04/10: C04–C12 đã hoàn tất và SQL Server LocalDB checks pass. Tài khoản Lecturer đầu tiên phải được nhóm provision an toàn với BCrypt hash; API POST User yêu cầu Lecturer, không có public signup hoặc tài khoản/mật khẩu mặc định. Bộ test tự tạo account trong DB cô lập rồi dọn; không provision tài khoản demo trên DB nhóm.
+
+- [x] Máy Quang: migrate SQL dev, User login/CRUD, Course/Question-Rubric CRUD, soft delete, role/owner và Swagger checks pass.
+- [ ] Máy peer: chạy regression và `dotnet run --project tests/BackendChecks -- --sql-server` trên LocalDB của mình, ghi kết quả/SHA. Chưa có bằng chứng nên không tick thay peer.
 
 ### M2 — Thi bằng văn bản chạy xuyên suốt
 
@@ -506,3 +517,4 @@ Giữ nguyên người làm và SHA gốc của Thai; sửa encoding/hiển th�
 | 04/10/2026 | Quang cùng Codex / C10 / quang | Course CRUD/DTO/validator, route cũ trả DTO, controller/SQLite regression checks | Runtime bị Application Control 0x800711C7; không báo pass | REVIEW: chạy checks, xác minh DB; auth tại C12 | Commit C10 riêng |
 | 04/10/2026 | Quang cùng Codex / C11 / quang | BCrypt login, JWT HS256, Bearer middleware, me endpoint và cấu hình ngoài source | Build 0 warning/error; 134 checks PASS gồm HTTP auth và SQLite C08–C10 | C12 bảo vệ API theo role; SQL Server live/C07 vẫn REVIEW; giữ credit Thai | Commit C11 riêng |
 | 04/10/2026 | Quang cùng Codex / C12 / quang | Role/ownership HTTP, active account JWT check, Swagger Bearer và demo docs | 261 checks PASS HTTP/SQLite; build 0 warning/error | C12 DONE; Gate M1 chờ C07 và SQL dev hai máy; giữ credit Thai | Commit C12 riêng |
+| 04/10/2026 | Quang cùng Codex / kiểm chứng C07 của Thai / quang | LocalDB migration, dữ liệu cũ, Guid/unique index, HTTP CRUD/login/phân quyền | 263 regression checks + 134 SQL Server checks PASS; build 0 warning/error; DB test đã dọn | C07 DONE giữ credit Thai; M1 9/9 mốc; peer chạy lại, Azure nhóm chưa xác minh | Commit kiểm chứng M1 riêng |

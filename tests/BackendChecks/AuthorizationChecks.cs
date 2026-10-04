@@ -30,7 +30,7 @@ using WebApi.Swagger;
 
 internal static class AuthorizationChecks
 {
-    public static async Task Run(Action<bool, string> check)
+    public static async Task Run(Action<bool, string> check, string? sqlServerConnection = null)
     {
         await using var connection = new SqliteConnection("Data Source=:memory:");
         await connection.OpenAsync();
@@ -52,7 +52,11 @@ internal static class AuthorizationChecks
         var builder = WebApplication.CreateBuilder();
         builder.Logging.ClearProviders();
         builder.WebHost.UseUrls("http://127.0.0.1:0");
-        builder.Services.AddDbContext<AivesDbContext>(o => o.UseSqlite(connection));
+        builder.Services.AddDbContext<AivesDbContext>(o =>
+        {
+            if (sqlServerConnection == null) o.UseSqlite(connection);
+            else o.UseSqlServer(sqlServerConnection);
+        });
         builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
         builder.Services.AddSingleton<IMapper>(mapper);
         builder.Services.AddSingleton<IPasswordHasher>(hasher);
@@ -76,7 +80,8 @@ internal static class AuthorizationChecks
         using (var scope = app.Services.CreateScope())
         {
             var db = scope.ServiceProvider.GetRequiredService<AivesDbContext>();
-            await db.Database.EnsureCreatedAsync();
+            if (sqlServerConnection == null) await db.Database.EnsureCreatedAsync();
+            else await db.Database.MigrateAsync();
             db.Users.AddRange(lecturer, student, otherStudent);
             await db.SaveChangesAsync();
         }
@@ -88,7 +93,7 @@ internal static class AuthorizationChecks
             async Task<string> Login(string username)
             {
                 using var response = await client.PostAsJsonAsync("/api/auth/login", new LoginRequest(username, "password123"));
-                check(response.StatusCode == HttpStatusCode.OK, "SQLite HTTP login: " + username);
+                check(response.StatusCode == HttpStatusCode.OK, (sqlServerConnection == null ? "SQLite" : "SQL Server") + " HTTP login: " + username);
                 return (await response.Content.ReadFromJsonAsync<LoginResponse>())!.AccessToken;
             }
             var lecturerToken = await Login("lecturer");
@@ -142,6 +147,13 @@ internal static class AuthorizationChecks
             });
             check(createdUser.StatusCode == HttpStatusCode.Created, "lecturer creates user");
             var userDto = (await createdUser.Content.ReadFromJsonAsync<UserDto>())!;
+            await Status(HttpMethod.Post, "/api/Users", new CreateUserDto
+            {
+                Username = "new-student", Password = "password123", FullName = "Duplicate", Role = "Student"
+            }, HttpStatusCode.Conflict, "duplicate username returns 409");
+            using (var scope = app.Services.CreateScope())
+                check(await scope.ServiceProvider.GetRequiredService<AivesDbContext>().Users.CountAsync(u => u.Username == "new-student") == 1,
+                    "duplicate username cannot create another row");
             await Status(HttpMethod.Get, $"/api/Users/{userDto.Id}", null, HttpStatusCode.OK, "lecturer reads user");
             await Status(HttpMethod.Put, $"/api/Users/{userDto.Id}", new { fullName = "Renamed" }, HttpStatusCode.NoContent, "lecturer updates user");
             await Status(HttpMethod.Delete, $"/api/Users/{userDto.Id}", null, HttpStatusCode.NoContent, "lecturer soft deletes user");

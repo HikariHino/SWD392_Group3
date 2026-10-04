@@ -19,6 +19,13 @@ void Check(bool condition, string name)
     Console.WriteLine("PASS: " + name);
 }
 
+if (args.Contains("--sql-server"))
+{
+    await SqlServerChecks.Run(Check);
+    Console.WriteLine($"{checks} SQL Server checks passed.");
+    return;
+}
+
 var hasher = new PasswordHasher();
 var firstHash = hasher.HashPassword("Sample password 123");
 Check(firstHash != "Sample password 123", "password is not stored verbatim");
@@ -84,4 +91,4 @@ await AuthorizationChecks.Run(Check);
 await QuestionBankChecks.Run(Check);
 await RubricChecks.Run(Check);
 await CourseChecks.Run(Check);
-Console.WriteLine($"{checks} checks passed. Live SQL migration/CRUD not verified.");
+Console.WriteLine($"{checks} checks passed. SQL Server checks are separate: run with --sql-server.");

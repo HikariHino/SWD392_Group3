@@ -171,7 +171,7 @@ Kiểm chứng ngày 04/10/2026: `dotnet build` 0 warning/error; `dotnet run --p
 
 ## C12: demo CRUD M1 bằng Swagger hoặc FE
 
-C12 đã có **261 checks PASS**, gồm HTTP + SQLite CRUD User/Course/Question-Rubric và phân quyền; SQL Server thật/Gate M1 vẫn cần nhóm xác minh C07. Các mốc C09–C12 hiện nằm trên `quang`; peer cần lấy nhánh có các commit này để tích hợp.
+C12 có **261 checks PASS** tại phiên triển khai. Phiên kiểm tra M1 bổ sung đã đạt **263 regression checks + 134 SQL Server LocalDB checks PASS**, C07 được tick DONE (giữ credit Thai). Peer vẫn cần chạy lại trên máy mình; Azure SQL nhóm chưa xác minh. Các mốc C09–C12 và kiểm chứng M1 hiện nằm trên `quang`; peer cần lấy nhánh có các commit này để tích hợp.
 
 Trước demo, cấu hình JWT ở trên và connection string tới DB dev đã có schema đúng. Nhóm cần provision tài khoản Lecturer đầu tiên với BCrypt hash qua quy trình DB dev được kiểm soát. API tạo user yêu cầu Lecturer; không có public signup hay tài khoản/mật khẩu mặc định.
 
@@ -193,3 +193,20 @@ Trước demo, cấu hình JWT ở trên và connection string tới DB dev đã
 FE repo riêng dùng base URL backend, gọi login, gửi `Authorization: Bearer <accessToken>` ở các request tiếp theo. CORS hiện cho phép `http://localhost:5173`, `http://localhost:3000`, `https://localhost:5173`; port/origin khác cần cập nhật cấu hình CORS. FE xử lý 401 bằng login lại, 403 bằng thông báo thiếu quyền. Role đổi hoặc account deleted khiến token hiện tại bị từ chối từ request kế tiếp.
 
 Quyền và ownership User được kiểm tra tại Application qua ICurrentUser; ASP.NET chỉ cung cấp identity đã xác thực. Xem [ma trận quyền C12](docs/BACKEND_CONTRACTS.md#72-c12-http-authorization-đã-triển-khai-04102026) và [hướng dẫn role authorization của Microsoft](https://learn.microsoft.com/en-us/aspnet/core/security/authorization/roles?view=aspnetcore-10.0). Import file còn placeholder (C25), Hub/thi AI/chấm điểm nằm ở các mốc tiếp theo; chưa thuộc demo CRUD M1.
+
+## Kiểm chứng C07 và M1 trên SQL Server LocalDB
+
+VS trên máy Quang đã cài LocalDB 17 nhưng SqlLocalDB.exe không nằm trong PATH. Chạy từ thư mục repo:
+
+```powershell
+& "C:/Program Files/Microsoft SQL Server/170/Tools/Binn/SqlLocalDB.exe" start MSSQLLocalDB
+dotnet build
+dotnet run --project tests/BackendChecks --no-build
+dotnet run --project tests/BackendChecks --no-build -- --sql-server
+```
+
+Máy peer tìm đúng vị trí SqlLocalDB.exe hoặc dùng `sqllocaldb start MSSQLLocalDB` nếu đã có PATH. Nếu chưa cài SQL Server Express LocalDB, cài thành phần LocalDB rồi chạy lại; SQLite checks không thay thế SQL Server checks.
+
+Lệnh `--sql-server` luôn dùng `(localdb)\MSSQLLocalDB` và tạo DB `AIVES_M1Checks_<Guid>` riêng, không đọc connection string trong appsettings hay dùng Azure SQL. Migration InitialCreate được apply trước, ghi Course mẫu, apply AddUserTable và xác minh dữ liệu vẫn còn, unique username index/Guid đúng, snapshot không drift và migration lặp idempotent. Sau đó chạy HTTP login/CRUD User/Course/Question-Rubric, phân quyền/soft delete và Swagger checks trên SQL Server. DB test được dọn trong finally; không giữ tài khoản test để demo.
+
+Ngày 04/10/2026: **263 regression checks PASS**, **134 SQL Server checks PASS**, build 0 warning/error. C04–C12 đạt 9/9 mốc trên máy Quang; gate hai máy còn chờ peer xác nhận. Azure SQL nhóm và schema trong ảnh vẫn cần kiểm tra mapping read-only trước khi apply migration hoặc demo trên DB đó. Chạy bộ test này không thay đổi DB được WebApi cấu hình; để demo Swagger/FE cần DB dev thật đã chuẩn bị và tài khoản Lecturer của nhóm.
