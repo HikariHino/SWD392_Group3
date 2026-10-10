@@ -1,5 +1,11 @@
 # Tiến độ backend và phối hợp coding
 
+## Định hướng workflow từ mentor — 10/10/2026
+
+Theo ghi chú [mentor-milestone2-review.txt](mentor-idea/mentor-milestone2-review.txt), CRUD chỉ thao tác dữ liệu đơn giản chưa đủ để gọi là workflow. Một CRUD có thể là workflow khi gắn với quy trình nghiệp vụ, luật kiểm tra, logic xử lý hoặc quyết định theo nhánh. Khi chọn việc cho các mốc sau, nên ưu tiên mô tả và triển khai hành trình nghiệp vụ đầu-cuối thay vì chỉ thêm endpoint CRUD; ví dụ có thể xem xét vòng đời ca thi vấn đáp, từ cấu hình đề và rubric, sinh viên tham gia, đến AI đề xuất điểm và giảng viên duyệt/chốt. Đây là hướng tham khảo, chưa phải phạm vi đã được nhóm hoặc giảng viên chốt.
+
+Sequence Diagram tạo Question/Rubric hiện tại thể hiện một luồng CRUD có validation và luật nghiệp vụ (tổng Weight, Course đang hoạt động), nhưng không đại diện cho toàn bộ workflow thi vấn đáp. Các sơ đồ workflow sau nên nêu rõ actor, điều kiện đầu vào, bước validation, nhánh lỗi/thành công, thay đổi trạng thái, lưu trữ và kết quả nghiệp vụ.
+
 ## Kết quả mới nhất trên nhánh quang — 04/10/2026
 
 ### Kiểm tra đóng checkbox M1 — 04/10/2026

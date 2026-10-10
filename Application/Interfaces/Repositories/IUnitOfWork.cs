@@ -3,7 +3,7 @@ using Domain.Entities.UserManagement;
 
 namespace Application.Interfaces.Repositories;
 
-public interface IUnitOfWork : IDisposable
+public interface IUnitOfWork : IDisposable  
 {
     IQuestionRepository Questions { get; }
     IUserRepository Users { get; }

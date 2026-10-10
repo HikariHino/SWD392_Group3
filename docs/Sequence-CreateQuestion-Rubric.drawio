@@ -1,0 +1,301 @@
+<?xml version='1.0' encoding='utf-8'?>
+<mxfile host="Electron" agent="Codex">
+  <diagram id="sequence-create-question-rubric" name="Sequence Diagram">
+    <mxGraphModel dx="2438" dy="1533" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="2500" pageHeight="1550" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="v2" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;fontColor=#1d2b3a;fontFamily=Arial;fontSize=31;fontStyle=1;" value="SEQUENCE DIAGRAM — GIẢNG VIÊN TẠO CÂU HỎI &amp;amp; CHUẨN HÓA RUBRIC" vertex="1">
+          <mxGeometry height="42" width="1800" x="350" y="22" as="geometry" />
+        </mxCell>
+        <mxCell id="v3" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;fontColor=#52657b;fontFamily=Arial;fontSize=12;fontStyle=0;" value="POST /api/questions · Tổng Weight phải bằng 100% · Lưu Question và Rubric trong cùng một lần SaveChangesAsync" vertex="1">
+          <mxGeometry height="28" width="1800" x="350" y="65" as="geometry" />
+        </mxCell>
+        <mxCell id="e4" edge="1" parent="1" style="edgeStyle=none;strokeColor=#26364a;strokeWidth=2;endArrow=block;endFill=1;" value="">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="760" y="112" as="sourcePoint" />
+            <mxPoint x="850" y="112" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="v5" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;fontColor=#52657b;fontFamily=Arial;fontSize=12;fontStyle=0;" value="Gọi đồng bộ" vertex="1">
+          <mxGeometry height="24" width="110" x="860" y="100" as="geometry" />
+        </mxCell>
+        <mxCell id="e6" edge="1" parent="1" style="edgeStyle=none;dashed=1;dashPattern=8 7;strokeColor=#52657b;strokeWidth=2;endArrow=open;endFill=0;" value="">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1040" y="112" as="sourcePoint" />
+            <mxPoint x="1130" y="112" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="v7" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;fontColor=#52657b;fontFamily=Arial;fontSize=12;fontStyle=0;" value="Kết quả trả về" vertex="1">
+          <mxGeometry height="24" width="135" x="1140" y="100" as="geometry" />
+        </mxCell>
+        <mxCell id="v8" parent="1" style="rounded=0;whiteSpace=wrap;html=1;align=center;verticalAlign=middle;strokeColor=#7593b4;fillColor=#eef4fb;fontColor=#1d2b3a;fontFamily=Arial;fontSize=12;fontStyle=0;" value="alt / loop" vertex="1">
+          <mxGeometry height="22" width="120" x="1340" y="101" as="geometry" />
+        </mxCell>
+        <mxCell id="v9" parent="1" style="rounded=1;whiteSpace=wrap;html=1;align=center;verticalAlign=middle;strokeColor=#7391b2;fillColor=#e9f1fb;fontColor=#1d2b3a;fontFamily=Arial;fontSize=12;fontStyle=1;" value="Lecturer" vertex="1">
+          <mxGeometry height="50" width="160" x="35" y="145" as="geometry" />
+        </mxCell>
+        <mxCell id="v10" parent="1" style="rounded=1;whiteSpace=wrap;html=1;align=center;verticalAlign=middle;strokeColor=#7391b2;fillColor=#e9f1fb;fontColor=#1d2b3a;fontFamily=Arial;fontSize=12;fontStyle=1;" value=":QuestionView" vertex="1">
+          <mxGeometry height="50" width="160" x="265" y="145" as="geometry" />
+        </mxCell>
+        <mxCell id="v11" parent="1" style="rounded=1;whiteSpace=wrap;html=1;align=center;verticalAlign=middle;strokeColor=#7391b2;fillColor=#e9f1fb;fontColor=#1d2b3a;fontFamily=Arial;fontSize=12;fontStyle=1;" value=":QuestionsController" vertex="1">
+          <mxGeometry height="50" width="160" x="495" y="145" as="geometry" />
+        </mxCell>
+        <mxCell id="v12" parent="1" style="rounded=1;whiteSpace=wrap;html=1;align=center;verticalAlign=middle;strokeColor=#7391b2;fillColor=#e9f1fb;fontColor=#1d2b3a;fontFamily=Arial;fontSize=12;fontStyle=1;" value=":CreateQuestionValidator" vertex="1">
+          <mxGeometry height="50" width="160" x="725" y="145" as="geometry" />
+        </mxCell>
+        <mxCell id="v13" parent="1" style="rounded=1;whiteSpace=wrap;html=1;align=center;verticalAlign=middle;strokeColor=#7391b2;fillColor=#e9f1fb;fontColor=#1d2b3a;fontFamily=Arial;fontSize=12;fontStyle=1;" value=":QuestionBankService" vertex="1">
+          <mxGeometry height="50" width="160" x="955" y="145" as="geometry" />
+        </mxCell>
+        <mxCell id="v14" parent="1" style="rounded=1;whiteSpace=wrap;html=1;align=center;verticalAlign=middle;strokeColor=#7391b2;fillColor=#e9f1fb;fontColor=#1d2b3a;fontFamily=Arial;fontSize=12;fontStyle=1;" value=":UnitOfWork" vertex="1">
+          <mxGeometry height="50" width="160" x="1185" y="145" as="geometry" />
+        </mxCell>
+        <mxCell id="v15" parent="1" style="rounded=1;whiteSpace=wrap;html=1;align=center;verticalAlign=middle;strokeColor=#7391b2;fillColor=#e9f1fb;fontColor=#1d2b3a;fontFamily=Arial;fontSize=12;fontStyle=1;" value="SQL Server" vertex="1">
+          <mxGeometry height="50" width="160" x="1415" y="145" as="geometry" />
+        </mxCell>
+        <mxCell id="v16" parent="1" style="shape=umlActor;html=1;strokeColor=#344a60;fillColor=none;fontColor=#52657b;fontSize=12;verticalLabelPosition=bottom;verticalAlign=top;" value="" vertex="1">
+          <mxGeometry height="80" width="50" x="90" y="205" as="geometry" />
+        </mxCell>
+        <mxCell id="e17" edge="1" parent="1" style="edgeStyle=none;dashed=1;dashPattern=7 7;strokeColor=#8b9bad;strokeWidth=1.5;endArrow=none;startArrow=none;" value="">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="115" y="195" as="sourcePoint" />
+            <mxPoint x="115" y="1445" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e18" edge="1" parent="1" style="edgeStyle=none;dashed=1;dashPattern=7 7;strokeColor=#8b9bad;strokeWidth=1.5;endArrow=none;startArrow=none;" value="">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="345" y="195" as="sourcePoint" />
+            <mxPoint x="345" y="1445" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e19" edge="1" parent="1" style="edgeStyle=none;dashed=1;dashPattern=7 7;strokeColor=#8b9bad;strokeWidth=1.5;endArrow=none;startArrow=none;" value="">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="575" y="195" as="sourcePoint" />
+            <mxPoint x="575" y="1445" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e20" edge="1" parent="1" style="edgeStyle=none;dashed=1;dashPattern=7 7;strokeColor=#8b9bad;strokeWidth=1.5;endArrow=none;startArrow=none;" value="">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="805" y="195" as="sourcePoint" />
+            <mxPoint x="805" y="1445" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e21" edge="1" parent="1" style="edgeStyle=none;dashed=1;dashPattern=7 7;strokeColor=#8b9bad;strokeWidth=1.5;endArrow=none;startArrow=none;" value="">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1035" y="195" as="sourcePoint" />
+            <mxPoint x="1035" y="1445" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e22" edge="1" parent="1" style="edgeStyle=none;dashed=1;dashPattern=7 7;strokeColor=#8b9bad;strokeWidth=1.5;endArrow=none;startArrow=none;" value="">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1265" y="195" as="sourcePoint" />
+            <mxPoint x="1265" y="1445" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e23" edge="1" parent="1" style="edgeStyle=none;dashed=1;dashPattern=7 7;strokeColor=#8b9bad;strokeWidth=1.5;endArrow=none;startArrow=none;" value="">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1495" y="195" as="sourcePoint" />
+            <mxPoint x="1495" y="1445" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="v24" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;fontColor=#52657b;fontFamily=Arial;fontSize=12;fontStyle=0;" value="Actor" vertex="1">
+          <mxGeometry height="20" width="74" x="78" y="286" as="geometry" />
+        </mxCell>
+        <mxCell id="e25" edge="1" parent="1" style="edgeStyle=none;html=1;rounded=0;strokeColor=#26364a;strokeWidth=2;endArrow=block;endFill=1;fontColor=#26364a;fontFamily=Arial;fontSize=12;labelBackgroundColor=#ffffff;" value="1. Nhập nội dung, môn,&lt;br&gt;Bloom Level và Rubric[]">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="125" y="330" as="sourcePoint" />
+            <mxPoint x="335" y="330" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e26" edge="1" parent="1" style="edgeStyle=none;html=1;rounded=0;strokeColor=#26364a;strokeWidth=2;endArrow=block;endFill=1;fontColor=#26364a;fontFamily=Arial;fontSize=12;labelBackgroundColor=#ffffff;" value="2. POST /api/questions&lt;br&gt;&lt;font color='#52657b'&gt;CreateQuestionRequest&lt;/font&gt;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="355" y="385" as="sourcePoint" />
+            <mxPoint x="565" y="385" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e27" edge="1" parent="1" style="edgeStyle=none;html=1;rounded=0;strokeColor=#26364a;strokeWidth=2;endArrow=block;endFill=1;fontColor=#26364a;fontFamily=Arial;fontSize=12;labelBackgroundColor=#ffffff;" value="3. ValidateAsync(request)">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="585" y="440" as="sourcePoint" />
+            <mxPoint x="795" y="440" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="v28" parent="1" style="shape=umlFrame;whiteSpace=wrap;html=1;align=center;verticalAlign=middle;strokeColor=#7593b4;fillColor=#f5f9fe;fontColor=#1d2b3a;fontFamily=Arial;fontSize=12;fontStyle=0;" value="loop&lt;br&gt;[for each rubric in request]" vertex="1">
+          <mxGeometry height="90" width="250" x="705" y="465" as="geometry" />
+        </mxCell>
+        <mxCell id="e29" edge="1" parent="1" style="edgeStyle=none;html=1;rounded=0;strokeColor=#26364a;strokeWidth=2;endArrow=block;endFill=1;fontColor=#26364a;fontFamily=Arial;fontSize=12;" value="">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="877" y="523" />
+              <mxPoint x="877" y="542" />
+            </Array>
+            <mxPoint x="805" y="523" as="sourcePoint" />
+            <mxPoint x="805" y="542" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e30" edge="1" parent="1" style="edgeStyle=none;html=1;rounded=0;dashed=1;dashPattern=8 7;strokeColor=#52657b;strokeWidth=2;endArrow=open;endFill=0;fontColor=#26364a;fontFamily=Arial;fontSize=12;labelBackgroundColor=#ffffff;" value="4. ValidationResult">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="795" y="580" as="sourcePoint" />
+            <mxPoint x="585" y="580" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="v31" parent="1" style="rounded=0;fillOpacity=0;;whiteSpace=wrap;html=1;align=center;verticalAlign=middle;strokeColor=#55799d;fillColor=#ffffff;fontColor=#1d2b3a;fontFamily=Arial;fontSize=12;fontStyle=0;" value="" vertex="1">
+          <mxGeometry height="845" width="1100" x="470" y="600" as="geometry" />
+        </mxCell>
+        <mxCell id="v32" parent="1" style="rounded=0;whiteSpace=wrap;html=1;align=center;verticalAlign=middle;strokeColor=#55799d;fillColor=#e7eff8;fontColor=#1d2b3a;fontFamily=Arial;fontSize=12;fontStyle=1;" value="alt" vertex="1">
+          <mxGeometry height="24" width="62" x="470" y="600" as="geometry" />
+        </mxCell>
+        <mxCell id="v33" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;fontColor=#1d2b3a;fontFamily=Arial;fontSize=12;fontStyle=1;" value="[Tổng trọng số Rubric != 100%]" vertex="1">
+          <mxGeometry height="24" width="360" x="590" y="600" as="geometry" />
+        </mxCell>
+        <mxCell id="e34" edge="1" parent="1" style="edgeStyle=none;dashed=1;dashPattern=9 7;strokeColor=#71869c;strokeWidth=1.7;endArrow=none;startArrow=none;" value="">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="470" y="690" as="sourcePoint" />
+            <mxPoint x="1570" y="690" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e35" edge="1" parent="1" style="edgeStyle=none;html=1;rounded=0;dashed=1;dashPattern=8 7;strokeColor=#52657b;strokeWidth=2;endArrow=open;endFill=0;fontColor=#26364a;fontFamily=Arial;fontSize=12;labelBackgroundColor=#ffffff;" value="5a. 400 Bad Request&lt;br&gt;&lt;font color='#52657b'&gt;message + errors[field]&lt;/font&gt;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="565" y="650" as="sourcePoint" />
+            <mxPoint x="355" y="650" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="v36" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;fontColor=#1d2b3a;fontFamily=Arial;fontSize=12;fontStyle=1;" value="[else (Hợp lệ)]" vertex="1">
+          <mxGeometry height="30" width="170" x="600" y="699" as="geometry" />
+        </mxCell>
+        <mxCell id="e37" edge="1" parent="1" style="edgeStyle=none;html=1;rounded=0;strokeColor=#26364a;strokeWidth=2;endArrow=block;endFill=1;fontColor=#26364a;fontFamily=Arial;fontSize=12;labelBackgroundColor=#ffffff;" value="5b. CreateQuestionAsync(request)">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="585" y="750" as="sourcePoint" />
+            <mxPoint x="1025" y="750" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e38" edge="1" parent="1" style="edgeStyle=none;html=1;rounded=0;strokeColor=#26364a;strokeWidth=2;endArrow=block;endFill=1;fontColor=#26364a;fontFamily=Arial;fontSize=12;" value="">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1090" y="770" />
+              <mxPoint x="1090" y="792" />
+            </Array>
+            <mxPoint x="1035" y="770" as="sourcePoint" />
+            <mxPoint x="1035" y="792" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="v39" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;fontColor=#52657b;fontFamily=Arial;fontSize=12;fontStyle=0;" value="Revalidate request;&lt;br&gt;RequireActiveCourseAsync" vertex="1">
+          <mxGeometry height="34" width="145" x="970" y="796" as="geometry" />
+        </mxCell>
+        <mxCell id="e40" edge="1" parent="1" style="edgeStyle=none;html=1;rounded=0;strokeColor=#26364a;strokeWidth=2;endArrow=block;endFill=1;fontColor=#26364a;fontFamily=Arial;fontSize=12;labelBackgroundColor=#ffffff;" value="6. Courses.GetByIdAsync">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1045" y="850" as="sourcePoint" />
+            <mxPoint x="1255" y="850" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e41" edge="1" parent="1" style="edgeStyle=none;html=1;rounded=0;strokeColor=#26364a;strokeWidth=2;endArrow=block;endFill=1;fontColor=#26364a;fontFamily=Arial;fontSize=12;labelBackgroundColor=#ffffff;" value="SELECT Course (active)">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1275" y="885" as="sourcePoint" />
+            <mxPoint x="1505" y="885" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e42" edge="1" parent="1" style="edgeStyle=none;html=1;rounded=0;dashed=1;dashPattern=8 7;strokeColor=#52657b;strokeWidth=2;endArrow=open;endFill=0;fontColor=#26364a;fontFamily=Arial;fontSize=12;labelBackgroundColor=#ffffff;" value="Course">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1505" y="918" as="sourcePoint" />
+            <mxPoint x="1275" y="918" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e43" edge="1" parent="1" style="edgeStyle=none;html=1;rounded=0;dashed=1;dashPattern=8 7;strokeColor=#52657b;strokeWidth=2;endArrow=open;endFill=0;fontColor=#26364a;fontFamily=Arial;fontSize=12;labelBackgroundColor=#ffffff;" value="Course hợp lệ">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1275" y="946" as="sourcePoint" />
+            <mxPoint x="1045" y="946" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="v44" parent="1" style="rounded=0;whiteSpace=wrap;html=1;align=center;verticalAlign=middle;strokeColor=#c39738;fillColor=#fff8e6;fontColor=#1d2b3a;fontFamily=Arial;fontSize=12;fontStyle=1;" value=":Question" vertex="1">
+          <mxGeometry height="58" width="190" x="1655" y="970" as="geometry" />
+        </mxCell>
+        <mxCell id="e45" edge="1" parent="1" style="edgeStyle=none;html=1;rounded=0;strokeColor=#26364a;strokeWidth=2;endArrow=block;endFill=1;fontColor=#26364a;fontFamily=Arial;fontSize=12;labelBackgroundColor=#ffffff;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" target="v44" value="&amp;lt;&amp;lt;create&amp;gt;&amp;gt; Question {Id, Content, CourseId, BloomLevel}">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1045" y="998" as="sourcePoint" />
+            <mxPoint x="1750" y="970" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e46" edge="1" parent="1" style="edgeStyle=none;dashed=1;dashPattern=7 7;strokeColor=#c39738;strokeWidth=1.5;endArrow=none;startArrow=none;" value="">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1750" y="1028" as="sourcePoint" />
+            <mxPoint x="1750" y="1445" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="v47" parent="1" style="rounded=0;fillOpacity=35;;whiteSpace=wrap;html=1;align=center;verticalAlign=middle;strokeColor=#7593b4;fillColor=#f8fbff;fontColor=#1d2b3a;fontFamily=Arial;fontSize=12;fontStyle=0;" value="" vertex="1">
+          <mxGeometry height="155" width="1090" x="1000" y="1045" as="geometry" />
+        </mxCell>
+        <mxCell id="v48" parent="1" style="rounded=0;whiteSpace=wrap;html=1;align=center;verticalAlign=middle;strokeColor=#7593b4;fillColor=#e5eef8;fontColor=#1d2b3a;fontFamily=Arial;fontSize=12;fontStyle=1;" value="loop" vertex="1">
+          <mxGeometry height="23" width="72" x="1000" y="1045" as="geometry" />
+        </mxCell>
+        <mxCell id="v49" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;fontColor=#1d2b3a;fontFamily=Arial;fontSize=12;fontStyle=0;" value="[for each rubric in request]" vertex="1">
+          <mxGeometry height="30" width="230" x="1085" y="1065" as="geometry" />
+        </mxCell>
+        <mxCell id="v50" parent="1" style="rounded=0;whiteSpace=wrap;html=1;align=center;verticalAlign=middle;strokeColor=#c39738;fillColor=#fff8e6;fontColor=#1d2b3a;fontFamily=Arial;fontSize=12;fontStyle=1;" value=":Rubric" vertex="1">
+          <mxGeometry height="58" width="190" x="1880" y="1110" as="geometry" />
+        </mxCell>
+        <mxCell id="e51" edge="1" parent="1" style="edgeStyle=none;html=1;rounded=0;strokeColor=#26364a;strokeWidth=2;endArrow=block;endFill=1;fontColor=#26364a;fontFamily=Arial;fontSize=12;labelBackgroundColor=#ffffff;" value="&amp;lt;&amp;lt;create&amp;gt;&amp;gt; Rubric {Id, QuestionId, Criteria, Weight, MaxScore}">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1975" y="1090" />
+            </Array>
+            <mxPoint x="1045" y="1090" as="sourcePoint" />
+            <mxPoint x="1975" y="1110" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e52" edge="1" parent="1" style="edgeStyle=none;dashed=1;dashPattern=7 7;strokeColor=#c39738;strokeWidth=1.5;endArrow=none;startArrow=none;" value="">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1975" y="1168" as="sourcePoint" />
+            <mxPoint x="1975" y="1445" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="v53" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;fontColor=#52657b;fontFamily=Arial;fontSize=12;fontStyle=0;" value="EF Core graph: Question.Rubrics" vertex="1">
+          <mxGeometry height="28" width="300" x="1080" y="1207" as="geometry" />
+        </mxCell>
+        <mxCell id="e54" edge="1" parent="1" style="edgeStyle=none;html=1;rounded=0;strokeColor=#26364a;strokeWidth=2;endArrow=block;endFill=1;fontColor=#26364a;fontFamily=Arial;fontSize=12;labelBackgroundColor=#ffffff;" value="7. Questions.AddAsync(question)">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1045" y="1260" as="sourcePoint" />
+            <mxPoint x="1255" y="1260" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e55" edge="1" parent="1" style="edgeStyle=none;html=1;rounded=0;strokeColor=#26364a;strokeWidth=2;endArrow=block;endFill=1;fontColor=#26364a;fontFamily=Arial;fontSize=12;labelBackgroundColor=#ffffff;" value="8. SaveChangesAsync()">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1275" y="1290" as="sourcePoint" />
+            <mxPoint x="1485" y="1290" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e56" edge="1" parent="1" style="edgeStyle=none;html=1;rounded=0;dashed=1;dashPattern=8 7;strokeColor=#52657b;strokeWidth=2;endArrow=open;endFill=0;fontColor=#26364a;fontFamily=Arial;fontSize=12;labelBackgroundColor=#ffffff;" value="INSERT Questions + Rubrics; COMMIT">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1485" y="1320" as="sourcePoint" />
+            <mxPoint x="1275" y="1320" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e57" edge="1" parent="1" style="edgeStyle=none;html=1;rounded=0;dashed=1;dashPattern=8 7;strokeColor=#52657b;strokeWidth=2;endArrow=open;endFill=0;fontColor=#26364a;fontFamily=Arial;fontSize=12;labelBackgroundColor=#ffffff;" value="Save completed">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1255" y="1350" as="sourcePoint" />
+            <mxPoint x="1045" y="1350" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e58" edge="1" parent="1" style="edgeStyle=none;html=1;rounded=0;dashed=1;dashPattern=8 7;strokeColor=#52657b;strokeWidth=2;endArrow=open;endFill=0;fontColor=#26364a;fontFamily=Arial;fontSize=12;labelBackgroundColor=#ffffff;" value="9. QuestionDto + Rubrics">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1025" y="1380" as="sourcePoint" />
+            <mxPoint x="585" y="1380" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e59" edge="1" parent="1" style="edgeStyle=none;html=1;rounded=0;dashed=1;dashPattern=8 7;strokeColor=#52657b;strokeWidth=2;endArrow=open;endFill=0;fontColor=#26364a;fontFamily=Arial;fontSize=12;labelBackgroundColor=#ffffff;" value="10. 201 Created + Location">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="565" y="1410" as="sourcePoint" />
+            <mxPoint x="355" y="1410" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e60" edge="1" parent="1" style="edgeStyle=none;html=1;rounded=0;dashed=1;dashPattern=8 7;strokeColor=#52657b;strokeWidth=2;endArrow=open;endFill=0;fontColor=#26364a;fontFamily=Arial;fontSize=12;labelBackgroundColor=#ffffff;" value="Hiển thị tạo thành công">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="335" y="1435" as="sourcePoint" />
+            <mxPoint x="125" y="1435" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="v61" parent="1" style="rounded=1;whiteSpace=wrap;html=1;align=center;verticalAlign=middle;strokeColor=#d2dce6;fillColor=#f2f6fa;fontColor=#1d2b3a;fontFamily=Arial;fontSize=12;fontStyle=0;" value="Sau khi lưu: Service tải lại Question kèm Rubrics → Controller trả QuestionDto, HTTP 201 và Location → View báo tạo thành công.&lt;br&gt;Validation: ít nhất 1 rubric; Criteria không rỗng (≤500); Weight &amp;amp; MaxScore &amp;gt;0; tổng Weight = 100 (sai số &amp;lt;0,01)." vertex="1">
+          <mxGeometry height="58" width="2310" x="95" y="1460" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
