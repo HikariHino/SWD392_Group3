@@ -9,10 +9,12 @@ public class CourseConfiguration : IEntityTypeConfiguration<Course>
     public void Configure(EntityTypeBuilder<Course> builder)
     {
         builder.HasKey(c => c.Id);
+        builder.Property(c => c.Id).HasColumnName("CourseId");
 
         builder.Property(c => c.Code)
             .IsRequired()
-            .HasMaxLength(50);
+            .HasMaxLength(50)
+            .HasColumnType("varchar(50)");
 
         builder.Property(c => c.Name)
             .IsRequired()

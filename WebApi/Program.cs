@@ -10,6 +10,11 @@ using Infrastructure.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// Keep local development logs on the console. The Windows Event Log provider
+// can fail when the process does not have permission to write system events.
+builder.Logging.ClearProviders();
+builder.Logging.AddConsole();
+
 // 1. Thêm Controllers & Swagger UI
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
@@ -89,7 +94,10 @@ if (app.Environment.IsDevelopment())
     }
 }
 
-app.UseHttpsRedirection();
+if (!app.Environment.IsDevelopment())
+{
+    app.UseHttpsRedirection();
+}
 
 app.UseCors("AllowReactApp");
 

@@ -9,6 +9,7 @@ public class QuestionConfiguration : IEntityTypeConfiguration<Question>
     public void Configure(EntityTypeBuilder<Question> builder)
     {
         builder.HasKey(q => q.Id);
+        builder.Property(q => q.Id).HasColumnName("QuestionId");
 
         builder.Property(q => q.Content)
             .IsRequired()
@@ -16,6 +17,18 @@ public class QuestionConfiguration : IEntityTypeConfiguration<Question>
 
         builder.Property(q => q.BloomLevel)
             .IsRequired();
+
+        builder.Property(q => q.QuestionType)
+            .IsRequired()
+            .HasMaxLength(50)
+            .HasColumnType("varchar(50)");
+
+        builder.Property(q => q.Points)
+            .HasColumnType("decimal(5,2)");
+
+        builder.Property(q => q.AiModel)
+            .HasMaxLength(50)
+            .HasColumnType("varchar(50)");
 
         builder.HasOne(q => q.Course)
             .WithMany(c => c.Questions)
