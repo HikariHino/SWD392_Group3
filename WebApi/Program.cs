@@ -21,6 +21,11 @@ builder.Services.AddScoped<IAccessTokenIssuer, Infrastructure.Security.JwtTokenI
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddAivesAuthentication(jwt);
 
+// Keep local development logs on the console. The Windows Event Log provider
+// can fail when the process does not have permission to write system events.
+builder.Logging.ClearProviders();
+builder.Logging.AddConsole();
+
 // 1. Thêm Controllers & Swagger UI
 builder.Services.AddControllers();
 builder.Services.AddAivesSwagger();
@@ -92,7 +97,10 @@ if (app.Environment.IsDevelopment())
     }
 }
 
-app.UseHttpsRedirection();
+if (!app.Environment.IsDevelopment())
+{
+    app.UseHttpsRedirection();
+}
 
 app.UseCors("AllowReactApp");
 

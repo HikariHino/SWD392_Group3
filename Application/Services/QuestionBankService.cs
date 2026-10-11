@@ -86,8 +86,15 @@ public class QuestionBankService : IQuestionBankService
         existingQuestion.Content = request.Content;
         existingQuestion.BloomLevel = request.BloomLevel;
 
-        // Keep the old rows for history; only the replacement set remains active.
-        foreach (var rubric in existingQuestion.Rubrics) rubric.IsDeleted = true;
+        // Keep the replaced rubric rows for history, then add the new matrix.
+        // The question and its included rubrics are already tracked by EF, so
+        // calling Update on the whole graph would mark newly-added rubrics as
+        // existing rows and cause a concurrency error on SaveChanges.
+        foreach (var existingRubric in existingQuestion.Rubrics)
+        {
+            existingRubric.IsDeleted = true;
+        }
+
         foreach (var rReq in request.Rubrics)
         {
             var rubric = new Rubric
@@ -107,7 +114,13 @@ public class QuestionBankService : IQuestionBankService
         await _unitOfWork.SaveChangesAsync();
 
         var updated = await _unitOfWork.Questions.GetWithRubricsAsync(id);
-        return _mapper.Map<QuestionDto>(updated ?? existingQuestion);
+        var result = updated ?? existingQuestion;
+        var dto = _mapper.Map<QuestionDto>(result);
+        // A tracked navigation can still contain the rubric rows that were
+        // soft-deleted above, even though the database query filter excludes
+        // them. Keep the PUT response consistent with subsequent GET calls.
+        dto.Rubrics = _mapper.Map<List<RubricDto>>(result.Rubrics.Where(r => !r.IsDeleted));
+        return dto;
     }
 
     public async Task<bool> DeleteQuestionAsync(Guid id)
