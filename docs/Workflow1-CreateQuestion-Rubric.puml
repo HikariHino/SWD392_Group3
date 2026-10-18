@@ -1,0 +1,85 @@
+@startuml Workflow1_CreateQuestion_Rubric
+!theme plain
+autonumber
+skinparam BoxPadding 10
+skinparam ParticipantPadding 10
+skinparam Shadowing false
+skinparam RoundCorner 8
+
+title SEQUENCE DIAGRAM - QUẢN LÝ NGÂN HÀNG CÂU HỎI & CHUẨN HÓA RUBRIC (WORKFLOW 1)
+
+actor "Giảng viên\n(Lecturer)" as lecturer
+boundary "Giao diện Web\n(:QuestionView)" as client
+control "QuestionsController\n(:WebAPI)" as controller
+control "CreateQuestionValidator\n(:FluentValidation)" as validator
+control "QuestionBankService\n(:Application)" as service
+control "UnitOfWork\n(:Persistence)" as uow
+database "SQL Server\n(:Database)" as db
+
+== 1. Nhập liệu và Gửi yêu cầu ==
+lecturer -> client: Nhập nội dung câu hỏi, CourseId,\nBloomLevel (1..6) và danh sách Rubrics[]
+activate lecturer
+activate client
+
+client -> controller: POST /api/questions\n(CreateQuestionRequest + Bearer JWT)
+activate controller
+
+== 2. Xác thực quyền và Validation nghiệp vụ ==
+controller -> validator: ValidateAsync(request)
+activate validator
+
+loop Duyệt từng Rubric trong request
+    validator -> validator: Kiểm tra Criteria rỗng, Weight > 0, MaxScore > 0
+end
+validator -> validator: Tính tổng Weight của tất cả Rubric
+
+alt #LightPink [Tổng Weight != 100% hoặc dữ liệu không hợp lệ]
+    validator --> controller: ValidationResult (IsValid = false, Errors)
+    controller --> client: 400 Bad Request\n(ProblemDetails: "Tổng trọng số Rubric phải bằng 100%")
+    client --> lecturer: Hiển thị thông báo lỗi chi tiết trên màn hình
+else #LightCyan [Dữ liệu hợp lệ (Tổng Weight == 100%)]
+    validator --> controller: ValidationResult (IsValid = true)
+    deactivate validator
+
+    == 3. Kiểm tra môn học và Khởi tạo Transaction ==
+    controller -> service: CreateQuestionAsync(request)
+    activate service
+
+    service -> uow: Courses.GetByIdAsync(request.CourseId)
+    activate uow
+    uow -> db: SELECT Course WHERE Id = courseId AND IsDeleted = 0
+    activate db
+    db --> uow: Course Entity
+    deactivate db
+    uow --> service: Course hợp lệ
+    deactivate uow
+
+    note over service
+        Khởi tạo Entity Question với Guid mới.
+        Gắn từng Rubric với Guid mới và QuestionId.
+    end note
+
+    service -> uow: Questions.AddAsync(questionGraph)
+    activate uow
+    note right of uow: EF Core theo dõi cả Question và Rubrics con
+
+    service -> uow: SaveChangesAsync()
+    uow -> db: BEGIN TRANSACTION\nINSERT INTO Questions...\nINSERT INTO Rubrics...\nCOMMIT TRANSACTION
+    activate db
+    db --> uow: Lưu thành công
+    deactivate db
+    uow --> service: SaveCompleted
+    deactivate uow
+
+    service --> controller: QuestionDto (kèm chi tiết danh sách Rubrics)
+    deactivate service
+
+    controller --> client: 201 Created\n(Location: /api/questions/{id}, QuestionDto)
+    deactivate controller
+
+    client --> lecturer: Hiển thị thông báo "Tạo câu hỏi & Rubric thành công!"
+    deactivate client
+end
+
+deactivate lecturer
+@enduml

@@ -1,0 +1,116 @@
+@startuml Workflow2_AIViva_Interview_Realtime
+!theme plain
+autonumber
+skinparam BoxPadding 10
+skinparam ParticipantPadding 10
+skinparam Shadowing false
+skinparam RoundCorner 8
+
+title SEQUENCE DIAGRAM - LÕI PHỎNG VẤN VẤN ĐÁP AI THỜI GIAN THỰC (WORKFLOW 2)
+
+actor "Sinh viên\n(Student)" as student
+boundary "Phòng thi ảo\n(:InterviewRoomView)" as client
+control "InterviewHub\n(:SignalR WebAPI)" as hub
+control "InterviewService\n(:Application)" as service
+control "SpeechAdapter\n(STT / TTS)" as speech
+control "AiProviderService\n(:Infrastructure)" as aiprovider
+entity "OpenAI API\n(:LLM Provider)" as openai
+database "SQL Server\n(:Database)" as db
+
+== Giai đoạn 1: Kết nối phòng thi & Nhận câu hỏi đầu tiên ==
+student -> client: Mở phòng thi và bấm "Bắt đầu thi"
+activate student
+activate client
+
+client -> hub: Kết nối WebSocket /interviewHub (JWT Bearer Token Student)
+activate hub
+client -> hub: Invoke("StartOrResumeAttempt", sessionId)
+
+hub -> service: StartAttemptAsync(sessionId, studentUserId)
+activate service
+service -> db: Kiểm tra ca thi Open, tạo mới/lấy Transcript (Status='InProgress')
+activate db
+db --> service: TranscriptDetails
+deactivate db
+service --> hub: AttemptDetailsDto (TranscriptId, QuestionSnapshot[0])
+deactivate service
+
+hub -->> client: Event: ReceiveFirstQuestion(transcriptId, questionId, content)
+client -> speech: SynthesizeSpeechAsync(content) [Text-to-Speech]
+activate speech
+speech --> client: Audio Stream (Giọng đọc AI)
+deactivate speech
+client --> student: Phát giọng đọc câu hỏi của Giám khảo ảo AI & Bắt đầu đếm ngược thời gian
+
+== Giai đoạn 2: Vấn đáp thích ứng & Hỏi xoáy (Adaptive Follow-up Loop) ==
+loop Trong giới hạn thời gian & Số lượt hỏi xoáy tối đa (Max Follow-up Turns)
+    student -> client: Bật micro trả lời bằng giọng nói (hoặc gõ văn bản)
+    client -> speech: RecognizeSpeechAsync(audioStream) [Speech-to-Text]
+    activate speech
+    speech --> client: answerText (Văn bản nhận dạng)
+    deactivate speech
+
+    client -> hub: Invoke("SendStudentAnswer", transcriptId, questionId, answerText)
+    hub -> service: ProcessStudentAnswerAsync(transcriptId, questionId, answerText)
+    activate service
+
+    service -> db: INSERT INTO TranscriptTurns (Speaker='Student', ContentText=answerText, Seq=k)
+    activate db
+    db --> service: Saved Turn
+    deactivate db
+
+    note over service
+        Nạp ngữ cảnh câu hỏi:
+        - Đề bài gốc & BloomLevel
+        - Tiêu chí Rubrics & ExpectedAnswer
+        - Lịch sử hội thoại trước đó (TranscriptTurns)
+    end note
+
+    service -> aiprovider: GenerateAdaptiveFollowUpAsync(context, answerText)
+    activate aiprovider
+    aiprovider -> openai: POST /v1/chat/completions\n(Prompt: Đánh giá câu trả lời theo Rubric,\nphát hiện ý còn thiếu/mơ hồ và sinh câu hỏi xoáy)
+    activate openai
+    openai --> aiprovider: JSON Response { isComplete, followUpQuestion, rationale }
+    deactivate openai
+    aiprovider --> service: FollowUpResultDto
+    deactivate aiprovider
+
+    alt #LightYellow [Câu trả lời còn thiếu ý hoặc mâu thuẫn (Cần hỏi xoáy)]
+        service -> db: INSERT INTO TranscriptTurns (Speaker='AI', ContentText=followUpQuestion, Seq=k+1)
+        activate db
+        db --> service: Saved Turn
+        deactivate db
+
+        service --> hub: followUpQuestion
+        hub -->> client: Event: ReceiveAIFollowUp(questionId, followUpQuestion, currentTurn, maxTurns)
+        client -> speech: SynthesizeSpeechAsync(followUpQuestion) [TTS]
+        activate speech
+        speech --> client: Audio Stream (Giọng hỏi xoáy của AI)
+        deactivate speech
+        client --> student: Phát giọng đọc câu hỏi xoáy của Giám khảo ảo AI
+    else #LightGreen [Câu trả lời đã đầy đủ hoặc đạt giới hạn lượt hỏi xoáy]
+        service --> hub: "Đã hoàn thành câu hỏi hiện tại"
+        hub -->> client: Event: QuestionCompleted(questionId, nextQuestionAvailable)
+        client --> student: Thông báo chuyển sang câu hỏi tiếp theo
+    end
+    deactivate service
+end
+
+== Giai đoạn 3: Nộp bài thi ==
+student -> client: Bấm "Nộp bài thi" (hoặc tự động nộp khi hết thời gian)
+client -> hub: Invoke("SubmitAttempt", transcriptId)
+hub -> service: SubmitAttemptAsync(transcriptId, studentUserId)
+activate service
+service -> db: UPDATE Transcripts SET Status='Submitted', SubmittedAt=UtcNow
+activate db
+db --> service: Updated
+deactivate db
+service --> hub: SubmitSuccessDto
+deactivate service
+
+hub -->> client: Event: ReceiveAttemptSubmitted(transcriptId)
+deactivate hub
+client --> student: Thông báo "Nộp bài thành công! Bài thi đang được chuyển sang AI chấm sơ bộ."
+deactivate client
+deactivate student
+@enduml

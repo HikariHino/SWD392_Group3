@@ -1,0 +1,97 @@
+@startuml Workflow3_AIGrading_HumanInTheLoop
+!theme plain
+autonumber
+skinparam BoxPadding 10
+skinparam ParticipantPadding 10
+skinparam Shadowing false
+skinparam RoundCorner 8
+
+title SEQUENCE DIAGRAM - AI HỖ TRỢ CHẤM ĐIỂM & GIẢNG VIÊN CHỐT ĐIỂM (WORKFLOW 3)
+
+actor "Giảng viên\n(Lecturer)" as lecturer
+boundary "Giao diện Thẩm định\n(:GradingReviewView)" as client
+control "AssessmentsController\n(:WebAPI)" as controller
+control "GradingService\n(:Application)" as service
+control "AiGradingProvider\n(:Infrastructure)" as aiprovider
+entity "OpenAI API\n(:LLM Provider)" as openai
+database "SQL Server\n(:Database)" as db
+
+== Phần A: AI đối chiếu Transcript với Rubric & Sinh điểm đề xuất ==
+note over service
+    Kích hoạt tự động khi bài thi chuyển sang trạng thái 'Submitted'
+    hoặc khi Giảng viên yêu cầu chấm lại.
+end note
+
+service -> db: Lấy toàn bộ TranscriptTurns (Lịch sử hỏi đáp),\nRubrics (Weight, MaxScore), Question.Points, Signals (thời gian, độ trôi chảy)
+activate service
+activate db
+db --> service: Dữ liệu bài thi & tiêu chí Rubric
+deactivate db
+
+service -> aiprovider: EvaluateRubricsAsync(turns, expectedAnswer, rubrics[])
+activate aiprovider
+
+aiprovider -> openai: POST /v1/chat/completions\n(Prompt: Đối chiếu câu trả lời với từng tiêu chí Rubric;\nĐánh giá điểm mạnh, điểm yếu, ý còn thiếu;\nTrả về Structured JSON theo rubricId)
+activate openai
+openai --> aiprovider: JSON: { rubricScores: [{ rubricId, earnedScore }],\nfeedback: { strengths, weaknesses, missingPoints },\nconfidenceLevel }\ndeactivate openai
+
+aiprovider --> service: AiGradingResultDto
+deactivate aiprovider
+
+note over service
+    Tính toán điểm câu hỏi theo công thức chuẩn:
+    questionScore = Points * SUM((earned_i / MaxScore_i) * (Weight_i / 100))
+    attemptTotal  = 10 * SUM(questionScore) / SUM(Points)
+end note
+
+service -> db: INSERT INTO Assessments (AiSuggestedScore, AiFeedback, AiConfidenceLevel)\nUPDATE Transcripts SET Status='AwaitingReview', TotalScore=attemptTotal
+activate db
+db --> service: Lưu thành công
+deactivate db
+deactivate service
+
+== Phần B: Giảng viên thẩm định & Chốt điểm chính thức (Human-in-the-loop) ==
+lecturer -> client: Mở danh sách bài thi cần thẩm định và chọn 1 bài thi
+activate lecturer
+activate client
+
+client -> controller: GET /api/assessments?transcriptId={id}\n(Bearer JWT Token Lecturer)
+activate controller
+
+controller -> service: GetTranscriptAssessmentDetailsAsync(transcriptId)
+activate service
+service -> db: SELECT Transcripts, TranscriptTurns, Rubrics, Assessments
+activate db
+db --> service: Toàn bộ dữ liệu phiên thi & Gợi ý của AI
+deactivate db
+service --> controller: AssessmentDetailDto
+deactivate service
+
+controller --> client: 200 OK (Chi tiết bài làm, Lịch sử hỏi đáp, Điểm đề xuất & Nhận xét của AI)
+deactivate controller
+
+client --> lecturer: Hiển thị giao diện Thẩm định: Transcript đầy đủ,\nAudio nghe lại, Điểm AI đề xuất, Phân tích điểm mạnh/yếu
+
+lecturer -> client: Giảng viên xem xét, điều chỉnh điểm (nếu cần),\nnhập TeacherComment và bấm "Chốt điểm chính thức"
+
+client -> controller: POST /api/assessments/{id}/finalize\n{ finalScore, teacherComment } (Bearer JWT)
+activate controller
+
+controller -> service: FinalizeAssessmentAsync(assessmentId, lecturerUserId, request)
+activate service
+
+service -> db: UPDATE Assessments\nSET FinalScore = request.finalScore,\n    TeacherComment = request.teacherComment,\n    FinalizedByUserId = lecturerUserId,\n    FinalizedAt = UtcNow\nUPDATE Transcripts SET Status = 'Finalized'
+activate db
+db --> service: Cập nhật thành công
+deactivate db
+
+service --> controller: FinalizedAssessmentDto
+deactivate service
+
+controller --> client: 200 OK (Điểm chính thức đã được ghi nhận)
+deactivate controller
+
+client --> lecturer: Thông báo "Chốt điểm thành công! Điểm chính thức đã được khóa vào hệ thống."
+deactivate client
+deactivate lecturer
+@enduml
