@@ -123,7 +123,7 @@ Mục này ghi lại chi tiết toàn bộ các hạng mục công việc kỹ t
 
 ## ⚙️ Getting Started & Local Setup
 
-Hiện có code CRUD User/Question/Rubric, danh sách Course và Swagger. Import/AI/interview/grading vẫn mock; Auth, Speech và entity ca thi/kết quả chưa triển khai. Cây kiến trúc phía trên mô tả cả phần dự kiến. Đọc [hợp đồng database/API C03](docs/BACKEND_CONTRACTS.md) trước khi đổi entity, migration hoặc DTO.
+Hiện đã hoàn thiện trọn vẹn Flow 1: CRUD User/Course/Question/Rubric, JSON Batch Import, AI Gemini sinh câu hỏi tự động (hỗ trợ xoay vòng key và fallback), xác thực JWT Bearer Role-based (Student/Lecturer) và Swagger UI tại root URL. Các phần phòng thi SignalR Speech và entity ca thi thuộc kế hoạch triển khai của Milestone 4. Đọc [hợp đồng database/API C03](docs/BACKEND_CONTRACTS.md) trước khi đổi entity, migration hoặc DTO.
 
 ### Chính sách SDK và chạy trong Visual Studio — C02
 
@@ -159,7 +159,7 @@ C10 có code CRUD Course ở `/api/courses`; `/api/questions/courses` trả Cour
 
 Profile https dùng **https://localhost:7035** và **http://localhost:5110**; HTTP có thể redirect HTTPS. Swagger Development ở `/`, JSON ở `/swagger/v1/swagger.json`, SignalR ở `/interviewHub`. Profile http chỉ nghe 5110. Luôn dùng cổng trong log `Now listening on`.
 
-Kiểm tra: mở Swagger, gọi GET `/api/questions/courses` và GET `/api/questions` để kiểm tra DB. User cần schema Users phù hợp. Import còn mock nên không dùng làm bằng chứng hoàn thành. Nếu HTTPS bị chặn, trust dev certificate rồi khởi động lại.
+Kiểm tra: mở Swagger, gọi GET `/api/questions/courses` và GET `/api/questions` để kiểm tra DB. Thử nghiệm tính năng tạo câu hỏi thủ công, import JSON hàng loạt (`POST /api/questions/import`) và sinh đề bằng AI (`POST /api/questions/ai-generate`). Nếu HTTPS bị chặn, trust dev certificate rồi khởi động lại.
 
 ### 1. Prerequisites
 

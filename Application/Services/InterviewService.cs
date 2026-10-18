@@ -5,8 +5,6 @@ namespace Application.Services
 {
     public class InterviewService : IInterviewService
     {
-        // Nhúng IOpenAIService, IVoiceService vào đây qua constructor sau
-        
         public async Task<string> ProcessStudentAnswerAsync(string studentId, string answerText)
         {
             // Logic: Gọi OpenAI tạo câu hỏi tiếp theo
