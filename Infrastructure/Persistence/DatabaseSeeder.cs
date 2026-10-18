@@ -8,7 +8,7 @@ public static class DatabaseSeeder
 {
     public static async Task SeedAsync(AivesDbContext context)
     {
-        // Tự động migrate / tạo DB nếu chưa có
+        // Creates a development schema only; does not apply EF migrations.
         await context.Database.EnsureCreatedAsync();
 
         // 1. Seed Courses nếu chưa có
@@ -19,7 +19,7 @@ public static class DatabaseSeeder
                 Id = Guid.Parse("11111111-1111-1111-1111-111111111111"),
                 Code = "SWD392",
                 Name = "Software Architecture and Design",
-                Description = "Kiến trúc và thiết kế phần mềm doanh nghiệp (.NET 8, Onion Architecture)"
+                Description = "Kiến trúc và thiết kế phần mềm doanh nghiệp (.NET 10, Onion Architecture)"
             };
 
             var course2 = new Course

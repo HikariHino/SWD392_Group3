@@ -42,7 +42,7 @@ erDiagram
     USER ||--o{ EXAM_SESSION : "tham gia thi (Student)"
     USER ||--o{ ASSESSMENT : "chốt điểm (Lecturer)"
     USER ||--o{ QUESTION : "tạo (Lecturer)"
-    
+
     COURSE ||--o{ QUESTION : "có ngân hàng"
     COURSE ||--o{ EXAM_SESSION : "tổ chức"
 

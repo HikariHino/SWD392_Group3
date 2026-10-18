@@ -17,7 +17,7 @@ public class QuestionRepository : GenericRepository<Question>, IQuestionReposito
         return await _dbSet
             .Include(q => q.Course)
             .Include(q => q.Rubrics)
-            .FirstOrDefaultAsync(q => q.Id == id);
+            .FirstOrDefaultAsync(q => q.Id == id && !q.IsDeleted);
     }
 
     public async Task<(IEnumerable<Question> Items, int TotalCount)> GetPagedQuestionsAsync(
@@ -53,6 +53,7 @@ public class QuestionRepository : GenericRepository<Question>, IQuestionReposito
 
         var items = await query
             .OrderByDescending(q => q.CreatedAt)
+            .ThenBy(q => q.Id)
             .Skip((pageIndex - 1) * pageSize)
             .Take(pageSize)
             .ToListAsync();

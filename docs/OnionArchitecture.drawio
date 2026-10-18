@@ -1,0 +1,60 @@
+<mxfile host="app.diagrams.net">
+  <diagram name="Page-1" id="EzvBwlTFHYOEGV3NqsfF">
+    <mxGraphModel dx="2838" dy="2194" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="1MCWPdifpFkCmG_xLstg-6" edge="1" parent="1" source="1MCWPdifpFkCmG_xLstg-2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" target="1MCWPdifpFkCmG_xLstg-3">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="1MCWPdifpFkCmG_xLstg-2" parent="1" style="rounded=1;whiteSpace=wrap;html=1;roundedPerimeter=1;fillColor=#ffe6cc;strokeColor=#d79b00;" value="&lt;b style=&quot;color: rgb(23, 50, 77); font-family: Arial; font-size: 16px;&quot;&gt;WebApi — Presentation&lt;/b&gt;&lt;div&gt;&lt;b style=&quot;color: rgb(23, 50, 77); font-family: Arial; font-size: 16px;&quot;&gt;&lt;br&gt;&lt;/b&gt;&lt;/div&gt;&lt;div&gt;&lt;b style=&quot;color: rgb(23, 50, 77); font-family: Arial; font-size: 16px;&quot;&gt;&lt;span style=&quot;font-weight: 400;&quot;&gt;QuestionsController&lt;/span&gt;&lt;br style=&quot;font-weight: 400;&quot;&gt;&lt;span style=&quot;font-weight: 400;&quot;&gt;ExceptionMiddleware · Swagger&lt;/span&gt;&lt;br style=&quot;font-weight: 400;&quot;&gt;&lt;span style=&quot;font-weight: 400;&quot;&gt;JWT Authentication · CORS&lt;/span&gt;&lt;br style=&quot;font-weight: 400;&quot;&gt;&lt;br style=&quot;font-weight: 400;&quot;&gt;&lt;span style=&quot;font-weight: 400;&quot;&gt;HTTP endpoints / JSON&lt;/span&gt;&lt;/b&gt;&lt;/div&gt;" vertex="1">
+          <mxGeometry height="220" width="230" x="-130" y="150" as="geometry" />
+        </mxCell>
+        <mxCell id="1MCWPdifpFkCmG_xLstg-8" edge="1" parent="1" source="1MCWPdifpFkCmG_xLstg-3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=0;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="1MCWPdifpFkCmG_xLstg-4">
+          <mxGeometry relative="1" x="0.2163" as="geometry">
+            <Array as="points">
+              <mxPoint x="485" y="10" />
+              <mxPoint x="1405" y="10" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="1MCWPdifpFkCmG_xLstg-3" parent="1" style="rounded=1;whiteSpace=wrap;html=1;roundedPerimeter=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" value="&lt;b style=&quot;color: rgb(23, 61, 43); font-family: Arial; font-size: 16px;&quot;&gt;Application&lt;/b&gt;&lt;br style=&quot;color: rgb(23, 61, 43); font-family: Arial; font-size: 16px;&quot;&gt;&lt;br style=&quot;color: rgb(23, 61, 43); font-family: Arial; font-size: 16px;&quot;&gt;&lt;span style=&quot;color: rgb(23, 61, 43); font-family: Arial; font-size: 16px;&quot;&gt;QuestionBankService&lt;/span&gt;&lt;br style=&quot;color: rgb(23, 61, 43); font-family: Arial; font-size: 16px;&quot;&gt;&lt;span style=&quot;color: rgb(23, 61, 43); font-family: Arial; font-size: 16px;&quot;&gt;Question DTOs · PagedResponse&lt;/span&gt;&lt;br style=&quot;color: rgb(23, 61, 43); font-family: Arial; font-size: 16px;&quot;&gt;&lt;span style=&quot;color: rgb(23, 61, 43); font-family: Arial; font-size: 16px;&quot;&gt;FluentValidation&lt;/span&gt;&lt;br style=&quot;color: rgb(23, 61, 43); font-family: Arial; font-size: 16px;&quot;&gt;&lt;br style=&quot;color: rgb(23, 61, 43); font-family: Arial; font-size: 16px;&quot;&gt;&lt;span style=&quot;color: rgb(23, 61, 43); font-family: Arial; font-size: 16px;&quot;&gt;IQuestionRepository&lt;/span&gt;&lt;br style=&quot;color: rgb(23, 61, 43); font-family: Arial; font-size: 16px;&quot;&gt;&lt;span style=&quot;color: rgb(23, 61, 43); font-family: Arial; font-size: 16px;&quot;&gt;IUnitOfWork&lt;/span&gt;" vertex="1">
+          <mxGeometry height="220" width="230" x="370" y="150" as="geometry" />
+        </mxCell>
+        <mxCell id="1MCWPdifpFkCmG_xLstg-4" parent="1" style="rounded=1;whiteSpace=wrap;html=1;roundedPerimeter=1;fillColor=#f8cecc;strokeColor=#b85450;" value="&lt;b style=&quot;color: rgb(75, 58, 11); font-family: Arial; font-size: 16px;&quot;&gt;Domain — Core model&lt;/b&gt;&lt;br style=&quot;color: rgb(75, 58, 11); font-family: Arial; font-size: 16px;&quot;&gt;&lt;br style=&quot;color: rgb(75, 58, 11); font-family: Arial; font-size: 16px;&quot;&gt;&lt;span style=&quot;color: rgb(75, 58, 11); font-family: Arial; font-size: 16px;&quot;&gt;Question&lt;/span&gt;&lt;br style=&quot;color: rgb(75, 58, 11); font-family: Arial; font-size: 16px;&quot;&gt;&lt;span style=&quot;color: rgb(75, 58, 11); font-family: Arial; font-size: 16px;&quot;&gt;Rubric&lt;/span&gt;&lt;br style=&quot;color: rgb(75, 58, 11); font-family: Arial; font-size: 16px;&quot;&gt;&lt;span style=&quot;color: rgb(75, 58, 11); font-family: Arial; font-size: 16px;&quot;&gt;Course&lt;/span&gt;&lt;br style=&quot;color: rgb(75, 58, 11); font-family: Arial; font-size: 16px;&quot;&gt;&lt;br style=&quot;color: rgb(75, 58, 11); font-family: Arial; font-size: 16px;&quot;&gt;&lt;span style=&quot;color: rgb(75, 58, 11); font-family: Arial; font-size: 16px;&quot;&gt;BloomLevel · AuditableEntity&lt;/span&gt;" vertex="1">
+          <mxGeometry height="220" width="230" x="1290" y="150" as="geometry" />
+        </mxCell>
+        <mxCell id="1MCWPdifpFkCmG_xLstg-7" edge="1" parent="1" source="1MCWPdifpFkCmG_xLstg-5" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" target="1MCWPdifpFkCmG_xLstg-3">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="1MCWPdifpFkCmG_xLstg-12" edge="1" parent="1" source="1MCWPdifpFkCmG_xLstg-5" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" target="1MCWPdifpFkCmG_xLstg-4">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="1MCWPdifpFkCmG_xLstg-5" parent="1" style="rounded=1;whiteSpace=wrap;html=1;roundedPerimeter=1;fillColor=#d5e8d4;strokeColor=#82b366;" value="&lt;b style=&quot;color: rgb(57, 35, 75); font-family: Arial; font-size: 16px;&quot;&gt;Infrastructure — Adapters&lt;/b&gt;&lt;br style=&quot;color: rgb(57, 35, 75); font-family: Arial; font-size: 16px;&quot;&gt;&lt;br style=&quot;color: rgb(57, 35, 75); font-family: Arial; font-size: 16px;&quot;&gt;&lt;span style=&quot;color: rgb(57, 35, 75); font-family: Arial; font-size: 16px;&quot;&gt;QuestionRepository · UnitOfWork&lt;/span&gt;&lt;br style=&quot;color: rgb(57, 35, 75); font-family: Arial; font-size: 16px;&quot;&gt;&lt;span style=&quot;color: rgb(57, 35, 75); font-family: Arial; font-size: 16px;&quot;&gt;AivesDbContext · EF Core&lt;/span&gt;&lt;br style=&quot;color: rgb(57, 35, 75); font-family: Arial; font-size: 16px;&quot;&gt;&lt;span style=&quot;color: rgb(57, 35, 75); font-family: Arial; font-size: 16px;&quot;&gt;SQL Server&lt;/span&gt;&lt;br style=&quot;color: rgb(57, 35, 75); font-family: Arial; font-size: 16px;&quot;&gt;&lt;br style=&quot;color: rgb(57, 35, 75); font-family: Arial; font-size: 16px;&quot;&gt;&lt;span style=&quot;color: rgb(57, 35, 75); font-family: Arial; font-size: 16px;&quot;&gt;Implements Application repository interfaces&lt;/span&gt;" vertex="1">
+          <mxGeometry height="220" width="230" x="853" y="150" as="geometry" />
+        </mxCell>
+        <mxCell id="1MCWPdifpFkCmG_xLstg-9" parent="1" style="text;whiteSpace=wrap;html=1;" value="&lt;code&gt;&lt;font style=&quot;font-size: 18px;&quot;&gt;call IQuestionBankService&lt;/font&gt;&lt;/code&gt;" vertex="1">
+          <mxGeometry height="40" width="250" x="105" y="230" as="geometry" />
+        </mxCell>
+        <mxCell id="1MCWPdifpFkCmG_xLstg-10" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;" value="&lt;code&gt;&lt;font style=&quot;font-size: 18px;&quot;&gt;Implements IQuestionRepository and IUnitOfWork&lt;/font&gt;&lt;/code&gt;" vertex="1">
+          <mxGeometry height="30" width="230" x="610" y="210" as="geometry" />
+        </mxCell>
+        <mxCell id="1MCWPdifpFkCmG_xLstg-11" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;" value="&lt;code&gt;&lt;font style=&quot;font-size: 18px;&quot;&gt;Uses Domain entities and enums&lt;/font&gt;&lt;/code&gt;" vertex="1">
+          <mxGeometry height="30" width="410" x="680" y="-20" as="geometry" />
+        </mxCell>
+        <mxCell id="1MCWPdifpFkCmG_xLstg-13" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;" value="&lt;code&gt;&lt;font style=&quot;font-size: 18px;&quot;&gt;EF Core maps entities&lt;/font&gt;&lt;/code&gt;" vertex="1">
+          <mxGeometry height="30" width="150" x="1095" y="220" as="geometry" />
+        </mxCell>
+        <mxCell id="1MCWPdifpFkCmG_xLstg-14" parent="1" style="text;whiteSpace=wrap;html=1;" value="&lt;code&gt;&lt;font style=&quot;font-size: 18px;&quot;&gt;Arrows indicate project dependencies&lt;/font&gt;&lt;/code&gt;" vertex="1">
+          <mxGeometry height="40" width="375" x="510" y="520" as="geometry" />
+        </mxCell>
+        <mxCell id="1MCWPdifpFkCmG_xLstg-16" edge="1" parent="1" style="endArrow=classic;html=1;rounded=0;" value="">
+          <mxGeometry height="50" relative="1" width="50" as="geometry">
+            <mxPoint x="450" y="560" as="sourcePoint" />
+            <mxPoint x="500" y="510" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

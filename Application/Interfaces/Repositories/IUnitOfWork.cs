@@ -3,12 +3,12 @@ using Domain.Entities.UserManagement;
 
 namespace Application.Interfaces.Repositories;
 
-public interface IUnitOfWork : IDisposable
+public interface IUnitOfWork : IDisposable  
 {
     IQuestionRepository Questions { get; }
+    IUserRepository Users { get; }
     IGenericRepository<Course> Courses { get; }
     IGenericRepository<Rubric> Rubrics { get; }
-    IUserRepository Users { get; }
     
     Task<int> SaveChangesAsync();
 }

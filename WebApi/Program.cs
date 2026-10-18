@@ -7,21 +7,28 @@ using Application.Services;
 using Application.Validators.QuestionBank;
 using Infrastructure.Persistence;
 using Infrastructure.Repositories;
+using WebApi.Security;
+using WebApi.Swagger;
 
 var builder = WebApplication.CreateBuilder(args);
 
+var jwt = builder.Configuration.GetSection("Jwt").Get<Infrastructure.Security.JwtSettings>()
+    ?? new Infrastructure.Security.JwtSettings();
+jwt.Validate();
+builder.Services.AddSingleton(jwt);
+builder.Services.AddSingleton(TimeProvider.System);
+builder.Services.AddScoped<IAccessTokenIssuer, Infrastructure.Security.JwtTokenIssuer>();
+builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddAivesAuthentication(jwt);
+
+// Keep local development logs on the console. The Windows Event Log provider
+// can fail when the process does not have permission to write system events.
+builder.Logging.ClearProviders();
+builder.Logging.AddConsole();
+
 // 1. Thêm Controllers & Swagger UI
 builder.Services.AddControllers();
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen(c =>
-{
-    c.SwaggerDoc("v1", new Microsoft.OpenApi.OpenApiInfo
-    {
-        Title = "AIVES API - AI-Powered Viva Exam System",
-        Version = "v1",
-        Description = "API hệ thống thi vấn đáp trực tuyến AIVES - SWD392 Group 3 (.NET 8 Onion Architecture)"
-    });
-});
+builder.Services.AddAivesSwagger();
 
 // 2. Thêm CORS cho kết nối Frontend React
 builder.Services.AddCors(options =>
@@ -55,13 +62,17 @@ builder.Services.AddScoped<IQuestionRepository, QuestionRepository>();
 // 8. Đăng ký Dependency Injection cho tầng Application Services
 builder.Services.AddScoped<IQuestionBankService, QuestionBankService>();
 builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<ICourseService, CourseService>();
 builder.Services.AddScoped<IInterviewService, InterviewService>();
 builder.Services.AddScoped<IGradingService, GradingService>();
+builder.Services.AddScoped<IPasswordHasher, Infrastructure.Security.PasswordHasher>();
 
 // 9. Đăng ký Dependency Injection cho External Services
 builder.Services.AddScoped<Application.Interfaces.ExternalServices.IOpenAIService, Infrastructure.ExternalServices.OpenAIService>();
 
 var app = builder.Build();
+
+app.UseMiddleware<WebApi.Middleware.ExceptionMiddleware>();
 
 // Cấu hình HTTP Request Pipeline
 if (app.Environment.IsDevelopment())
@@ -86,10 +97,14 @@ if (app.Environment.IsDevelopment())
     }
 }
 
-app.UseHttpsRedirection();
+if (!app.Environment.IsDevelopment())
+{
+    app.UseHttpsRedirection();
+}
 
 app.UseCors("AllowReactApp");
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 // Ánh xạ Endpoint cho Controllers và SignalR Hub

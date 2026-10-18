@@ -12,5 +12,5 @@ public interface IQuestionBankService
     Task<QuestionDto?> UpdateQuestionAsync(Guid id, UpdateQuestionRequest request);
     Task<bool> DeleteQuestionAsync(Guid id);
     Task<bool> ImportQuestionsAsync(string filePath);
-    Task<IEnumerable<Course>> GetCoursesAsync();
+    Task<IEnumerable<CourseDto>> GetCoursesAsync();
 }

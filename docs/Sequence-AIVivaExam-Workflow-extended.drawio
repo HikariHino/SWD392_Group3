@@ -1,0 +1,870 @@
+<?xml version='1.0' encoding='utf-8'?>
+<mxfile host="Electron" agent="Codex">
+  <diagram id="sequence-ai-viva-exam-workflow" name="AIVES Core Workflow">
+    <mxGraphModel dx="3994" dy="2423" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="3600" pageHeight="2850" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+  <mxCell id="v2" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;fontColor=#1d2b3a;fontFamily=Arial;fontSize=28;fontStyle=1;" value="SEQUENCE DIAGRAM — QUY TRÌNH THI VẤN ĐÁP AI &amp;amp; ĐÁNH GIÁ CHỐT ĐIỂM (END-TO-END WORKFLOW)" vertex="1">
+    <mxGeometry height="42" width="2800" x="400" y="20" as="geometry" />
+  </mxCell>
+  <mxCell id="v3" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;fontColor=#52657b;fontFamily=Arial;fontSize=13;fontStyle=0;" value="Quy trình đầy đủ Milestone 3: Giảng viên mở ca thi · Kết nối SignalR Realtime · AI hỏi &amp;amp; hỏi phụ theo ngữ cảnh · AI chấm điểm Rubric · Giảng viên chốt điểm" vertex="1">
+    <mxGeometry height="28" width="2800" x="400" y="62" as="geometry" />
+  </mxCell>
+
+
+  <mxCell id="v4" edge="1" parent="1" style="edgeStyle=none;strokeColor=#26364a;strokeWidth=2;endArrow=block;endFill=1;" value="">
+    <mxGeometry relative="1" as="geometry"><mxPoint x="1200" y="105" as="sourcePoint" /><mxPoint x="1290" y="105" as="targetPoint" /></mxGeometry>
+  </mxCell>
+  <mxCell id="v5" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;fontColor=#52657b;fontFamily=Arial;fontSize=12;fontStyle=0;" value="Gọi đồng bộ / API" vertex="1">
+    <mxGeometry height="24" width="120" x="1300" y="93" as="geometry" />
+  </mxCell>
+  <mxCell id="v6" edge="1" parent="1" style="edgeStyle=none;dashed=1;dashPattern=8 7;strokeColor=#52657b;strokeWidth=2;endArrow=open;endFill=0;" value="">
+    <mxGeometry relative="1" as="geometry"><mxPoint x="1460" y="105" as="sourcePoint" /><mxPoint x="1550" y="105" as="targetPoint" /></mxGeometry>
+  </mxCell>
+  <mxCell id="v7" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;fontColor=#52657b;fontFamily=Arial;fontSize=12;fontStyle=0;" value="Kết quả trả về / Event" vertex="1">
+    <mxGeometry height="24" width="140" x="1560" y="93" as="geometry" />
+  </mxCell>
+  <mxCell id="v8" parent="1" style="rounded=0;whiteSpace=wrap;html=1;align=center;verticalAlign=middle;strokeColor=#7593b4;fillColor=#eef4fb;fontColor=#1d2b3a;fontFamily=Arial;fontSize=12;fontStyle=0;" value="loop / alt" vertex="1">
+    <mxGeometry height="22" width="100" x="1740" y="94" as="geometry" />
+  </mxCell>
+  <mxCell id="v9" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;fontColor=#52657b;fontFamily=Arial;fontSize=12;fontStyle=0;" value="Khối điều kiện / Vòng lặp" vertex="1">
+    <mxGeometry height="24" width="150" x="1850" y="93" as="geometry" />
+  </mxCell>
+
+
+    <mxCell id="v10" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;fontColor=#758a99;fontFamily=Arial;fontSize=10;fontStyle=1;" value="ACTOR" vertex="1">
+      <mxGeometry height="18" width="160" x="60" y="125" as="geometry" />
+    </mxCell>
+  
+
+    <mxCell id="v11" parent="1" style="rounded=1;whiteSpace=wrap;html=1;align=center;verticalAlign=middle;strokeColor=#7391b2;fillColor=#e9f1fb;fontColor=#1d2b3a;fontFamily=Arial;fontSize=12;fontStyle=1;" value="Lecturer" vertex="1">
+      <mxGeometry height="50" width="160" x="60" y="140" as="geometry" />
+    </mxCell>
+  
+
+      <mxCell id="v12" parent="1" style="shape=umlActor;html=1;strokeColor=#344a60;fillColor=none;fontColor=#52657b;fontSize=12;verticalLabelPosition=bottom;verticalAlign=top;" value="" vertex="1">
+        <mxGeometry height="55" width="35" x="123" y="195" as="geometry" />
+      </mxCell>
+    
+
+    <mxCell id="v13" edge="1" parent="1" style="edgeStyle=none;dashed=1;dashPattern=7 7;strokeColor=#8b9bad;strokeWidth=1.5;endArrow=none;startArrow=none;" value="">
+      <mxGeometry relative="1" as="geometry">
+        <mxPoint x="140" y="190" as="sourcePoint" />
+        <mxPoint x="140" y="2650" as="targetPoint" />
+      </mxGeometry>
+    </mxCell>
+  
+
+    <mxCell id="v14" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;fontColor=#758a99;fontFamily=Arial;fontSize=10;fontStyle=1;" value="ACTOR" vertex="1">
+      <mxGeometry height="18" width="160" x="380" y="125" as="geometry" />
+    </mxCell>
+  
+
+    <mxCell id="v15" parent="1" style="rounded=1;whiteSpace=wrap;html=1;align=center;verticalAlign=middle;strokeColor=#7391b2;fillColor=#e9f1fb;fontColor=#1d2b3a;fontFamily=Arial;fontSize=12;fontStyle=1;" value="Student" vertex="1">
+      <mxGeometry height="50" width="160" x="380" y="140" as="geometry" />
+    </mxCell>
+  
+
+      <mxCell id="v16" parent="1" style="shape=umlActor;html=1;strokeColor=#344a60;fillColor=none;fontColor=#52657b;fontSize=12;verticalLabelPosition=bottom;verticalAlign=top;" value="" vertex="1">
+        <mxGeometry height="55" width="35" x="443" y="195" as="geometry" />
+      </mxCell>
+    
+
+    <mxCell id="v17" edge="1" parent="1" style="edgeStyle=none;dashed=1;dashPattern=7 7;strokeColor=#8b9bad;strokeWidth=1.5;endArrow=none;startArrow=none;" value="">
+      <mxGeometry relative="1" as="geometry">
+        <mxPoint x="460" y="190" as="sourcePoint" />
+        <mxPoint x="460" y="2650" as="targetPoint" />
+      </mxGeometry>
+    </mxCell>
+  
+
+    <mxCell id="v18" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;fontColor=#758a99;fontFamily=Arial;fontSize=10;fontStyle=1;" value="FRONTEND" vertex="1">
+      <mxGeometry height="18" width="170" x="700" y="125" as="geometry" />
+    </mxCell>
+  
+
+    <mxCell id="v19" parent="1" style="rounded=1;whiteSpace=wrap;html=1;align=center;verticalAlign=middle;strokeColor=#7391b2;fillColor=#e9f1fb;fontColor=#1d2b3a;fontFamily=Arial;fontSize=12;fontStyle=1;" value=":ClientApp" vertex="1">
+      <mxGeometry height="50" width="170" x="700" y="140" as="geometry" />
+    </mxCell>
+  
+
+    <mxCell id="v20" edge="1" parent="1" style="edgeStyle=none;dashed=1;dashPattern=7 7;strokeColor=#8b9bad;strokeWidth=1.5;endArrow=none;startArrow=none;" value="">
+      <mxGeometry relative="1" as="geometry">
+        <mxPoint x="785" y="190" as="sourcePoint" />
+        <mxPoint x="785" y="2650" as="targetPoint" />
+      </mxGeometry>
+    </mxCell>
+  
+
+    <mxCell id="v21" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;fontColor=#758a99;fontFamily=Arial;fontSize=10;fontStyle=1;" value="WEB API" vertex="1">
+      <mxGeometry height="18" width="190" x="1020" y="125" as="geometry" />
+    </mxCell>
+  
+
+    <mxCell id="v22" parent="1" style="rounded=1;whiteSpace=wrap;html=1;align=center;verticalAlign=middle;strokeColor=#7391b2;fillColor=#e9f1fb;fontColor=#1d2b3a;fontFamily=Arial;fontSize=12;fontStyle=1;" value=":ExamSessionsController" vertex="1">
+      <mxGeometry height="50" width="190" x="1020" y="140" as="geometry" />
+    </mxCell>
+  
+
+    <mxCell id="v23" edge="1" parent="1" style="edgeStyle=none;dashed=1;dashPattern=7 7;strokeColor=#8b9bad;strokeWidth=1.5;endArrow=none;startArrow=none;" value="">
+      <mxGeometry relative="1" as="geometry">
+        <mxPoint x="1115" y="190" as="sourcePoint" />
+        <mxPoint x="1115" y="2650" as="targetPoint" />
+      </mxGeometry>
+    </mxCell>
+  
+
+    <mxCell id="v24" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;fontColor=#758a99;fontFamily=Arial;fontSize=10;fontStyle=1;" value="WEB API (SIGNALR)" vertex="1">
+      <mxGeometry height="18" width="170" x="1340" y="125" as="geometry" />
+    </mxCell>
+  
+
+    <mxCell id="v25" parent="1" style="rounded=1;whiteSpace=wrap;html=1;align=center;verticalAlign=middle;strokeColor=#7391b2;fillColor=#e9f1fb;fontColor=#1d2b3a;fontFamily=Arial;fontSize=12;fontStyle=1;" value=":InterviewHub" vertex="1">
+      <mxGeometry height="50" width="170" x="1340" y="140" as="geometry" />
+    </mxCell>
+  
+
+    <mxCell id="v26" edge="1" parent="1" style="edgeStyle=none;dashed=1;dashPattern=7 7;strokeColor=#8b9bad;strokeWidth=1.5;endArrow=none;startArrow=none;" value="">
+      <mxGeometry relative="1" as="geometry">
+        <mxPoint x="1425" y="190" as="sourcePoint" />
+        <mxPoint x="1425" y="2650" as="targetPoint" />
+      </mxGeometry>
+    </mxCell>
+  
+
+    <mxCell id="v27" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;fontColor=#758a99;fontFamily=Arial;fontSize=10;fontStyle=1;" value="APPLICATION" vertex="1">
+      <mxGeometry height="18" width="190" x="1640" y="125" as="geometry" />
+    </mxCell>
+  
+
+    <mxCell id="v28" parent="1" style="rounded=1;whiteSpace=wrap;html=1;align=center;verticalAlign=middle;strokeColor=#7391b2;fillColor=#e9f1fb;fontColor=#1d2b3a;fontFamily=Arial;fontSize=12;fontStyle=1;" value=":ExamSessionService" vertex="1">
+      <mxGeometry height="50" width="190" x="1640" y="140" as="geometry" />
+    </mxCell>
+  
+
+    <mxCell id="v29" edge="1" parent="1" style="edgeStyle=none;dashed=1;dashPattern=7 7;strokeColor=#8b9bad;strokeWidth=1.5;endArrow=none;startArrow=none;" value="">
+      <mxGeometry relative="1" as="geometry">
+        <mxPoint x="1735" y="190" as="sourcePoint" />
+        <mxPoint x="1735" y="2650" as="targetPoint" />
+      </mxGeometry>
+    </mxCell>
+  
+
+    <mxCell id="v30" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;fontColor=#758a99;fontFamily=Arial;fontSize=10;fontStyle=1;" value="APPLICATION" vertex="1">
+      <mxGeometry height="18" width="180" x="1960" y="125" as="geometry" />
+    </mxCell>
+  
+
+    <mxCell id="v31" parent="1" style="rounded=1;whiteSpace=wrap;html=1;align=center;verticalAlign=middle;strokeColor=#7391b2;fillColor=#e9f1fb;fontColor=#1d2b3a;fontFamily=Arial;fontSize=12;fontStyle=1;" value=":InterviewService" vertex="1">
+      <mxGeometry height="50" width="180" x="1960" y="140" as="geometry" />
+    </mxCell>
+  
+
+    <mxCell id="v32" edge="1" parent="1" style="edgeStyle=none;dashed=1;dashPattern=7 7;strokeColor=#8b9bad;strokeWidth=1.5;endArrow=none;startArrow=none;" value="">
+      <mxGeometry relative="1" as="geometry">
+        <mxPoint x="2050" y="190" as="sourcePoint" />
+        <mxPoint x="2050" y="2650" as="targetPoint" />
+      </mxGeometry>
+    </mxCell>
+  
+
+    <mxCell id="v33" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;fontColor=#758a99;fontFamily=Arial;fontSize=10;fontStyle=1;" value="APPLICATION" vertex="1">
+      <mxGeometry height="18" width="170" x="2270" y="125" as="geometry" />
+    </mxCell>
+  
+
+    <mxCell id="v34" parent="1" style="rounded=1;whiteSpace=wrap;html=1;align=center;verticalAlign=middle;strokeColor=#7391b2;fillColor=#e9f1fb;fontColor=#1d2b3a;fontFamily=Arial;fontSize=12;fontStyle=1;" value=":GradingService" vertex="1">
+      <mxGeometry height="50" width="170" x="2270" y="140" as="geometry" />
+    </mxCell>
+  
+
+    <mxCell id="v35" edge="1" parent="1" style="edgeStyle=none;dashed=1;dashPattern=7 7;strokeColor=#8b9bad;strokeWidth=1.5;endArrow=none;startArrow=none;" value="">
+      <mxGeometry relative="1" as="geometry">
+        <mxPoint x="2355" y="190" as="sourcePoint" />
+        <mxPoint x="2355" y="2650" as="targetPoint" />
+      </mxGeometry>
+    </mxCell>
+  
+
+    <mxCell id="v36" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;fontColor=#758a99;fontFamily=Arial;fontSize=10;fontStyle=1;" value="INFRASTRUCTURE" vertex="1">
+      <mxGeometry height="18" width="180" x="2570" y="125" as="geometry" />
+    </mxCell>
+  
+
+    <mxCell id="v37" parent="1" style="rounded=1;whiteSpace=wrap;html=1;align=center;verticalAlign=middle;strokeColor=#7391b2;fillColor=#e9f1fb;fontColor=#1d2b3a;fontFamily=Arial;fontSize=12;fontStyle=1;" value=":AiProviderService" vertex="1">
+      <mxGeometry height="50" width="180" x="2570" y="140" as="geometry" />
+    </mxCell>
+  
+
+    <mxCell id="v38" edge="1" parent="1" style="edgeStyle=none;dashed=1;dashPattern=7 7;strokeColor=#8b9bad;strokeWidth=1.5;endArrow=none;startArrow=none;" value="">
+      <mxGeometry relative="1" as="geometry">
+        <mxPoint x="2660" y="190" as="sourcePoint" />
+        <mxPoint x="2660" y="2650" as="targetPoint" />
+      </mxGeometry>
+    </mxCell>
+  
+
+    <mxCell id="v39" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;fontColor=#758a99;fontFamily=Arial;fontSize=10;fontStyle=1;" value="EXTERNAL AI" vertex="1">
+      <mxGeometry height="18" width="180" x="2880" y="125" as="geometry" />
+    </mxCell>
+  
+
+    <mxCell id="v40" parent="1" style="rounded=1;whiteSpace=wrap;html=1;align=center;verticalAlign=middle;strokeColor=#7391b2;fillColor=#e9f1fb;fontColor=#1d2b3a;fontFamily=Arial;fontSize=12;fontStyle=1;" value="External LLM
+(OpenAI / Gemini)" vertex="1">
+      <mxGeometry height="50" width="180" x="2880" y="140" as="geometry" />
+    </mxCell>
+  
+
+    <mxCell id="v41" edge="1" parent="1" style="edgeStyle=none;dashed=1;dashPattern=7 7;strokeColor=#8b9bad;strokeWidth=1.5;endArrow=none;startArrow=none;" value="">
+      <mxGeometry relative="1" as="geometry">
+        <mxPoint x="2970" y="190" as="sourcePoint" />
+        <mxPoint x="2970" y="2650" as="targetPoint" />
+      </mxGeometry>
+    </mxCell>
+  
+
+    <mxCell id="v42" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;fontColor=#758a99;fontFamily=Arial;fontSize=10;fontStyle=1;" value="PERSISTENCE" vertex="1">
+      <mxGeometry height="18" width="180" x="3190" y="125" as="geometry" />
+    </mxCell>
+  
+
+    <mxCell id="v43" parent="1" style="rounded=1;whiteSpace=wrap;html=1;align=center;verticalAlign=middle;strokeColor=#7391b2;fillColor=#e9f1fb;fontColor=#1d2b3a;fontFamily=Arial;fontSize=12;fontStyle=1;" value=":UnitOfWork &amp;
+SQL Server" vertex="1">
+      <mxGeometry height="50" width="180" x="3190" y="140" as="geometry" />
+    </mxCell>
+  
+
+    <mxCell id="v44" edge="1" parent="1" style="edgeStyle=none;dashed=1;dashPattern=7 7;strokeColor=#8b9bad;strokeWidth=1.5;endArrow=none;startArrow=none;" value="">
+      <mxGeometry relative="1" as="geometry">
+        <mxPoint x="3280" y="190" as="sourcePoint" />
+        <mxPoint x="3280" y="2650" as="targetPoint" />
+      </mxGeometry>
+    </mxCell>
+  
+
+    <mxCell id="v45" parent="1" style="rounded=1;whiteSpace=wrap;html=1;align=left;verticalAlign=top;strokeColor=#55799d;fillColor=#f4f8fd;fontColor=#1d2b3a;fontFamily=Arial;fontSize=13;fontStyle=1;spacingLeft=15;spacingTop=10;fillOpacity=40;" value="GIAI ĐOẠN 1: GIẢNG VIÊN CẤU HÌNH &amp; MỞ CA THI — ExamSession Draft -&gt; Open" vertex="1">
+      <mxGeometry height="310" width="3480" x="40" y="260" as="geometry" />
+    </mxCell>
+  
+
+    <mxCell id="v46" edge="1" parent="1" style="edgeStyle=none;html=1;rounded=0;strokeColor=#26364a;strokeWidth=2;endArrow=block;endFill=1;fontColor=#26364a;fontFamily=Arial;fontSize=12;labelBackgroundColor=#ffffff;" value="1. Chọn ca thi &amp; bấm &quot;Mở phòng thi&quot; (SessionId)">
+      <mxGeometry relative="1" as="geometry">
+        <mxPoint x="140" y="300" as="sourcePoint" />
+        <mxPoint x="785" y="300" as="targetPoint" />
+      </mxGeometry>
+    </mxCell>
+  
+
+    <mxCell id="v47" edge="1" parent="1" style="edgeStyle=none;html=1;rounded=0;strokeColor=#26364a;strokeWidth=2;endArrow=block;endFill=1;fontColor=#26364a;fontFamily=Arial;fontSize=12;labelBackgroundColor=#ffffff;" value="2. PUT /api/exam-sessions/{id}/open (Bearer JWT Lecturer)">
+      <mxGeometry relative="1" as="geometry">
+        <mxPoint x="785" y="335" as="sourcePoint" />
+        <mxPoint x="1115" y="335" as="targetPoint" />
+      </mxGeometry>
+    </mxCell>
+  
+
+    <mxCell id="v48" edge="1" parent="1" style="edgeStyle=none;html=1;rounded=0;strokeColor=#26364a;strokeWidth=2;endArrow=block;endFill=1;fontColor=#26364a;fontFamily=Arial;fontSize=12;labelBackgroundColor=#ffffff;" value="3. OpenSessionAsync(sessionId, lecturerUserId)">
+      <mxGeometry relative="1" as="geometry">
+        <mxPoint x="1115" y="370" as="sourcePoint" />
+        <mxPoint x="1735" y="370" as="targetPoint" />
+      </mxGeometry>
+    </mxCell>
+  
+
+    <mxCell id="v49" edge="1" parent="1" style="edgeStyle=none;html=1;rounded=0;strokeColor=#26364a;strokeWidth=2;endArrow=block;endFill=1;fontColor=#26364a;fontFamily=Arial;fontSize=12;labelBackgroundColor=#ffffff;" value="4. Kiểm tra ca thi: Status==Draft, StartTime &lt; EndTime, môn hợp lệ">
+      <mxGeometry relative="1" as="geometry">
+        <mxPoint x="1735" y="405" as="sourcePoint" />
+        <mxPoint x="3280" y="405" as="targetPoint" />
+      </mxGeometry>
+    </mxCell>
+  
+
+    <mxCell id="v50" edge="1" parent="1" style="edgeStyle=none;html=1;rounded=0;dashed=1;dashPattern=8 7;strokeColor=#52657b;strokeWidth=2;endArrow=open;endFill=0;fontColor=#26364a;fontFamily=Arial;fontSize=12;labelBackgroundColor=#ffffff;" value="Ca thi hợp lệ &amp; đúng chủ sở hữu">
+      <mxGeometry relative="1" as="geometry">
+        <mxPoint x="3280" y="435" as="sourcePoint" />
+        <mxPoint x="1735" y="435" as="targetPoint" />
+      </mxGeometry>
+    </mxCell>
+  
+
+    <mxCell id="v51" edge="1" parent="1" style="edgeStyle=none;html=1;rounded=0;strokeColor=#26364a;strokeWidth=2;endArrow=block;endFill=1;fontColor=#26364a;fontFamily=Arial;fontSize=12;labelBackgroundColor=#ffffff;" value="5. UPDATE ExamSessions SET Status=&apos;Open&apos;, Snapshot Questions">
+      <mxGeometry relative="1" as="geometry">
+        <mxPoint x="1735" y="465" as="sourcePoint" />
+        <mxPoint x="3280" y="465" as="targetPoint" />
+      </mxGeometry>
+    </mxCell>
+  
+
+    <mxCell id="v52" edge="1" parent="1" style="edgeStyle=none;html=1;rounded=0;dashed=1;dashPattern=8 7;strokeColor=#52657b;strokeWidth=2;endArrow=open;endFill=0;fontColor=#26364a;fontFamily=Arial;fontSize=12;labelBackgroundColor=#ffffff;" value="SaveChanges completed (Status=Open)">
+      <mxGeometry relative="1" as="geometry">
+        <mxPoint x="3280" y="495" as="sourcePoint" />
+        <mxPoint x="1735" y="495" as="targetPoint" />
+      </mxGeometry>
+    </mxCell>
+  
+
+    <mxCell id="v53" edge="1" parent="1" style="edgeStyle=none;html=1;rounded=0;dashed=1;dashPattern=8 7;strokeColor=#52657b;strokeWidth=2;endArrow=open;endFill=0;fontColor=#26364a;fontFamily=Arial;fontSize=12;labelBackgroundColor=#ffffff;" value="6. Trả về SessionDto { Id, Status: &quot;Open&quot; }">
+      <mxGeometry relative="1" as="geometry">
+        <mxPoint x="1735" y="520" as="sourcePoint" />
+        <mxPoint x="1115" y="520" as="targetPoint" />
+      </mxGeometry>
+    </mxCell>
+  
+
+    <mxCell id="v54" edge="1" parent="1" style="edgeStyle=none;html=1;rounded=0;dashed=1;dashPattern=8 7;strokeColor=#52657b;strokeWidth=2;endArrow=open;endFill=0;fontColor=#26364a;fontFamily=Arial;fontSize=12;labelBackgroundColor=#ffffff;" value="7. 200 OK (Ca thi đã mở, sẵn sàng nhận sinh viên)">
+      <mxGeometry relative="1" as="geometry">
+        <mxPoint x="1115" y="540" as="sourcePoint" />
+        <mxPoint x="785" y="540" as="targetPoint" />
+      </mxGeometry>
+    </mxCell>
+  
+
+    <mxCell id="v55" edge="1" parent="1" style="edgeStyle=none;html=1;rounded=0;dashed=1;dashPattern=8 7;strokeColor=#52657b;strokeWidth=2;endArrow=open;endFill=0;fontColor=#26364a;fontFamily=Arial;fontSize=12;labelBackgroundColor=#ffffff;" value="Hiển thị ca thi đang mở (Mã phòng, trạng thái Open)">
+      <mxGeometry relative="1" as="geometry">
+        <mxPoint x="785" y="560" as="sourcePoint" />
+        <mxPoint x="140" y="560" as="targetPoint" />
+      </mxGeometry>
+    </mxCell>
+  
+
+    <mxCell id="v56" parent="1" style="rounded=1;whiteSpace=wrap;html=1;align=left;verticalAlign=top;strokeColor=#55799d;fillColor=#f4f8fd;fontColor=#1d2b3a;fontFamily=Arial;fontSize=13;fontStyle=1;spacingLeft=15;spacingTop=10;fillOpacity=40;" value="GIAI ĐOẠN 2: SINH VIÊN KẾT NỐI REALTIME &amp; BẮT ĐẦU BÀI THI — SignalR Connect -&gt; Tạo Transcript InProgress" vertex="1">
+      <mxGeometry height="340" width="3480" x="40" y="590" as="geometry" />
+    </mxCell>
+  
+
+    <mxCell id="v57" edge="1" parent="1" style="edgeStyle=none;html=1;rounded=0;strokeColor=#26364a;strokeWidth=2;endArrow=block;endFill=1;fontColor=#26364a;fontFamily=Arial;fontSize=12;labelBackgroundColor=#ffffff;" value="8. Nhập mã ca thi &amp; bấm &quot;Tham gia phòng thi&quot;">
+      <mxGeometry relative="1" as="geometry">
+        <mxPoint x="460" y="630" as="sourcePoint" />
+        <mxPoint x="785" y="630" as="targetPoint" />
+      </mxGeometry>
+    </mxCell>
+  
+
+    <mxCell id="v58" edge="1" parent="1" style="edgeStyle=none;html=1;rounded=0;strokeColor=#26364a;strokeWidth=2;endArrow=block;endFill=1;fontColor=#26364a;fontFamily=Arial;fontSize=12;labelBackgroundColor=#ffffff;" value="9. Kết nối WebSocket /interviewHub (JWT Bearer Token Student)">
+      <mxGeometry relative="1" as="geometry">
+        <mxPoint x="785" y="665" as="sourcePoint" />
+        <mxPoint x="1425" y="665" as="targetPoint" />
+      </mxGeometry>
+    </mxCell>
+  
+
+    <mxCell id="v59" edge="1" parent="1" style="edgeStyle=none;html=1;rounded=0;strokeColor=#26364a;strokeWidth=2;endArrow=block;endFill=1;fontColor=#26364a;fontFamily=Arial;fontSize=12;labelBackgroundColor=#ffffff;" value="10. Invoke(&quot;JoinAndStartAttempt&quot;, sessionId)">
+      <mxGeometry relative="1" as="geometry">
+        <mxPoint x="785" y="700" as="sourcePoint" />
+        <mxPoint x="1425" y="700" as="targetPoint" />
+      </mxGeometry>
+    </mxCell>
+  
+
+    <mxCell id="v60" edge="1" parent="1" style="edgeStyle=none;html=1;rounded=0;strokeColor=#26364a;strokeWidth=2;endArrow=block;endFill=1;fontColor=#26364a;fontFamily=Arial;fontSize=12;labelBackgroundColor=#ffffff;" value="11. StartAttemptAsync(sessionId, studentUserId)">
+      <mxGeometry relative="1" as="geometry">
+        <mxPoint x="1425" y="735" as="sourcePoint" />
+        <mxPoint x="1735" y="735" as="targetPoint" />
+      </mxGeometry>
+    </mxCell>
+  
+
+    <mxCell id="v61" edge="1" parent="1" style="edgeStyle=none;html=1;rounded=0;strokeColor=#26364a;strokeWidth=2;endArrow=block;endFill=1;fontColor=#26364a;fontFamily=Arial;fontSize=12;labelBackgroundColor=#ffffff;" value="12. Kiểm tra: Session Status==Open, chưa nộp bài, thời gian hợp lệ">
+      <mxGeometry relative="1" as="geometry">
+        <mxPoint x="1735" y="765" as="sourcePoint" />
+        <mxPoint x="3280" y="765" as="targetPoint" />
+      </mxGeometry>
+    </mxCell>
+  
+
+    <mxCell id="v62" edge="1" parent="1" style="edgeStyle=none;html=1;rounded=0;dashed=1;dashPattern=8 7;strokeColor=#52657b;strokeWidth=2;endArrow=open;endFill=0;fontColor=#26364a;fontFamily=Arial;fontSize=12;labelBackgroundColor=#ffffff;" value="Điều kiện hợp lệ">
+      <mxGeometry relative="1" as="geometry">
+        <mxPoint x="3280" y="790" as="sourcePoint" />
+        <mxPoint x="1735" y="790" as="targetPoint" />
+      </mxGeometry>
+    </mxCell>
+  
+
+    <mxCell id="v63" edge="1" parent="1" style="edgeStyle=none;html=1;rounded=0;strokeColor=#26364a;strokeWidth=2;endArrow=block;endFill=1;fontColor=#26364a;fontFamily=Arial;fontSize=12;labelBackgroundColor=#ffffff;" value="13. INSERT Transcripts { Status=&apos;InProgress&apos;, StartedAt=UtcNow }">
+      <mxGeometry relative="1" as="geometry">
+        <mxPoint x="1735" y="815" as="sourcePoint" />
+        <mxPoint x="3280" y="815" as="targetPoint" />
+      </mxGeometry>
+    </mxCell>
+  
+
+    <mxCell id="v64" edge="1" parent="1" style="edgeStyle=none;html=1;rounded=0;dashed=1;dashPattern=8 7;strokeColor=#52657b;strokeWidth=2;endArrow=open;endFill=0;fontColor=#26364a;fontFamily=Arial;fontSize=12;labelBackgroundColor=#ffffff;" value="TranscriptId đã tạo">
+      <mxGeometry relative="1" as="geometry">
+        <mxPoint x="3280" y="840" as="sourcePoint" />
+        <mxPoint x="1735" y="840" as="targetPoint" />
+      </mxGeometry>
+    </mxCell>
+  
+
+    <mxCell id="v65" edge="1" parent="1" style="edgeStyle=none;html=1;rounded=0;dashed=1;dashPattern=8 7;strokeColor=#52657b;strokeWidth=2;endArrow=open;endFill=0;fontColor=#26364a;fontFamily=Arial;fontSize=12;labelBackgroundColor=#ffffff;" value="14. AttemptDetailsDto (TranscriptId, QuestionSnapshot[0])">
+      <mxGeometry relative="1" as="geometry">
+        <mxPoint x="1735" y="865" as="sourcePoint" />
+        <mxPoint x="1425" y="865" as="targetPoint" />
+      </mxGeometry>
+    </mxCell>
+  
+
+    <mxCell id="v66" edge="1" parent="1" style="edgeStyle=none;html=1;rounded=0;dashed=1;dashPattern=8 7;strokeColor=#52657b;strokeWidth=2;endArrow=open;endFill=0;fontColor=#26364a;fontFamily=Arial;fontSize=12;labelBackgroundColor=#ffffff;" value="15. Event: ReceiveAttemptStarted(transcriptId, firstQuestion)">
+      <mxGeometry relative="1" as="geometry">
+        <mxPoint x="1425" y="890" as="sourcePoint" />
+        <mxPoint x="785" y="890" as="targetPoint" />
+      </mxGeometry>
+    </mxCell>
+  
+
+    <mxCell id="v67" edge="1" parent="1" style="edgeStyle=none;html=1;rounded=0;dashed=1;dashPattern=8 7;strokeColor=#52657b;strokeWidth=2;endArrow=open;endFill=0;fontColor=#26364a;fontFamily=Arial;fontSize=12;labelBackgroundColor=#ffffff;" value="Hiển thị màn hình phỏng vấn &amp; Câu hỏi đầu tiên">
+      <mxGeometry relative="1" as="geometry">
+        <mxPoint x="785" y="915" as="sourcePoint" />
+        <mxPoint x="460" y="915" as="targetPoint" />
+      </mxGeometry>
+    </mxCell>
+  
+
+    <mxCell id="v68" parent="1" style="rounded=1;whiteSpace=wrap;html=1;align=left;verticalAlign=top;strokeColor=#55799d;fillColor=#f4f8fd;fontColor=#1d2b3a;fontFamily=Arial;fontSize=13;fontStyle=1;spacingLeft=15;spacingTop=10;fillOpacity=40;" value="GIAI ĐOẠN 3: VÒNG LẶP VẤN ĐÁP TƯƠNG TÁC (INTERACTIVE AI VIVA LOOP) — Speech/Text -&gt; Dynamic Follow-up Questions" vertex="1">
+      <mxGeometry height="610" width="3480" x="40" y="940" as="geometry" />
+    </mxCell>
+  
+
+    <mxCell id="v69" parent="1" style="rounded=0;fillOpacity=25;whiteSpace=wrap;html=1;align=center;verticalAlign=middle;strokeColor=#7593b4;fillColor=#f8fbff;fontColor=#1d2b3a;fontFamily=Arial;fontSize=12;fontStyle=0;" value="" vertex="1">
+      <mxGeometry height="550" width="2600" x="420" y="980" as="geometry" />
+    </mxCell>
+    <mxCell id="v70" parent="1" style="rounded=0;whiteSpace=wrap;html=1;align=center;verticalAlign=middle;strokeColor=#7593b4;fillColor=#e5eef8;fontColor=#1d2b3a;fontFamily=Arial;fontSize=12;fontStyle=1;" value="loop" vertex="1">
+      <mxGeometry height="24" width="60" x="420" y="980" as="geometry" />
+    </mxCell>
+    <mxCell id="v71" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;fontColor=#1d2b3a;fontFamily=Arial;fontSize=12;fontStyle=1;" value="[Mỗi câu hỏi tính điểm &amp; các lượt hỏi phụ (Follow-up questions)]" vertex="1">
+      <mxGeometry height="24" width="550" x="490" y="980" as="geometry" />
+    </mxCell>
+  
+
+    <mxCell id="v72" edge="1" parent="1" style="edgeStyle=none;html=1;rounded=0;strokeColor=#26364a;strokeWidth=2;endArrow=block;endFill=1;fontColor=#26364a;fontFamily=Arial;fontSize=12;labelBackgroundColor=#ffffff;" value="16. Trả lời câu hỏi (Microphone STT hoặc gõ văn bản)">
+      <mxGeometry relative="1" as="geometry">
+        <mxPoint x="460" y="1020" as="sourcePoint" />
+        <mxPoint x="785" y="1020" as="targetPoint" />
+      </mxGeometry>
+    </mxCell>
+  
+
+    <mxCell id="v73" edge="1" parent="1" style="edgeStyle=none;html=1;rounded=0;strokeColor=#26364a;strokeWidth=2;endArrow=block;endFill=1;fontColor=#26364a;fontFamily=Arial;fontSize=12;labelBackgroundColor=#ffffff;" value="17. Invoke(&quot;SendStudentAnswer&quot;, transcriptId, questionId, answerText)">
+      <mxGeometry relative="1" as="geometry">
+        <mxPoint x="785" y="1055" as="sourcePoint" />
+        <mxPoint x="1425" y="1055" as="targetPoint" />
+      </mxGeometry>
+    </mxCell>
+  
+
+    <mxCell id="v74" edge="1" parent="1" style="edgeStyle=none;html=1;rounded=0;strokeColor=#26364a;strokeWidth=2;endArrow=block;endFill=1;fontColor=#26364a;fontFamily=Arial;fontSize=12;labelBackgroundColor=#ffffff;" value="18. ProcessStudentTurnAsync(transcriptId, questionId, answerText)">
+      <mxGeometry relative="1" as="geometry">
+        <mxPoint x="1425" y="1090" as="sourcePoint" />
+        <mxPoint x="2050" y="1090" as="targetPoint" />
+      </mxGeometry>
+    </mxCell>
+  
+
+    <mxCell id="v75" edge="1" parent="1" style="edgeStyle=none;html=1;rounded=0;strokeColor=#26364a;strokeWidth=2;endArrow=block;endFill=1;fontColor=#26364a;fontFamily=Arial;fontSize=12;labelBackgroundColor=#ffffff;" value="19. Add TranscriptTurn { Speaker: &quot;Student&quot;, ContentText, Seq=k }">
+      <mxGeometry relative="1" as="geometry">
+        <mxPoint x="2050" y="1125" as="sourcePoint" />
+        <mxPoint x="3280" y="1125" as="targetPoint" />
+      </mxGeometry>
+    </mxCell>
+  
+
+    <mxCell id="v76" edge="1" parent="1" style="edgeStyle=none;html=1;rounded=0;dashed=1;dashPattern=8 7;strokeColor=#52657b;strokeWidth=2;endArrow=open;endFill=0;fontColor=#26364a;fontFamily=Arial;fontSize=12;labelBackgroundColor=#ffffff;" value="Turn đã lưu">
+      <mxGeometry relative="1" as="geometry">
+        <mxPoint x="3280" y="1150" as="sourcePoint" />
+        <mxPoint x="2050" y="1150" as="targetPoint" />
+      </mxGeometry>
+    </mxCell>
+  
+
+    <mxCell id="v77" edge="1" parent="1" style="edgeStyle=none;html=1;rounded=0;strokeColor=#26364a;strokeWidth=2;endArrow=block;endFill=1;fontColor=#26364a;fontFamily=Arial;fontSize=12;labelBackgroundColor=#ffffff;" value="20. GenerateFollowUpAsync(context, expectedAnswer, rubricCriteria, answer)">
+      <mxGeometry relative="1" as="geometry">
+        <mxPoint x="2050" y="1180" as="sourcePoint" />
+        <mxPoint x="2660" y="1180" as="targetPoint" />
+      </mxGeometry>
+    </mxCell>
+  
+
+    <mxCell id="v78" edge="1" parent="1" style="edgeStyle=none;html=1;rounded=0;strokeColor=#26364a;strokeWidth=2;endArrow=block;endFill=1;fontColor=#26364a;fontFamily=Arial;fontSize=12;labelBackgroundColor=#ffffff;" value="21. POST /v1/chat/completions (Prompt: Phân tích lỗ hổng &amp; sinh câu hỏi phụ)">
+      <mxGeometry relative="1" as="geometry">
+        <mxPoint x="2660" y="1215" as="sourcePoint" />
+        <mxPoint x="2970" y="1215" as="targetPoint" />
+      </mxGeometry>
+    </mxCell>
+  
+
+    <mxCell id="v79" edge="1" parent="1" style="edgeStyle=none;html=1;rounded=0;dashed=1;dashPattern=8 7;strokeColor=#52657b;strokeWidth=2;endArrow=open;endFill=0;fontColor=#26364a;fontFamily=Arial;fontSize=12;labelBackgroundColor=#ffffff;" value="Trả về Follow-up Question (JSON: content, targetCriteria)">
+      <mxGeometry relative="1" as="geometry">
+        <mxPoint x="2970" y="1250" as="sourcePoint" />
+        <mxPoint x="2660" y="1250" as="targetPoint" />
+      </mxGeometry>
+    </mxCell>
+  
+
+    <mxCell id="v80" edge="1" parent="1" style="edgeStyle=none;html=1;rounded=0;dashed=1;dashPattern=8 7;strokeColor=#52657b;strokeWidth=2;endArrow=open;endFill=0;fontColor=#26364a;fontFamily=Arial;fontSize=12;labelBackgroundColor=#ffffff;" value="22. FollowUpQuestionDto">
+      <mxGeometry relative="1" as="geometry">
+        <mxPoint x="2660" y="1280" as="sourcePoint" />
+        <mxPoint x="2050" y="1280" as="targetPoint" />
+      </mxGeometry>
+    </mxCell>
+  
+
+    <mxCell id="v81" edge="1" parent="1" style="edgeStyle=none;html=1;rounded=0;strokeColor=#26364a;strokeWidth=2;endArrow=block;endFill=1;fontColor=#26364a;fontFamily=Arial;fontSize=12;labelBackgroundColor=#ffffff;" value="23. Add TranscriptTurn { Speaker: &quot;AI&quot;, ContentText: followUp, Seq=k+1 }">
+      <mxGeometry relative="1" as="geometry">
+        <mxPoint x="2050" y="1310" as="sourcePoint" />
+        <mxPoint x="3280" y="1310" as="targetPoint" />
+      </mxGeometry>
+    </mxCell>
+  
+
+    <mxCell id="v82" edge="1" parent="1" style="edgeStyle=none;html=1;rounded=0;dashed=1;dashPattern=8 7;strokeColor=#52657b;strokeWidth=2;endArrow=open;endFill=0;fontColor=#26364a;fontFamily=Arial;fontSize=12;labelBackgroundColor=#ffffff;" value="Turn đã lưu">
+      <mxGeometry relative="1" as="geometry">
+        <mxPoint x="3280" y="1335" as="sourcePoint" />
+        <mxPoint x="2050" y="1335" as="targetPoint" />
+      </mxGeometry>
+    </mxCell>
+  
+
+    <mxCell id="v83" edge="1" parent="1" style="edgeStyle=none;html=1;rounded=0;dashed=1;dashPattern=8 7;strokeColor=#52657b;strokeWidth=2;endArrow=open;endFill=0;fontColor=#26364a;fontFamily=Arial;fontSize=12;labelBackgroundColor=#ffffff;" value="24. Trả về nội dung câu hỏi phụ">
+      <mxGeometry relative="1" as="geometry">
+        <mxPoint x="2050" y="1365" as="sourcePoint" />
+        <mxPoint x="1425" y="1365" as="targetPoint" />
+      </mxGeometry>
+    </mxCell>
+  
+
+    <mxCell id="v84" edge="1" parent="1" style="edgeStyle=none;html=1;rounded=0;dashed=1;dashPattern=8 7;strokeColor=#52657b;strokeWidth=2;endArrow=open;endFill=0;fontColor=#26364a;fontFamily=Arial;fontSize=12;labelBackgroundColor=#ffffff;" value="25. Event: ReceiveAIFollowUp(questionId, followUpContent)">
+      <mxGeometry relative="1" as="geometry">
+        <mxPoint x="1425" y="1395" as="sourcePoint" />
+        <mxPoint x="785" y="1395" as="targetPoint" />
+      </mxGeometry>
+    </mxCell>
+  
+
+    <mxCell id="v85" edge="1" parent="1" style="edgeStyle=none;html=1;rounded=0;dashed=1;dashPattern=8 7;strokeColor=#52657b;strokeWidth=2;endArrow=open;endFill=0;fontColor=#26364a;fontFamily=Arial;fontSize=12;labelBackgroundColor=#ffffff;" value="AI phát âm câu hỏi phụ (TTS) &amp; hiển thị trên màn hình">
+      <mxGeometry relative="1" as="geometry">
+        <mxPoint x="785" y="1425" as="sourcePoint" />
+        <mxPoint x="460" y="1425" as="targetPoint" />
+      </mxGeometry>
+    </mxCell>
+  
+
+    <mxCell id="v86" edge="1" parent="1" style="edgeStyle=none;html=1;rounded=0;strokeColor=#26364a;strokeWidth=2;endArrow=block;endFill=1;fontColor=#26364a;fontFamily=Arial;fontSize=12;labelBackgroundColor=#ffffff;" value="26. Sinh viên trả lời làm rõ câu hỏi phụ (lặp lại theo cấu hình)">
+      <mxGeometry relative="1" as="geometry">
+        <mxPoint x="460" y="1460" as="sourcePoint" />
+        <mxPoint x="785" y="1460" as="targetPoint" />
+      </mxGeometry>
+    </mxCell>
+  
+
+    <mxCell id="v87" edge="1" parent="1" style="edgeStyle=none;html=1;rounded=0;dashed=1;dashPattern=8 7;strokeColor=#52657b;strokeWidth=2;endArrow=open;endFill=0;fontColor=#26364a;fontFamily=Arial;fontSize=12;labelBackgroundColor=#ffffff;" value="Chuyển sang câu hỏi tiếp theo trong đề thi">
+      <mxGeometry relative="1" as="geometry">
+        <mxPoint x="785" y="1495" as="sourcePoint" />
+        <mxPoint x="460" y="1495" as="targetPoint" />
+      </mxGeometry>
+    </mxCell>
+  
+
+    <mxCell id="v88" parent="1" style="rounded=1;whiteSpace=wrap;html=1;align=left;verticalAlign=top;strokeColor=#55799d;fillColor=#f4f8fd;fontColor=#1d2b3a;fontFamily=Arial;fontSize=13;fontStyle=1;spacingLeft=15;spacingTop=10;fillOpacity=40;" value="GIAI ĐOẠN 4: NỘP BÀI THI &amp; AI CHẤM ĐIỂM THEO RUBRIC — Transcript Submitted -&gt; Grading -&gt; AwaitingReview" vertex="1">
+      <mxGeometry height="560" width="3480" x="40" y="1570" as="geometry" />
+    </mxCell>
+  
+
+    <mxCell id="v89" edge="1" parent="1" style="edgeStyle=none;html=1;rounded=0;strokeColor=#26364a;strokeWidth=2;endArrow=block;endFill=1;fontColor=#26364a;fontFamily=Arial;fontSize=12;labelBackgroundColor=#ffffff;" value="27. Bấm &quot;Nộp bài thi&quot; (hoặc tự động nộp khi hết giờ ca thi)">
+      <mxGeometry relative="1" as="geometry">
+        <mxPoint x="460" y="1610" as="sourcePoint" />
+        <mxPoint x="785" y="1610" as="targetPoint" />
+      </mxGeometry>
+    </mxCell>
+  
+
+    <mxCell id="v90" edge="1" parent="1" style="edgeStyle=none;html=1;rounded=0;strokeColor=#26364a;strokeWidth=2;endArrow=block;endFill=1;fontColor=#26364a;fontFamily=Arial;fontSize=12;labelBackgroundColor=#ffffff;" value="28. Invoke(&quot;SubmitAttempt&quot;, transcriptId)">
+      <mxGeometry relative="1" as="geometry">
+        <mxPoint x="785" y="1645" as="sourcePoint" />
+        <mxPoint x="1425" y="1645" as="targetPoint" />
+      </mxGeometry>
+    </mxCell>
+  
+
+    <mxCell id="v91" edge="1" parent="1" style="edgeStyle=none;html=1;rounded=0;strokeColor=#26364a;strokeWidth=2;endArrow=block;endFill=1;fontColor=#26364a;fontFamily=Arial;fontSize=12;labelBackgroundColor=#ffffff;" value="29. SubmitAttemptAsync(transcriptId, studentUserId)">
+      <mxGeometry relative="1" as="geometry">
+        <mxPoint x="1425" y="1680" as="sourcePoint" />
+        <mxPoint x="1735" y="1680" as="targetPoint" />
+      </mxGeometry>
+    </mxCell>
+  
+
+    <mxCell id="v92" edge="1" parent="1" style="edgeStyle=none;html=1;rounded=0;strokeColor=#26364a;strokeWidth=2;endArrow=block;endFill=1;fontColor=#26364a;fontFamily=Arial;fontSize=12;labelBackgroundColor=#ffffff;" value="30. UPDATE Transcripts SET Status=&apos;Submitted&apos;, SubmittedAt=UtcNow">
+      <mxGeometry relative="1" as="geometry">
+        <mxPoint x="1735" y="1715" as="sourcePoint" />
+        <mxPoint x="3280" y="1715" as="targetPoint" />
+      </mxGeometry>
+    </mxCell>
+  
+
+    <mxCell id="v93" edge="1" parent="1" style="edgeStyle=none;html=1;rounded=0;dashed=1;dashPattern=8 7;strokeColor=#52657b;strokeWidth=2;endArrow=open;endFill=0;fontColor=#26364a;fontFamily=Arial;fontSize=12;labelBackgroundColor=#ffffff;" value="Trạng thái Submitted đã lưu">
+      <mxGeometry relative="1" as="geometry">
+        <mxPoint x="3280" y="1740" as="sourcePoint" />
+        <mxPoint x="1735" y="1740" as="targetPoint" />
+      </mxGeometry>
+    </mxCell>
+  
+
+    <mxCell id="v94" edge="1" parent="1" style="edgeStyle=none;html=1;rounded=0;strokeColor=#26364a;strokeWidth=2;endArrow=block;endFill=1;fontColor=#26364a;fontFamily=Arial;fontSize=12;labelBackgroundColor=#ffffff;" value="31. GradeTranscriptAsync(transcriptId)">
+      <mxGeometry relative="1" as="geometry">
+        <mxPoint x="1735" y="1770" as="sourcePoint" />
+        <mxPoint x="2355" y="1770" as="targetPoint" />
+      </mxGeometry>
+    </mxCell>
+  
+
+    <mxCell id="v95" edge="1" parent="1" style="edgeStyle=none;html=1;rounded=0;strokeColor=#26364a;strokeWidth=2;endArrow=block;endFill=1;fontColor=#26364a;fontFamily=Arial;fontSize=12;labelBackgroundColor=#ffffff;" value="32. Lấy toàn bộ TranscriptTurns, Rubrics (Weight, MaxScore), Question.Points">
+      <mxGeometry relative="1" as="geometry">
+        <mxPoint x="2355" y="1800" as="sourcePoint" />
+        <mxPoint x="3280" y="1800" as="targetPoint" />
+      </mxGeometry>
+    </mxCell>
+  
+
+    <mxCell id="v96" edge="1" parent="1" style="edgeStyle=none;html=1;rounded=0;dashed=1;dashPattern=8 7;strokeColor=#52657b;strokeWidth=2;endArrow=open;endFill=0;fontColor=#26364a;fontFamily=Arial;fontSize=12;labelBackgroundColor=#ffffff;" value="Dữ liệu bài thi &amp; tiêu chí rubric">
+      <mxGeometry relative="1" as="geometry">
+        <mxPoint x="3280" y="1825" as="sourcePoint" />
+        <mxPoint x="2355" y="1825" as="targetPoint" />
+      </mxGeometry>
+    </mxCell>
+  
+
+    <mxCell id="v97" edge="1" parent="1" style="edgeStyle=none;html=1;rounded=0;strokeColor=#26364a;strokeWidth=2;endArrow=block;endFill=1;fontColor=#26364a;fontFamily=Arial;fontSize=12;labelBackgroundColor=#ffffff;" value="33. EvaluateRubricsAsync(studentTurns, expectedAnswers, rubrics[])">
+      <mxGeometry relative="1" as="geometry">
+        <mxPoint x="2355" y="1855" as="sourcePoint" />
+        <mxPoint x="2660" y="1855" as="targetPoint" />
+      </mxGeometry>
+    </mxCell>
+  
+
+    <mxCell id="v98" edge="1" parent="1" style="edgeStyle=none;html=1;rounded=0;strokeColor=#26364a;strokeWidth=2;endArrow=block;endFill=1;fontColor=#26364a;fontFamily=Arial;fontSize=12;labelBackgroundColor=#ffffff;" value="34. Prompt: Chấm điểm từng rubric, đưa ra feedback &amp; confidence (Structured JSON)">
+      <mxGeometry relative="1" as="geometry">
+        <mxPoint x="2660" y="1890" as="sourcePoint" />
+        <mxPoint x="2970" y="1890" as="targetPoint" />
+      </mxGeometry>
+    </mxCell>
+  
+
+    <mxCell id="v99" edge="1" parent="1" style="edgeStyle=none;html=1;rounded=0;dashed=1;dashPattern=8 7;strokeColor=#52657b;strokeWidth=2;endArrow=open;endFill=0;fontColor=#26364a;fontFamily=Arial;fontSize=12;labelBackgroundColor=#ffffff;" value="JSON: { rubrics: [{ rubricId, earnedScore }], feedback, confidence }">
+      <mxGeometry relative="1" as="geometry">
+        <mxPoint x="2970" y="1925" as="sourcePoint" />
+        <mxPoint x="2660" y="1925" as="targetPoint" />
+      </mxGeometry>
+    </mxCell>
+  
+
+    <mxCell id="v100" edge="1" parent="1" style="edgeStyle=none;html=1;rounded=0;dashed=1;dashPattern=8 7;strokeColor=#52657b;strokeWidth=2;endArrow=open;endFill=0;fontColor=#26364a;fontFamily=Arial;fontSize=12;labelBackgroundColor=#ffffff;" value="35. AiGradingResponseDto">
+      <mxGeometry relative="1" as="geometry">
+        <mxPoint x="2660" y="1955" as="sourcePoint" />
+        <mxPoint x="2355" y="1955" as="targetPoint" />
+      </mxGeometry>
+    </mxCell>
+  
+
+      <mxCell id="v101" edge="1" parent="1" style="edgeStyle=none;html=1;rounded=0;strokeColor=#26364a;strokeWidth=2;endArrow=block;endFill=1;fontColor=#26364a;fontFamily=Arial;fontSize=12;" value="">
+        <mxGeometry relative="1" as="geometry">
+          <Array as="points">
+            <mxPoint x="2400" y="1985" />
+            <mxPoint x="2400" y="2007" />
+          </Array>
+          <mxPoint x="2355" y="1985" as="sourcePoint" />
+          <mxPoint x="2355" y="2007" as="targetPoint" />
+        </mxGeometry>
+      </mxCell>
+      <mxCell id="v102" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;fontColor=#26364a;fontFamily=Arial;fontSize=12;fontStyle=0;" value="36. Tự tính: questionScore = Points * SUM((earned/max)*(w/100)); attemptTotal = 10*SUM(qScore)/SUM(pts)" vertex="1">
+        <mxGeometry height="28" width="320" x="2410" y="1981" as="geometry" />
+      </mxCell>
+    
+
+    <mxCell id="v103" edge="1" parent="1" style="edgeStyle=none;html=1;rounded=0;strokeColor=#26364a;strokeWidth=2;endArrow=block;endFill=1;fontColor=#26364a;fontFamily=Arial;fontSize=12;labelBackgroundColor=#ffffff;" value="37. INSERT Assessments, UPDATE Transcripts SET Status=&apos;AwaitingReview&apos;, TotalScore=aiScore">
+      <mxGeometry relative="1" as="geometry">
+        <mxPoint x="2355" y="2025" as="sourcePoint" />
+        <mxPoint x="3280" y="2025" as="targetPoint" />
+      </mxGeometry>
+    </mxCell>
+  
+
+    <mxCell id="v104" edge="1" parent="1" style="edgeStyle=none;html=1;rounded=0;dashed=1;dashPattern=8 7;strokeColor=#52657b;strokeWidth=2;endArrow=open;endFill=0;fontColor=#26364a;fontFamily=Arial;fontSize=12;labelBackgroundColor=#ffffff;" value="Lưu đánh giá thành công">
+      <mxGeometry relative="1" as="geometry">
+        <mxPoint x="3280" y="2050" as="sourcePoint" />
+        <mxPoint x="2355" y="2050" as="targetPoint" />
+      </mxGeometry>
+    </mxCell>
+  
+
+    <mxCell id="v105" edge="1" parent="1" style="edgeStyle=none;html=1;rounded=0;dashed=1;dashPattern=8 7;strokeColor=#52657b;strokeWidth=2;endArrow=open;endFill=0;fontColor=#26364a;fontFamily=Arial;fontSize=12;labelBackgroundColor=#ffffff;" value="38. Hoàn tất chấm điểm AI">
+      <mxGeometry relative="1" as="geometry">
+        <mxPoint x="2355" y="2075" as="sourcePoint" />
+        <mxPoint x="1425" y="2075" as="targetPoint" />
+      </mxGeometry>
+    </mxCell>
+  
+
+    <mxCell id="v106" edge="1" parent="1" style="edgeStyle=none;html=1;rounded=0;dashed=1;dashPattern=8 7;strokeColor=#52657b;strokeWidth=2;endArrow=open;endFill=0;fontColor=#26364a;fontFamily=Arial;fontSize=12;labelBackgroundColor=#ffffff;" value="39. Event: ReceiveAttemptGraded(aiSuggestedTotalScore)">
+      <mxGeometry relative="1" as="geometry">
+        <mxPoint x="1425" y="2100" as="sourcePoint" />
+        <mxPoint x="785" y="2100" as="targetPoint" />
+      </mxGeometry>
+    </mxCell>
+  
+
+    <mxCell id="v107" edge="1" parent="1" style="edgeStyle=none;html=1;rounded=0;dashed=1;dashPattern=8 7;strokeColor=#52657b;strokeWidth=2;endArrow=open;endFill=0;fontColor=#26364a;fontFamily=Arial;fontSize=12;labelBackgroundColor=#ffffff;" value="Thông báo nộp bài thành công, bài thi đang chờ Giảng viên phê duyệt">
+      <mxGeometry relative="1" as="geometry">
+        <mxPoint x="785" y="2120" as="sourcePoint" />
+        <mxPoint x="460" y="2120" as="targetPoint" />
+      </mxGeometry>
+    </mxCell>
+  
+
+    <mxCell id="v108" parent="1" style="rounded=1;whiteSpace=wrap;html=1;align=left;verticalAlign=top;strokeColor=#55799d;fillColor=#f4f8fd;fontColor=#1d2b3a;fontFamily=Arial;fontSize=13;fontStyle=1;spacingLeft=15;spacingTop=10;fillOpacity=40;" value="GIAI ĐOẠN 5: GIẢNG VIÊN XEM XÉT &amp; CHỐT ĐIỂM CHÍNH THỨC — Review AI Suggestions -&gt; Finalize Assessment" vertex="1">
+      <mxGeometry height="480" width="3480" x="40" y="2150" as="geometry" />
+    </mxCell>
+  
+
+    <mxCell id="v109" edge="1" parent="1" style="edgeStyle=none;html=1;rounded=0;strokeColor=#26364a;strokeWidth=2;endArrow=block;endFill=1;fontColor=#26364a;fontFamily=Arial;fontSize=12;labelBackgroundColor=#ffffff;" value="40. Mở danh sách bài thi cần duyệt (TranscriptId)">
+      <mxGeometry relative="1" as="geometry">
+        <mxPoint x="140" y="2190" as="sourcePoint" />
+        <mxPoint x="785" y="2190" as="targetPoint" />
+      </mxGeometry>
+    </mxCell>
+  
+
+    <mxCell id="v110" edge="1" parent="1" style="edgeStyle=none;html=1;rounded=0;strokeColor=#26364a;strokeWidth=2;endArrow=block;endFill=1;fontColor=#26364a;fontFamily=Arial;fontSize=12;labelBackgroundColor=#ffffff;" value="41. GET /api/assessments?transcriptId={id} (Bearer JWT Lecturer)">
+      <mxGeometry relative="1" as="geometry">
+        <mxPoint x="785" y="2220" as="sourcePoint" />
+        <mxPoint x="1115" y="2220" as="targetPoint" />
+      </mxGeometry>
+    </mxCell>
+  
+
+    <mxCell id="v111" edge="1" parent="1" style="edgeStyle=none;html=1;rounded=0;strokeColor=#26364a;strokeWidth=2;endArrow=block;endFill=1;fontColor=#26364a;fontFamily=Arial;fontSize=12;labelBackgroundColor=#ffffff;" value="42. GetTranscriptAssessmentDetailsAsync(transcriptId)">
+      <mxGeometry relative="1" as="geometry">
+        <mxPoint x="1115" y="2250" as="sourcePoint" />
+        <mxPoint x="2355" y="2250" as="targetPoint" />
+      </mxGeometry>
+    </mxCell>
+  
+
+    <mxCell id="v112" edge="1" parent="1" style="edgeStyle=none;html=1;rounded=0;strokeColor=#26364a;strokeWidth=2;endArrow=block;endFill=1;fontColor=#26364a;fontFamily=Arial;fontSize=12;labelBackgroundColor=#ffffff;" value="43. Truy vấn Transcript, Lịch sử hội thoại Turns, Đánh giá Assessments">
+      <mxGeometry relative="1" as="geometry">
+        <mxPoint x="2355" y="2280" as="sourcePoint" />
+        <mxPoint x="3280" y="2280" as="targetPoint" />
+      </mxGeometry>
+    </mxCell>
+  
+
+    <mxCell id="v113" edge="1" parent="1" style="edgeStyle=none;html=1;rounded=0;dashed=1;dashPattern=8 7;strokeColor=#52657b;strokeWidth=2;endArrow=open;endFill=0;fontColor=#26364a;fontFamily=Arial;fontSize=12;labelBackgroundColor=#ffffff;" value="Dữ liệu toàn bộ bài thi">
+      <mxGeometry relative="1" as="geometry">
+        <mxPoint x="3280" y="2305" as="sourcePoint" />
+        <mxPoint x="2355" y="2305" as="targetPoint" />
+      </mxGeometry>
+    </mxCell>
+  
+
+    <mxCell id="v114" edge="1" parent="1" style="edgeStyle=none;html=1;rounded=0;dashed=1;dashPattern=8 7;strokeColor=#52657b;strokeWidth=2;endArrow=open;endFill=0;fontColor=#26364a;fontFamily=Arial;fontSize=12;labelBackgroundColor=#ffffff;" value="44. AssessmentDetailDto (Điểm AI, Tiêu chí Rubric, Audio/Text Turns)">
+      <mxGeometry relative="1" as="geometry">
+        <mxPoint x="2355" y="2330" as="sourcePoint" />
+        <mxPoint x="1115" y="2330" as="targetPoint" />
+      </mxGeometry>
+    </mxCell>
+  
+
+    <mxCell id="v115" edge="1" parent="1" style="edgeStyle=none;html=1;rounded=0;dashed=1;dashPattern=8 7;strokeColor=#52657b;strokeWidth=2;endArrow=open;endFill=0;fontColor=#26364a;fontFamily=Arial;fontSize=12;labelBackgroundColor=#ffffff;" value="45. 200 OK (Chi tiết bài làm &amp; gợi ý AI)">
+      <mxGeometry relative="1" as="geometry">
+        <mxPoint x="1115" y="2355" as="sourcePoint" />
+        <mxPoint x="785" y="2355" as="targetPoint" />
+      </mxGeometry>
+    </mxCell>
+  
+
+    <mxCell id="v116" edge="1" parent="1" style="edgeStyle=none;html=1;rounded=0;dashed=1;dashPattern=8 7;strokeColor=#52657b;strokeWidth=2;endArrow=open;endFill=0;fontColor=#26364a;fontFamily=Arial;fontSize=12;labelBackgroundColor=#ffffff;" value="Hiển thị giao diện thẩm định: Lịch sử hỏi đáp, Audio, Gợi ý AI">
+      <mxGeometry relative="1" as="geometry">
+        <mxPoint x="785" y="2375" as="sourcePoint" />
+        <mxPoint x="140" y="2375" as="targetPoint" />
+      </mxGeometry>
+    </mxCell>
+  
+
+    <mxCell id="v117" edge="1" parent="1" style="edgeStyle=none;html=1;rounded=0;strokeColor=#26364a;strokeWidth=2;endArrow=block;endFill=1;fontColor=#26364a;fontFamily=Arial;fontSize=12;labelBackgroundColor=#ffffff;" value="46. Chỉnh sửa điểm (nếu có), nhập TeacherComment &amp; bấm &quot;Chốt điểm&quot;">
+      <mxGeometry relative="1" as="geometry">
+        <mxPoint x="140" y="2410" as="sourcePoint" />
+        <mxPoint x="785" y="2410" as="targetPoint" />
+      </mxGeometry>
+    </mxCell>
+  
+
+    <mxCell id="v118" edge="1" parent="1" style="edgeStyle=none;html=1;rounded=0;strokeColor=#26364a;strokeWidth=2;endArrow=block;endFill=1;fontColor=#26364a;fontFamily=Arial;fontSize=12;labelBackgroundColor=#ffffff;" value="47. POST /api/assessments/{id}/finalize { finalScore, teacherComment }">
+      <mxGeometry relative="1" as="geometry">
+        <mxPoint x="785" y="2440" as="sourcePoint" />
+        <mxPoint x="1115" y="2440" as="targetPoint" />
+      </mxGeometry>
+    </mxCell>
+  
+
+    <mxCell id="v119" edge="1" parent="1" style="edgeStyle=none;html=1;rounded=0;strokeColor=#26364a;strokeWidth=2;endArrow=block;endFill=1;fontColor=#26364a;fontFamily=Arial;fontSize=12;labelBackgroundColor=#ffffff;" value="48. FinalizeAssessmentAsync(assessmentId, lecturerUserId, request)">
+      <mxGeometry relative="1" as="geometry">
+        <mxPoint x="1115" y="2470" as="sourcePoint" />
+        <mxPoint x="2355" y="2470" as="targetPoint" />
+      </mxGeometry>
+    </mxCell>
+  
+
+    <mxCell id="v120" edge="1" parent="1" style="edgeStyle=none;html=1;rounded=0;strokeColor=#26364a;strokeWidth=2;endArrow=block;endFill=1;fontColor=#26364a;fontFamily=Arial;fontSize=12;labelBackgroundColor=#ffffff;" value="49. UPDATE Assessments SET FinalScore, TeacherComment, FinalizedBy, FinalizedAt; Status=&apos;Finalized&apos;">
+      <mxGeometry relative="1" as="geometry">
+        <mxPoint x="2355" y="2500" as="sourcePoint" />
+        <mxPoint x="3280" y="2500" as="targetPoint" />
+      </mxGeometry>
+    </mxCell>
+  
+
+    <mxCell id="v121" edge="1" parent="1" style="edgeStyle=none;html=1;rounded=0;dashed=1;dashPattern=8 7;strokeColor=#52657b;strokeWidth=2;endArrow=open;endFill=0;fontColor=#26364a;fontFamily=Arial;fontSize=12;labelBackgroundColor=#ffffff;" value="Transaction Commit completed">
+      <mxGeometry relative="1" as="geometry">
+        <mxPoint x="3280" y="2530" as="sourcePoint" />
+        <mxPoint x="2355" y="2530" as="targetPoint" />
+      </mxGeometry>
+    </mxCell>
+  
+
+    <mxCell id="v122" edge="1" parent="1" style="edgeStyle=none;html=1;rounded=0;dashed=1;dashPattern=8 7;strokeColor=#52657b;strokeWidth=2;endArrow=open;endFill=0;fontColor=#26364a;fontFamily=Arial;fontSize=12;labelBackgroundColor=#ffffff;" value="50. Trả về FinalizedAssessmentDto">
+      <mxGeometry relative="1" as="geometry">
+        <mxPoint x="2355" y="2555" as="sourcePoint" />
+        <mxPoint x="1115" y="2555" as="targetPoint" />
+      </mxGeometry>
+    </mxCell>
+  
+
+    <mxCell id="v123" edge="1" parent="1" style="edgeStyle=none;html=1;rounded=0;dashed=1;dashPattern=8 7;strokeColor=#52657b;strokeWidth=2;endArrow=open;endFill=0;fontColor=#26364a;fontFamily=Arial;fontSize=12;labelBackgroundColor=#ffffff;" value="51. 200 OK (Điểm đã được chốt chính thức)">
+      <mxGeometry relative="1" as="geometry">
+        <mxPoint x="1115" y="2575" as="sourcePoint" />
+        <mxPoint x="785" y="2575" as="targetPoint" />
+      </mxGeometry>
+    </mxCell>
+  
+
+    <mxCell id="v124" edge="1" parent="1" style="edgeStyle=none;html=1;rounded=0;dashed=1;dashPattern=8 7;strokeColor=#52657b;strokeWidth=2;endArrow=open;endFill=0;fontColor=#26364a;fontFamily=Arial;fontSize=12;labelBackgroundColor=#ffffff;" value="Thông báo chốt điểm thành công, bài thi hoàn tất">
+      <mxGeometry relative="1" as="geometry">
+        <mxPoint x="785" y="2595" as="sourcePoint" />
+        <mxPoint x="140" y="2595" as="targetPoint" />
+      </mxGeometry>
+    </mxCell>
+  
+
+  <mxCell id="v125" parent="1" style="rounded=1;whiteSpace=wrap;html=1;align=left;verticalAlign=middle;strokeColor=#d2dce6;fillColor=#f2f6fa;fontColor=#1d2b3a;fontFamily=Arial;fontSize=12;fontStyle=0;spacingLeft=20;" value="&lt;b&gt;QUY TẮC NGHIỆP VỤ &amp;amp; KIẾN TRÚC ONION (AIVES SWD392 ARCHITECTURE):&lt;/b&gt;&lt;br&gt;
+• &lt;b&gt;Vòng đời Ca thi (ExamSession):&lt;/b&gt; Draft → Open → Closed / Cancelled. Chỉ giảng viên sở hữu môn thi mới có quyền mở/đóng ca thi.&lt;br&gt;
+• &lt;b&gt;Vòng đời Bài thi (Transcript):&lt;/b&gt; InProgress → Submitted → Grading → AwaitingReview → Finalized. Sinh viên chỉ nộp 1 bài duy nhất / ca thi (MVP).&lt;br&gt;
+• &lt;b&gt;Realtime SignalR Hub:&lt;/b&gt; Kiểm tra JWT Bearer, bảo vệ phòng thi theo session/student; lưu trữ bất biến các lượt hỏi đáp (&lt;i&gt;TranscriptTurns&lt;/i&gt;) theo thứ tự Sequence.&lt;br&gt;
+• &lt;b&gt;AI Provider &amp;amp; Công thức điểm:&lt;/b&gt; AI chỉ đóng vai trò trợ lý (hỏi phụ &amp;amp; đề xuất điểm theo Rubric). Server tự kiểm tra và chuẩn hóa điểm theo trọng số (tổng Weight=100%).&lt;br&gt;
+• &lt;b&gt;Phê duyệt (Assessment Finalize):&lt;/b&gt; Điểm chính thức (&lt;i&gt;FinalScore&lt;/i&gt;) bắt buộc do Giảng viên chốt và ký duyệt, lưu vết audit đầy đủ (&lt;i&gt;FinalizedByUserId, FinalizedAt&lt;/i&gt;)." vertex="1">
+    <mxGeometry height="100" width="3480" x="40" y="2660" as="geometry" />
+  </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

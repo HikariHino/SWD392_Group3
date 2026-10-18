@@ -4,6 +4,7 @@ using Application.DTOs.QuestionBank;
 using Application.Interfaces.Repositories;
 using Application.Interfaces.Services;
 using Domain.Entities.QuestionBank;
+using FluentValidation;
 
 namespace Application.Services;
 
@@ -11,15 +12,27 @@ public class QuestionBankService : IQuestionBankService
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly IMapper _mapper;
+    private readonly IValidator<QuestionQueryParameters> _queryValidator;
+    private readonly IValidator<CreateQuestionRequest> _createValidator;
+    private readonly IValidator<UpdateQuestionRequest> _updateValidator;
 
-    public QuestionBankService(IUnitOfWork unitOfWork, IMapper mapper)
+    public QuestionBankService(IUnitOfWork unitOfWork, IMapper mapper,
+        IValidator<QuestionQueryParameters> queryValidator,
+        IValidator<CreateQuestionRequest> createValidator,
+        IValidator<UpdateQuestionRequest> updateValidator)
     {
         _unitOfWork = unitOfWork;
         _mapper = mapper;
+        _queryValidator = queryValidator;
+        _createValidator = createValidator;
+        _updateValidator = updateValidator;
     }
 
     public async Task<PagedResponse<QuestionDto>> GetQuestionsAsync(QuestionQueryParameters query)
     {
+        ThrowIfInvalid(await _queryValidator.ValidateAsync(query));
+        if (query.CourseId.HasValue) await RequireActiveCourseAsync(query.CourseId.Value);
+
         var (items, totalCount) = await _unitOfWork.Questions.GetPagedQuestionsAsync(
             query.CourseId,
             query.BloomLevel,
@@ -42,6 +55,9 @@ public class QuestionBankService : IQuestionBankService
 
     public async Task<QuestionDto> CreateQuestionAsync(CreateQuestionRequest request)
     {
+        ThrowIfInvalid(await _createValidator.ValidateAsync(request));
+        await RequireActiveCourseAsync(request.CourseId);
+
         var question = _mapper.Map<Question>(request);
         question.Id = Guid.NewGuid();
 
@@ -62,38 +78,55 @@ public class QuestionBankService : IQuestionBankService
 
     public async Task<QuestionDto?> UpdateQuestionAsync(Guid id, UpdateQuestionRequest request)
     {
+        ThrowIfInvalid(await _updateValidator.ValidateAsync(request));
         var existingQuestion = await _unitOfWork.Questions.GetWithRubricsAsync(id);
-        if (existingQuestion == null) return null;
+        if (existingQuestion == null || existingQuestion.IsDeleted) return null;
 
         // Update question attributes
         existingQuestion.Content = request.Content;
         existingQuestion.BloomLevel = request.BloomLevel;
 
-        // Clear and replace rubrics
-        existingQuestion.Rubrics.Clear();
+        // Keep the replaced rubric rows for history, then add the new matrix.
+        // The question and its included rubrics are already tracked by EF, so
+        // calling Update on the whole graph would mark newly-added rubrics as
+        // existing rows and cause a concurrency error on SaveChanges.
+        foreach (var existingRubric in existingQuestion.Rubrics)
+        {
+            existingRubric.IsDeleted = true;
+        }
+
         foreach (var rReq in request.Rubrics)
         {
-            existingQuestion.Rubrics.Add(new Rubric
+            var rubric = new Rubric
             {
                 Id = Guid.NewGuid(),
                 QuestionId = id,
                 Criteria = rReq.Criteria,
                 Weight = rReq.Weight,
                 MaxScore = rReq.MaxScore
-            });
+            };
+            existingQuestion.Rubrics.Add(rubric);
+            // Explicitly mark replacements Added even though their Guid is assigned.
+            await _unitOfWork.Rubrics.AddAsync(rubric);
         }
 
-        _unitOfWork.Questions.Update(existingQuestion);
+        // Save the tracked question and explicitly-added replacements together.
         await _unitOfWork.SaveChangesAsync();
 
         var updated = await _unitOfWork.Questions.GetWithRubricsAsync(id);
-        return _mapper.Map<QuestionDto>(updated ?? existingQuestion);
+        var result = updated ?? existingQuestion;
+        var dto = _mapper.Map<QuestionDto>(result);
+        // A tracked navigation can still contain the rubric rows that were
+        // soft-deleted above, even though the database query filter excludes
+        // them. Keep the PUT response consistent with subsequent GET calls.
+        dto.Rubrics = _mapper.Map<List<RubricDto>>(result.Rubrics.Where(r => !r.IsDeleted));
+        return dto;
     }
 
     public async Task<bool> DeleteQuestionAsync(Guid id)
     {
         var question = await _unitOfWork.Questions.GetWithRubricsAsync(id);
-        if (question == null) return false;
+        if (question == null || question.IsDeleted) return false;
 
         // Soft delete question and rubrics
         question.IsDeleted = true;
@@ -102,7 +135,7 @@ public class QuestionBankService : IQuestionBankService
             rubric.IsDeleted = true;
         }
 
-        _unitOfWork.Questions.Update(question);
+        // The loaded graph is tracked; retain soft-deleted rows without removing them.
         await _unitOfWork.SaveChangesAsync();
         return true;
     }
@@ -113,8 +146,28 @@ public class QuestionBankService : IQuestionBankService
         return await Task.FromResult(true);
     }
 
-    public async Task<IEnumerable<Course>> GetCoursesAsync()
+    public async Task<IEnumerable<CourseDto>> GetCoursesAsync()
     {
-        return await _unitOfWork.Courses.GetAllAsync();
+        return _mapper.Map<IEnumerable<CourseDto>>((await _unitOfWork.Courses.GetAllAsync()).Where(c => !c.IsDeleted));
+    }
+
+    private async Task RequireActiveCourseAsync(Guid courseId)
+    {
+        var course = await _unitOfWork.Courses.GetByIdAsync(courseId);
+        if (course == null || course.IsDeleted)
+        {
+            throw new Application.Exceptions.ValidationException(new Dictionary<string, string[]>
+            {
+                [nameof(CreateQuestionRequest.CourseId)] = ["Course does not exist or has been deleted."]
+            });
+        }
+    }
+
+    private static void ThrowIfInvalid(FluentValidation.Results.ValidationResult validation)
+    {
+        if (validation.IsValid) return;
+        throw new Application.Exceptions.ValidationException(validation.Errors
+            .GroupBy(error => error.PropertyName)
+            .ToDictionary(group => group.Key, group => group.Select(error => error.ErrorMessage).ToArray()));
     }
 }
