@@ -70,6 +70,9 @@ builder.Services.AddScoped<IPasswordHasher, Infrastructure.Security.PasswordHash
 // 9. Đăng ký Dependency Injection cho External Services
 builder.Services.AddScoped<Application.Interfaces.ExternalServices.IOpenAIService, Infrastructure.ExternalServices.OpenAIService>();
 
+// 10. Đăng ký Gemini AI Service (HttpClient + IAiService)
+builder.Services.AddHttpClient<Application.Interfaces.ExternalServices.IAiService, Infrastructure.ExternalServices.GeminiService>();
+
 var app = builder.Build();
 
 app.UseMiddleware<WebApi.Middleware.ExceptionMiddleware>();

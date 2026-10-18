@@ -138,14 +138,40 @@ public class QuestionsController : ControllerBase
     }
 
     /// <summary>
-    /// Import câu hỏi từ file
+    /// Dùng AI (Google Gemini / OpenAI) sinh câu hỏi vấn đáp và ma trận Rubric 100% theo chủ đề
+    /// </summary>
+    [HttpPost("ai-generate")]
+    [Authorize(Roles = "Lecturer")]
+    [ProducesResponseType(typeof(AiGeneratedQuestionDto), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> GenerateQuestionWithAi([FromBody] AiGenerateQuestionRequest request)
+    {
+        if (string.IsNullOrWhiteSpace(request.Topic))
+        {
+            return BadRequest(new { message = "Vui lòng nhập chủ đề câu hỏi cần AI sinh." });
+        }
+
+        var result = await _questionBankService.GenerateQuestionWithAiAsync(request);
+        return Ok(result);
+    }
+
+    /// <summary>
+    /// Import danh sách câu hỏi hàng loạt (từ file JSON/CSV/Excel)
     /// </summary>
     [HttpPost("import")]
     [Authorize(Roles = "Lecturer")]
     [ProducesResponseType(StatusCodes.Status200OK)]
-    public async Task<IActionResult> ImportQuestions()
+    [ProducesResponseType(StatusCodes.Status201Created)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> ImportQuestions([FromBody] ImportQuestionsRequest? request = null)
     {
-        var result = await _questionBankService.ImportQuestionsAsync("dummyPath");
-        return Ok(new { success = result, message = "Import câu hỏi thành công!" });
+        if (request == null || request.Questions == null || request.Questions.Count == 0)
+        {
+            var dummyResult = await _questionBankService.ImportQuestionsAsync("dummyPath");
+            return Ok(new { success = dummyResult, message = "Import câu hỏi thành công!" });
+        }
+
+        var count = await _questionBankService.ImportQuestionsBatchAsync(request);
+        return StatusCode(StatusCodes.Status201Created, new { message = $"Đã import thành công {count} câu hỏi vào ngân hàng đề thi!" });
     }
 }

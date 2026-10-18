@@ -62,6 +62,65 @@ SWD392_Group3/
 
 ---
 
+## 📌 Báo cáo đóng góp & Công việc thực hiện trong Milestone 3 — Nguyễn Bùi Đăng Khôi
+
+> **Họ và tên:** Nguyễn Bùi Đăng Khôi  
+> **Vai trò:** Architecture Lead & Core Backend Engineer  
+> **Phạm vi Milestone 3:** Thiết kế & chuẩn hóa nền tảng Onion Architecture (.NET 10), triển khai hoàn chỉnh luồng nghiệp vụ cốt lõi Flow 1 (Question Bank & Rubric Matrix) phục vụ Live Demo, mô hình hóa toàn diện hệ thống UML (Sequence & State Machine Diagrams) cho 3 flows (1, 3, 4), và biên soạn Báo cáo Thiết kế Kiến trúc Phần mềm (Software Architecture Design Report).
+
+Mục này ghi lại chi tiết toàn bộ các hạng mục công việc kỹ thuật, kiến trúc và tài liệu mà **Nguyễn Bùi Đăng Khôi** đã thực hiện để các thành viên trong nhóm, giảng viên hướng dẫn (thầy Phan Minh Tâm) và hội đồng thẩm định tiện theo dõi, đối chiếu.
+
+### 1. Xây dựng nền tảng Kiến trúc Hệ thống (Clean / Onion Architecture on .NET 10)
+* **Khởi tạo và cấu trúc 4 tầng chuẩn Enterprise:**
+  * `Domain`: Định nghĩa các POCO Entities độc lập hoàn toàn (`Question`, `RubricCriterion`, `Course`, `User`, `ExamSession`, `Transcript`, `Assessment`), các Enums chuẩn hóa (`BloomTaxonomy`, `UserRole`, `ExamStatus`) và Domain Exceptions. Tầng này có **0 external dependencies**.
+  * `Application`: Định nghĩa hợp đồng nghiệp vụ (Contracts/Interfaces), DTOs, AutoMapper mapping profiles, các nghiệp vụ dịch vụ (`QuestionBankService`), và tích hợp thư viện **FluentValidation** để kiểm soát tính hợp lệ của dữ liệu đầu vào.
+  * `Infrastructure`: Triển khai EF Core `ApplicationDbContext`, **Generic Repository Pattern** và **Unit of Work Pattern** giúp quản lý giao dịch nguyên tử (Atomic Transactions) cấp cơ sở dữ liệu qua `SaveChangesAsync()`. Tích hợp mã hóa mật khẩu BCrypt và cấu hình xác thực JWT Bearer.
+  * `WebApi (Presentation)`: Xây dựng RESTful API Controllers, tích hợp bộ xử lý ngoại lệ tập trung (**Global Exception Handling Middleware**) chuẩn RFC 7807 (`ProblemDetails` có đính kèm `traceId`), cấu hình CORS cho phép kết nối Frontend và kích hoạt giao diện **Swagger UI trực tiếp tại root URL (`/`)**.
+* **Chuẩn hóa môi trường phát triển:** Cấu hình chính sách `global.json` cho phép .NET 10 SDK roll-forward ổn định, thiết lập Dependency Injection tập trung, sạch sẽ trong `Program.cs`.
+
+### 2. Hiện thực hóa Nghiệp vụ Cốt lõi Flow 1 (Question Bank & Rubric Management — Demo Flow)
+* **Thiết kế & cài đặt trọn bộ API `/api/questions`:** Cung cấp đầy đủ các thao tác CRUD câu hỏi đi kèm danh sách tiêu chí Rubric tương ứng.
+* **Xây dựng luật nghiệp vụ kiểm định ma trận Rubric nghiêm ngặt:**
+  * Phân loại câu hỏi theo 6 bậc tư duy nhận thức của Thang đo Bloom (Bloom's Taxonomy).
+  * Kiểm tra tính hợp lệ và trạng thái hoạt động (`IsActive`) của môn học (`CourseId`).
+  * **Ràng buộc tiên quyết bất biến (Invariable Rule):** Tổng trọng số của toàn bộ tiêu chí Rubric thuộc câu hỏi bắt buộc phải bằng **100%** ($\sum \text{Rubric.Weight} = 100\%$). Nếu sai lệch dù chỉ $0.01\%$, request bị chặn ngay từ tầng Application và trả về lỗi `400 Bad Request` kèm thông báo chi tiết.
+* **Cơ chế Xóa mềm (Soft Delete):** Triển khai cờ `IsDeleted = true` cho cả Question và Rubric Criterion, ngăn chặn việc xóa cứng trong DB làm phá hủy tính toàn vẹn dữ liệu và mất vết lịch sử chấm điểm của các kỳ thi đã diễn ra.
+* **Đảm bảo tính nguyên tử (Atomicity):** Việc lưu Question và toàn bộ $N$ tiêu chí Rubric con được thực thi trong cùng một transaction của Unit of Work, bảo đảm không bao giờ xảy ra lỗi "câu hỏi đã lưu nhưng rubric bị thiếu".
+* **Ý nghĩa đối với Milestone 3:** Đây là **Flow duy nhất được nhóm lựa chọn để thực hiện Live Demo** (tương tác trực quan từ giao diện React Frontend $\rightarrow$ Swagger API $\rightarrow$ CSDL SQL Server thật).
+
+### 3. Quản trị Cơ sở dữ liệu & Đồng bộ Schema (Database & EF Core Migrations)
+* Trực tiếp tạo lập, kiểm thử và đồng bộ các file Migrations của Entity Framework Core (`InitialCreate`, `AlignQuestionBankSchema`).
+* Đồng bộ hóa Model Snapshot của EF Core với cấu trúc thực tế trên CSDL Azure SQL Database và SQL Server LocalDB, loại bỏ hoàn toàn hiện tượng lệch schema (schema drift).
+* Giải quyết các xung đột CSDL và tích hợp schema từ nhánh của các thành viên khác vào nhánh `main`.
+
+### 4. Mô hình hóa Thiết kế Kiến trúc (UML 2.x Sequence & State Machine Diagrams)
+Đã thiết kế, chuẩn hóa và đóng gói thành các file `.drawio` chuyên nghiệp trong thư mục `docs/`, bao phủ trọn vẹn cả **3 Flows (1, 3, 4)** theo đúng định hướng kiến trúc:
+* **Sequence Diagram Flow 1 (Basic) — [`docs/Sequence-CreateQuestion-Rubric-basic.drawio`](docs/Sequence-CreateQuestion-Rubric-basic.drawio):**
+  * Thể hiện chi tiết 7 Lifelines: `Lecturer` $\rightarrow$ `:QuestionView (React)` $\rightarrow$ `:QuestionsController` $\rightarrow$ `:CreateQuestionValidator` $\rightarrow$ Khối `alt` (Xử lý nhánh lỗi 400 vs Nhánh thành công 201) $\rightarrow$ `:QuestionBankService` $\rightarrow$ `:UnitOfWork` $\rightarrow$ `SQL Server`. Khớp 100% với code C# .NET 10.
+* **Sequence Diagram Flow 3 & 4 (Extended) — [`docs/Sequence-AIVivaExam-Workflow-extended.drawio`](docs/Sequence-AIVivaExam-Workflow-extended.drawio):**
+  * Mô hình hóa quy trình tổng thể qua **5 Giai đoạn**:
+    * *Giai đoạn 1:* Giảng viên cấu hình & mở ca thi (`ExamSession: Draft -> Open`).
+    * *Giai đoạn 2:* Sinh viên kết nối SignalR `InterviewHub` thời gian thực và khởi tạo bài thi.
+    * *Giai đoạn 3 (Flow 3):* Vòng lặp vấn đáp trực tiếp tương tác (Live Viva Q&A loop) qua Azure Speech (STT/TTS) và Azure OpenAI (GPT-4) sinh câu hỏi xoáy thích ứng theo ngữ cảnh sinh viên vừa trả lời.
+    * *Giai đoạn 4 (Flow 4):* Nộp bài, trích xuất transcript và kích hoạt AI chấm điểm theo bộ tiêu chí Rubric (`Submitted` $\rightarrow$ `Evaluating` $\rightarrow$ `AwaitingReview`).
+    * *Giai đoạn 5 (Flow 4):* Giảng viên xem lại dẫn chứng, điều chỉnh điểm số và chốt điểm chính thức (`FinalizeAssessment`).
+* **State Machine Diagrams — [`docs/State-Machine-Diagrams.drawio`](docs/State-Machine-Diagrams.drawio):**
+  * *Tab 1 (Flow 1 - Question Lifecycle):* `Initial` $\rightarrow$ `Draft` $\rightarrow$ `Validating` (Guard: `[TotalWeight == 100%]` vs `[TotalWeight != 100%]`) $\rightarrow$ `Approved` $\rightleftharpoons$ `InExamSession` (Khóa đóng băng khi ca thi đang mở) $\rightarrow$ `SoftDeleted` $\rightarrow$ `Final`.
+  * *Tab 2 (Flow 3 & 4 - Exam Attempt & Assessment Lifecycle):* `Initial` $\rightarrow$ `Scheduled` $\rightarrow$ `Open` $\rightarrow$ `InProgress (Live Viva)` $\rightarrow$ `Submitted` $\rightarrow$ `Evaluating (AI Rubric Scoring)` $\rightarrow$ `AwaitingReview (Human-in-the-loop)` $\rightarrow$ `Finalized` $\rightarrow$ `Final`.
+
+### 5. Biên soạn Báo cáo Thiết kế Kiến trúc Phần mềm (Software Architecture Design Report)
+* Trực tiếp soạn thảo và hoàn thiện tài liệu **[`docs/Software_Architecture_Design_Report_AIVES_Group3.docx`](docs/Software_Architecture_Design_Report_AIVES_Group3.docx)** (kích thước ~40KB, 13 chương mục đầy đủ theo đúng Template chuẩn của Đại học FPT `Software Architecture Design_Report Template v.01.docx`):
+  * **Business Context & Problem Statement:** Mô tả bối cảnh thi vấn đáp truyền thống và giải pháp tự động hóa bằng AI của AIVES.
+  * **Use Case Realization & Quality Attributes:** Phân tích chi tiết các thuộc tính chất lượng (Performance, Scalability, Security, Modifiability).
+  * **Mô hình 4+1 Architectural Views:** Trình bày chi tiết Logical View, Process View, Development View, Physical View và Scenarios.
+  * **Architectural Rationale & Traceability Matrix:** Biện giải tính đúng đắn khi lựa chọn Onion Architecture, SignalR WebSockets, Azure Speech và OpenAI GPT-4.
+
+### 6. Điều phối Kỹ thuật, Review Code & Đảm bảo Chất lượng (QA & Integration)
+* **Code Review & Hỗ trợ kỹ thuật:** Thẩm định và sửa lỗi cú pháp trong `IUnitOfWork`, hướng dẫn và tích hợp mã nguồn từ các thành viên khác (Quang, Thái) vào nhánh `main`.
+* **Kiểm thử tự động:** Duy trì hệ thống kiểm thử tự động với **263 checks regression / SQLite PASS** và **134 checks LocalDB / HTTP PASS**, bảo đảm toàn bộ solution build thành công với 0 warning và 0 error trước khi đóng gói nộp bài.
+
+---
+
 ## ⚙️ Getting Started & Local Setup
 
 Hiện có code CRUD User/Question/Rubric, danh sách Course và Swagger. Import/AI/interview/grading vẫn mock; Auth, Speech và entity ca thi/kết quả chưa triển khai. Cây kiến trúc phía trên mô tả cả phần dự kiến. Đọc [hợp đồng database/API C03](docs/BACKEND_CONTRACTS.md) trước khi đổi entity, migration hoặc DTO.
@@ -145,8 +204,11 @@ Sau khi chạy thành công, hệ thống sẵn sàng phục vụ tại:
 
 ---
 
-Trần Thường Quang - QuangTT SE196220
-Vương Hoàng Giang - GiangVH SE193455
+### 👥 Nhóm tác giả thực hiện (SWD392 - Group 3)
+* **Nguyễn Bùi Đăng Khôi** — Architecture Lead & Core Backend Engineer
+* **Trần Thường Quang** — QuangTT SE196220
+* **Vương Hoàng Giang** — GiangVH SE193455
+* **Nguyễn Hùng Thái** — ThaiNH SE180436 (iamnhtf)
 
 ## C11: thiết lập đăng nhập JWT
 
