@@ -187,10 +187,15 @@ public class QuestionBankService : IQuestionBankService
         int count = 0;
         foreach (var qReq in request.Questions)
         {
+            if (request.CourseId != Guid.Empty && qReq.CourseId == Guid.Empty)
+            {
+                qReq.CourseId = request.CourseId;
+            }
+
             ThrowIfInvalid(await _createValidator.ValidateAsync(qReq));
             var question = _mapper.Map<Question>(qReq);
             question.Id = Guid.NewGuid();
-            question.CourseId = request.CourseId != Guid.Empty ? request.CourseId : qReq.CourseId;
+            question.CourseId = qReq.CourseId;
 
             foreach (var r in question.Rubrics)
             {
