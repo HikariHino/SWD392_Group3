@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Domain.Entities.QuestionBank;
+using Domain.Entities.UserManagement;
 using Domain.Enums;
 
 namespace Infrastructure.Persistence;
@@ -10,6 +11,25 @@ public static class DatabaseSeeder
     {
         // Creates a development schema only; does not apply EF migrations.
         await context.Database.EnsureCreatedAsync();
+
+        // Bootstrap a development Lecturer so a clean database can log in
+        // before protected user-management endpoints are available.
+        // The username check keeps this seed idempotent across restarts.
+        if (!await context.Users.AnyAsync(u => u.Username == "lecturer"))
+        {
+            await context.Users.AddAsync(new User
+            {
+                Id = Guid.Parse("aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa"),
+                Username = "lecturer",
+                PasswordHash = BCrypt.Net.BCrypt.HashPassword("password123"),
+                FullName = "Default Lecturer",
+                Role = "Lecturer",
+                CreatedAt = DateTime.UtcNow,
+                IsDeleted = false
+            });
+
+            await context.SaveChangesAsync();
+        }
 
         // 1. Seed Courses nếu chưa có
         if (!await context.Courses.AnyAsync())
