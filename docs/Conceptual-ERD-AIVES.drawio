@@ -1,0 +1,113 @@
+<mxfile host="app.diagrams.net" agent="Codex">
+  <diagram id="conceptual-erd-aives" name="Conceptual ERD - AIVES">
+    <mxGraphModel dx="3273" dy="921" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="1000" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="title" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontFamily=Arial;fontSize=25;fontStyle=1;fontColor=#222222;" value="CONCEPTUAL ERD — AIVES" vertex="1">
+          <mxGeometry height="40" width="1000" x="290" y="50" as="geometry" />
+        </mxCell>
+        <mxCell id="user" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#222222;strokeWidth=1.5;fontFamily=Arial;fontSize=16;fontColor=#222222;spacing=12;" value="&lt;b&gt;USER&lt;/b&gt;&lt;br&gt;&lt;br&gt;Lecturer / Student account" vertex="1">
+          <mxGeometry height="100" width="230" x="20" y="220" as="geometry" />
+        </mxCell>
+        <mxCell id="course" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#222222;strokeWidth=1.5;fontFamily=Arial;fontSize=16;fontColor=#222222;spacing=12;" value="&lt;b&gt;COURSE&lt;/b&gt;&lt;br&gt;&lt;br&gt;Subject / question-bank owner" vertex="1">
+          <mxGeometry height="100" width="230" x="60" y="520" as="geometry" />
+        </mxCell>
+        <mxCell id="question" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#222222;strokeWidth=1.5;fontFamily=Arial;fontSize=16;fontColor=#222222;spacing=12;" value="&lt;b&gt;QUESTION&lt;/b&gt;&lt;br&gt;&lt;br&gt;Viva question" vertex="1">
+          <mxGeometry height="100" width="230" x="450" y="335" as="geometry" />
+        </mxCell>
+        <mxCell id="rubric" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#222222;strokeWidth=1.5;fontFamily=Arial;fontSize=16;fontColor=#222222;spacing=12;" value="&lt;b&gt;RUBRIC&lt;/b&gt;&lt;br&gt;&lt;br&gt;Scoring criteria" vertex="1">
+          <mxGeometry height="100" width="230" x="810" y="270" as="geometry" />
+        </mxCell>
+        <mxCell id="session" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#222222;strokeWidth=1.5;fontFamily=Arial;fontSize=16;fontColor=#222222;spacing=12;" value="&lt;b&gt;EXAM SESSION&lt;/b&gt;&lt;br&gt;&lt;br&gt;Organized viva examination" vertex="1">
+          <mxGeometry height="100" width="230" x="740" y="530" as="geometry" />
+        </mxCell>
+        <mxCell id="transcript" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#222222;strokeWidth=1.5;fontFamily=Arial;fontSize=16;fontColor=#222222;spacing=12;" value="&lt;b&gt;TRANSCRIPT&lt;/b&gt;&lt;br&gt;&lt;br&gt;Student viva attempt" vertex="1">
+          <mxGeometry height="100" width="240" x="1320" y="335" as="geometry" />
+        </mxCell>
+        <mxCell id="assessment" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#222222;strokeWidth=1.5;fontFamily=Arial;fontSize=16;fontColor=#222222;spacing=12;" value="&lt;b&gt;ASSESSMENT&lt;/b&gt;&lt;br&gt;&lt;br&gt;AI suggestion + Lecturer final score" vertex="1">
+          <mxGeometry height="100" width="240" x="1330" y="660" as="geometry" />
+        </mxCell>
+        <mxCell id="e1" edge="1" parent="1" source="user" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#222222;strokeWidth=1.5;startArrow=ERone;endArrow=ERmany;fontFamily=Arial;fontSize=12;labelBackgroundColor=#ffffff;" target="session" value="creates / participates in">
+          <mxGeometry relative="1" x="-0.05" as="geometry">
+            <Array as="points">
+              <mxPoint x="400" y="260" />
+              <mxPoint x="400" y="570" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e2" edge="1" parent="1" source="user" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#222222;strokeWidth=1.5;startArrow=ERone;endArrow=ERmany;fontFamily=Arial;fontSize=12;labelBackgroundColor=#ffffff;" target="question" value="manages">
+          <mxGeometry relative="1" x="-0.076" as="geometry">
+            <Array as="points">
+              <mxPoint x="-30" y="270" />
+              <mxPoint x="-30" y="360" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e3" edge="1" parent="1" source="user" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#222222;strokeWidth=1.5;startArrow=ERone;endArrow=ERmany;fontFamily=Arial;fontSize=12;labelBackgroundColor=#ffffff;" target="assessment" value="finalizes">
+          <mxGeometry relative="1" x="-0.0173" as="geometry">
+            <Array as="points">
+              <mxPoint x="220" y="150" />
+              <mxPoint x="1120" y="150" />
+              <mxPoint x="1120" y="700" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e4" edge="1" parent="1" source="course" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#222222;strokeWidth=1.5;startArrow=ERone;endArrow=ERmany;fontFamily=Arial;fontSize=12;labelBackgroundColor=#ffffff;" target="question" value="contains">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="170" y="385" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e5" edge="1" parent="1" source="course" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#222222;strokeWidth=1.5;startArrow=ERone;endArrow=ERmany;fontFamily=Arial;fontSize=12;labelBackgroundColor=#ffffff;" target="session" value="is examined in">
+          <mxGeometry relative="1" x="0.3778" as="geometry">
+            <Array as="points">
+              <mxPoint x="175" y="690" />
+              <mxPoint x="855" y="690" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e6" edge="1" parent="1" source="question" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#222222;strokeWidth=1.5;startArrow=ERone;endArrow=ERmany;fontFamily=Arial;fontSize=12;labelBackgroundColor=#ffffff;" target="rubric" value="is evaluated by">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="565" y="300" />
+              <mxPoint x="935" y="300" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e7" edge="1" parent="1" source="session" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#222222;strokeWidth=1.5;startArrow=ERone;endArrow=ERmany;fontFamily=Arial;fontSize=12;labelBackgroundColor=#ffffff;" target="transcript" value="records">
+          <mxGeometry relative="1" x="0.021" as="geometry">
+            <Array as="points">
+              <mxPoint x="1360" y="570" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e8" edge="1" parent="1" source="user" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#222222;strokeWidth=1.5;startArrow=ERone;endArrow=ERmany;fontFamily=Arial;fontSize=12;labelBackgroundColor=#ffffff;" target="transcript" value="submits">
+          <mxGeometry relative="1" x="-0.008" as="geometry">
+            <Array as="points">
+              <mxPoint x="140" y="115" />
+              <mxPoint x="1450" y="115" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e9" edge="1" parent="1" source="transcript" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#222222;strokeWidth=1.5;startArrow=ERone;endArrow=ERmany;fontFamily=Arial;fontSize=12;labelBackgroundColor=#ffffff;" target="assessment" value="has">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1450" y="480" />
+              <mxPoint x="1450" y="480" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e10" edge="1" parent="1" source="question" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#222222;strokeWidth=1.5;startArrow=ERone;endArrow=ERmany;fontFamily=Arial;fontSize=12;labelBackgroundColor=#ffffff;" target="assessment" value="is answered in">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="565" y="800" />
+              <mxPoint x="1450" y="800" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
