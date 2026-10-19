@@ -1,0 +1,100 @@
+[
+  {
+    "Code": "UC-01",
+    "Name": "Create or Import Questions",
+    "Actor": "Lecturer",
+    "Pre": "Lecturer logged in with question bank permissions.",
+    "Flow": "1. Select course or topic.\n2. Create questions manually or import via JSON/CSV.\n3. System validates constraints (Rubric weight = 100%).\n4. Save question graph to database."
+  },
+  {
+    "Code": "UC-02",
+    "Name": "Synthesize Questions with AI",
+    "Actor": "Lecturer, AI Service",
+    "Pre": "Course topic and context selected.",
+    "Flow": "1. Lecturer inputs topic and Bloom level.\n2. Gemini AI analyzes requirements.\n3. AI synthesizes viva question and 100% rubric matrix.\n4. Question loaded as editable draft."
+  },
+  {
+    "Code": "UC-03",
+    "Name": "Assign Bloom Levels and Link Rubrics",
+    "Actor": "Lecturer, AI Service",
+    "Pre": "Question content prepared.",
+    "Flow": "1. Display question.\n2. Select Bloom taxonomy level (Remember to Analyze).\n3. Define rubric criteria, weights, and max points.\n4. Validate total weight strictly equals 100%."
+  },
+  {
+    "Code": "UC-04",
+    "Name": "Review AI-Generated Questions",
+    "Actor": "Lecturer",
+    "Pre": "AI draft question synthesized.",
+    "Flow": "1. Review generated content and rubric matrix.\n2. Edit question or rubric weights if needed.\n3. Approve and commit question to official question bank."
+  },
+  {
+    "Code": "UC-05",
+    "Name": "Manage Assessment Criteria and Scoring Scales",
+    "Actor": "Lecturer",
+    "Pre": "Active question exists.",
+    "Flow": "1. Open question rubric builder.\n2. Define criteria, weights, and achievement scales.\n3. Verify total weight == 100%.\n4. Commit atomic transaction."
+  },
+  {
+    "Code": "UC-06",
+    "Name": "Act as a Virtual Examiner",
+    "Actor": "Student, AI Service",
+    "Pre": "Exam session active; microphone access granted.",
+    "Flow": "1. AI selects viva question.\n2. AI reads question aloud via TTS voice synthesis.\n3. Student listens and prepares response.\n4. System starts countdown response timer."
+  },
+  {
+    "Code": "UC-07",
+    "Name": "Answer Questions by Voice",
+    "Actor": "Student",
+    "Pre": "Microphone enabled in exam room.",
+    "Flow": "1. Student speaks oral response.\n2. Web client captures audio stream.\n3. Stream transmitted via SignalR WebSocket.\n4. Real-time transcript visualized on screen."
+  },
+  {
+    "Code": "UC-08",
+    "Name": "Convert Spoken Answers into Text",
+    "Actor": "Student, AI Service",
+    "Pre": "Audio stream transmitted.",
+    "Flow": "1. Speech recognition engine receives audio chunks.\n2. Audio transcribed into text in near real-time.\n3. Session transcript updated and linked to current question."
+  },
+  {
+    "Code": "UC-09",
+    "Name": "Analyze Student Answers",
+    "Actor": "AI Service",
+    "Pre": "Transcript, question context, and rubrics available.",
+    "Flow": "1. Ingest transcript dialogue.\n2. Compare candidate response against rubric criteria.\n3. Identify conceptual accuracy, omissions, and contradictions."
+  },
+  {
+    "Code": "UC-10",
+    "Name": "Generate Adaptive Follow-up Questions",
+    "Actor": "AI Service",
+    "Pre": "Answer analysis detects incomplete or ambiguous point.",
+    "Flow": "1. Identify concept requiring deeper probing.\n2. Synthesize targeted follow-up question.\n3. Check session limits.\n4. Deliver follow-up question via voice."
+  },
+  {
+    "Code": "UC-11",
+    "Name": "Suggest Rubric Score",
+    "Actor": "AI Service",
+    "Pre": "Transcript completed and analyzed.",
+    "Flow": "1. Evaluate response per rubric criterion.\n2. Calculate suggested score and confidence level.\n3. Generate detailed qualitative feedback and evidence quotes."
+  },
+  {
+    "Code": "UC-12",
+    "Name": "Review Transcript and AI Suggestion",
+    "Actor": "Lecturer",
+    "Pre": "Exam attempt completed; proposal ready.",
+    "Flow": "1. Open candidate grading dashboard.\n2. Review dialogue transcript, audio playback, and rubric matrix.\n3. Inspect AI suggested score and feedback rationale."
+  },
+  {
+    "Code": "UC-13",
+    "Name": "Adjust and Finalize Grade",
+    "Actor": "Lecturer",
+    "Pre": "Transcript and AI suggestion reviewed.",
+    "Flow": "1. Lecturer accepts AI score or adjusts criteria marks.\n2. Enter teacher comment/justification if modified.\n3. Submit official final score to publish result."
+  },
+  {
+    "Code": "UC-14",
+    "Name": "Generate Post-Exam Feedback",
+    "Actor": "AI Service",
+    "Pre": "Exam finalized by Lecturer.",
+    "Flow": "1. Aggregate rubric achievement and weaknesses.\n2. Synthesize constructive study recommendations.\n3. Publish official feedback report to Student portal."
+  }
+]

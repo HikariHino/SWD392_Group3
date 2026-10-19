@@ -1,0 +1,100 @@
+[
+  {
+    "Code": "UC-01",
+    "Name": "Tạo hoặc Nhập câu hỏi",
+    "Actor": "Giảng viên",
+    "Pre": "Giảng viên đã đăng nhập và có quyền quản lý ngân hàng câu hỏi.",
+    "Flow": "1. Chọn môn học hoặc chủ đề.\n2. Tạo thủ công hoặc nhập file JSON/CSV.\n3. Hệ thống kiểm tra ràng buộc (Tổng trọng số Rubric = 100%).\n4. Lưu câu hỏi vào CSDL."
+  },
+  {
+    "Code": "UC-02",
+    "Name": "Sinh câu hỏi bằng AI Gemini",
+    "Actor": "Giảng viên, Dịch vụ AI",
+    "Pre": "Đã chọn môn học và chủ đề cần ra đề.",
+    "Flow": "1. Giảng viên nhập chủ đề và mức độ Bloom.\n2. Gemini AI phân tích yêu cầu.\n3. AI sinh câu hỏi vấn đáp và ma trận Rubric 100%.\n4. Hiển thị bản nháp để duyệt."
+  },
+  {
+    "Code": "UC-03",
+    "Name": "Gán cấp độ Bloom và Rubric",
+    "Actor": "Giảng viên, Dịch vụ AI",
+    "Pre": "Nội dung câu hỏi đã sẵn sàng.",
+    "Flow": "1. Hiển thị câu hỏi.\n2. Chọn mức nhận thức Bloom (1..6).\n3. Thêm tiêu chí rubric, trọng số và điểm tối đa.\n4. Kiểm tra tổng trọng số bắt buộc = 100%."
+  },
+  {
+    "Code": "UC-04",
+    "Name": "Duyệt câu hỏi do AI tạo",
+    "Actor": "Giảng viên",
+    "Pre": "AI đã sinh xong câu hỏi nháp.",
+    "Flow": "1. Kiểm tra nội dung câu hỏi và ma trận rubric.\n2. Chỉnh sửa câu hỏi hoặc trọng số nếu cần.\n3. Phê duyệt và lưu chính thức vào ngân hàng đề."
+  },
+  {
+    "Code": "UC-05",
+    "Name": "Quản lý Tiêu chí & Thang điểm",
+    "Actor": "Giảng viên",
+    "Pre": "Câu hỏi đang hoạt động trong hệ thống.",
+    "Flow": "1. Mở giao diện cấu hình rubric động.\n2. Thiết lập tiêu chí, trọng số và thang điểm.\n3. Ràng buộc tổng trọng số = 100%.\n4. Thực hiện giao dịch lưu nguyên tử."
+  },
+  {
+    "Code": "UC-06",
+    "Name": "Giám khảo ảo đặt câu hỏi",
+    "Actor": "Sinh viên, Dịch vụ AI",
+    "Pre": "Ca thi đang hoạt động; quyền micro đã được cấp.",
+    "Flow": "1. AI chọn câu hỏi thi.\n2. AI đọc câu hỏi bằng giọng nói qua Text-to-Speech (TTS).\n3. Sinh viên lắng nghe.\n4. Hệ thống bắt đầu đếm ngược thời gian."
+  },
+  {
+    "Code": "UC-07",
+    "Name": "Trả lời câu hỏi bằng Giọng nói",
+    "Actor": "Sinh viên",
+    "Pre": "Microphone đã bật trong phòng thi.",
+    "Flow": "1. Sinh viên trả lời bằng giọng nói.\n2. Trình duyệt ghi âm luồng âm thanh.\n3. Truyền luồng qua SignalR WebSocket.\n4. Hiển thị văn bản dịch thời gian thực."
+  },
+  {
+    "Code": "UC-08",
+    "Name": "Chuyển giọng nói thành văn bản",
+    "Actor": "Sinh viên, Dịch vụ AI",
+    "Pre": "Luồng âm thanh đã được truyền đi.",
+    "Flow": "1. Bộ nhận diện nhận các gói âm thanh.\n2. Dịch giọng nói thành văn bản thời gian thực.\n3. Cập nhật nhật ký hội thoại gắn với câu hỏi."
+  },
+  {
+    "Code": "UC-09",
+    "Name": "Phân tích câu trả lời thí sinh",
+    "Actor": "Dịch vụ AI",
+    "Pre": "Đã có đoạn hội thoại, câu hỏi và rubric.",
+    "Flow": "1. Nạp nội dung hội thoại.\n2. Đối chiếu câu trả lời với tiêu chí rubric.\n3. Xác định luận điểm đúng, thiếu sót và mâu thuẫn."
+  },
+  {
+    "Code": "UC-10",
+    "Name": "Sinh câu hỏi xoáy thích ứng",
+    "Actor": "Dịch vụ AI",
+    "Pre": "Phát hiện câu trả lời chưa rõ hoặc mâu thuẫn.",
+    "Flow": "1. Xác định nội dung cần hỏi sâu.\n2. AI sinh câu hỏi xoáy thích ứng.\n3. Kiểm tra giới hạn số câu và thời gian.\n4. Phát câu hỏi bằng giọng nói TTS."
+  },
+  {
+    "Code": "UC-11",
+    "Name": "Đề xuất điểm số theo Rubric",
+    "Actor": "Dịch vụ AI",
+    "Pre": "Đoạn hội thoại đã hoàn thành và phân tích xong.",
+    "Flow": "1. Chấm điểm từng tiêu chí rubric.\n2. Tính điểm đề xuất và độ tin cậy.\n3. Tạo nhận xét chi tiết kèm trích dẫn bằng chứng."
+  },
+  {
+    "Code": "UC-12",
+    "Name": "Xem lại Transcript & Điểm gợi ý",
+    "Actor": "Giảng viên",
+    "Pre": "Thí sinh thi xong; AI đã chấm sơ bộ.",
+    "Flow": "1. Giảng viên mở bảng thẩm định ca thi.\n2. Xem lại đoạn hội thoại, nghe ghi âm, xem rubric.\n3. Xem lý giải chấm điểm của AI."
+  },
+  {
+    "Code": "UC-13",
+    "Name": "Điều chỉnh & Chốt Điểm chính thức",
+    "Actor": "Giảng viên",
+    "Pre": "Đã xem lại transcript và điểm số gợi ý.",
+    "Flow": "1. Giảng viên đồng ý hoặc điều chỉnh điểm từng tiêu chí.\n2. Nhập nhận xét/lý do nếu có thay đổi.\n3. Xác nhận và lưu điểm chính thức vào CSDL."
+  },
+  {
+    "Code": "UC-14",
+    "Name": "Tổng hợp Đánh giá sau kỳ thi",
+    "Actor": "Dịch vụ AI",
+    "Pre": "Giảng viên đã chốt điểm chính thức.",
+    "Flow": "1. Tổng hợp mức độ đạt theo rubric.\n2. Xác định điểm mạnh và lỗ hổng kiến thức.\n3. Đưa ra khuyến nghị học tập cho sinh viên."
+  }
+]

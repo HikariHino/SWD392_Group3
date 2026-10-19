@@ -1,0 +1,85 @@
+<mxfile host="app.diagrams.net" agent="Codex">
+  <diagram id="flow1-implemented" name="Flow 1 - Implemented Question Lifecycle">
+    <mxGraphModel dx="1101" dy="932" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1400" pageHeight="900" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="title" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontFamily=Arial;fontSize=24;fontStyle=1;fontColor=#17324d;" value="STATE MACHINE DIAGRAM — IMPLEMENTED QUESTION LIFECYCLE (FLOW 1)" vertex="1">
+          <mxGeometry height="40" width="1040" x="180" y="25" as="geometry" />
+        </mxCell>
+        <mxCell id="subtitle" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontFamily=Arial;fontSize=14;fontColor=#52657b;" value="Implemented in current backend: AI generation, FluentValidation, Question/Rubric persistence, update and soft delete" vertex="1">
+          <mxGeometry height="30" width="1060" x="170" y="65" as="geometry" />
+        </mxCell>
+        <mxCell id="initial" parent="1" style="shape=umlInitialState;html=1;fillColor=#1f2937;strokeColor=#1f2937;" vertex="1">
+          <mxGeometry height="32" width="32" x="675" y="115" as="geometry" />
+        </mxCell>
+        <mxCell id="draft" parent="1" style="rounded=1;whiteSpace=wrap;html=1;strokeWidth=2;fontFamily=Arial;fontSize=16;spacing=12;strokeColor=#000000;" value="&lt;b&gt;Draft&lt;/b&gt;&lt;br&gt;&lt;br&gt;Question data is prepared&lt;br&gt;(manual input or AI result)" vertex="1">
+          <mxGeometry height="105" width="260" x="560" y="190" as="geometry" />
+        </mxCell>
+        <mxCell id="validating" parent="1" style="rounded=1;whiteSpace=wrap;html=1;strokeWidth=2;fontFamily=Arial;fontSize=16;spacing=12;strokeColor=#000000;" value="&lt;b&gt;Validating&lt;/b&gt;&lt;br&gt;&lt;br&gt;FluentValidation&lt;br&gt;Weight total must equal 100%" vertex="1">
+          <mxGeometry height="110" width="260" x="560" y="370" as="geometry" />
+        </mxCell>
+        <mxCell id="saved" parent="1" style="rounded=1;whiteSpace=wrap;html=1;strokeWidth=2;fontFamily=Arial;fontSize=16;spacing=12;strokeColor=#000000;" value="&lt;b&gt;Saved&lt;/b&gt;&lt;br&gt;&lt;br&gt;Question + active Rubrics&lt;br&gt;persisted in SQL Server" vertex="1">
+          <mxGeometry height="105" width="260" x="560" y="555" as="geometry" />
+        </mxCell>
+        <mxCell id="updating" parent="1" style="rounded=1;whiteSpace=wrap;html=1;strokeWidth=2;fontFamily=Arial;fontSize=16;spacing=12;strokeColor=#000000;" value="&lt;b&gt;Updating&lt;/b&gt;&lt;br&gt;&lt;br&gt;PUT question&lt;br&gt;Replace active Rubric matrix" vertex="1">
+          <mxGeometry height="105" width="260" x="180" y="555" as="geometry" />
+        </mxCell>
+        <mxCell id="softdeleted" parent="1" style="rounded=1;whiteSpace=wrap;html=1;strokeWidth=2;fontFamily=Arial;fontSize=16;spacing=12;strokeColor=#000000;" value="&lt;b&gt;SoftDeleted&lt;/b&gt;&lt;br&gt;&lt;br&gt;Question.IsDeleted = true&lt;br&gt;Rubrics.IsDeleted = true" vertex="1">
+          <mxGeometry height="105" width="260" x="940" y="555" as="geometry" />
+        </mxCell>
+        <mxCell id="final" parent="1" style="shape=umlActivityFinal;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=2;" vertex="1">
+          <mxGeometry height="42" width="42" x="1050" y="750" as="geometry" />
+        </mxCell>
+        <mxCell id="e1" edge="1" parent="1" source="initial" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#334155;strokeWidth=2;endArrow=block;endFill=1;fontFamily=Arial;fontSize=13;labelBackgroundColor=#ffffff;" target="draft" value="CreateQuestion() / AI Generate()">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e2" edge="1" parent="1" source="draft" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#000000;strokeWidth=2;endArrow=block;endFill=1;fontFamily=Arial;fontSize=13;labelBackgroundColor=#ffffff;" target="validating" value="SubmitQuestion()">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e3" edge="1" parent="1" source="validating" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#000000;strokeWidth=2;endArrow=block;endFill=1;fontFamily=Arial;fontSize=13;fontColor=#991b1b;labelBackgroundColor=#ffffff;" target="draft" value="[Weight != 100%] / HTTP 400 + validation errors">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="500" y="425" />
+              <mxPoint x="500" y="245" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e4" edge="1" parent="1" source="validating" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#000000;strokeWidth=2;endArrow=block;endFill=1;fontFamily=Arial;fontSize=13;fontColor=#166534;labelBackgroundColor=#ffffff;" target="saved" value="[Weight == 100%] / SaveQuestionAndRubrics()">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e5" edge="1" parent="1" source="saved" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#000000;strokeWidth=2;endArrow=block;endFill=1;fontFamily=Arial;fontSize=13;fontColor=#7c2d12;labelBackgroundColor=#ffffff;" target="updating" value="PUT /api/questions/{id}">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="500" y="610" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e6" edge="1" parent="1" source="updating" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#000000;strokeWidth=2;endArrow=block;endFill=1;fontFamily=Arial;fontSize=13;fontColor=#7c2d12;labelBackgroundColor=#ffffff;" target="validating" value="Validate new content and Rubrics">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="310" y="425" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e7" edge="1" parent="1" source="updating" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#000000;strokeWidth=2;endArrow=block;endFill=1;fontFamily=Arial;fontSize=13;fontColor=#166534;labelBackgroundColor=#ffffff;" target="saved" value="Valid update / save replacement Rubrics">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="500" y="700" />
+              <mxPoint x="690" y="700" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e8" edge="1" parent="1" source="saved" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#000000;strokeWidth=2;endArrow=block;endFill=1;fontFamily=Arial;fontSize=13;fontColor=#991b1b;labelBackgroundColor=#ffffff;" target="softdeleted" value="DELETE /api/questions/{id} / Set IsDeleted = true">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e9" edge="1" parent="1" source="softdeleted" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#000000;strokeWidth=2;endArrow=block;endFill=1;fontFamily=Arial;fontSize=13;labelBackgroundColor=#ffffff;" target="final" value="Final">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="note" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8fafc;strokeColor=#000000;fontFamily=Arial;fontSize=14;fontColor=#1e293b;align=left;spacing=12;" value="&lt;b&gt;Scope note&lt;/b&gt;&lt;br&gt;Draft, Validating and Saved are workflow concepts; Question has no Status field.&lt;br&gt;Approved, InExamSession, Lock/Unlock, DiscardDraft and Audit History are not implemented in the current backend." vertex="1">
+          <mxGeometry height="70" width="880" x="260" y="800" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
