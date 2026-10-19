@@ -1,0 +1,83 @@
+<?xml version='1.0' encoding='utf-8'?>
+<mxfile host="app.diagrams.net" agent="Codex" version="24.7.17">
+  <diagram id="conceptual-erd-aives" name="Conceptual ERD - AIVES">
+    <mxGraphModel dx="2400" dy="1700" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="2400" pageHeight="1700" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="title" value="CONCEPTUAL ERD — AIVES" style="text;html=1;align=center;verticalAlign=middle;fontStyle=1;fontSize=30;fontColor=#111111;" vertex="1" parent="1">
+          <mxGeometry x="80" y="25" width="2240" height="58" as="geometry" />
+        </mxCell>
+        <mxCell id="subtitle" value="Business entities and relationships (no database keys or implementation types)" style="text;html=1;align=center;verticalAlign=middle;fontSize=18;fontColor=#333333;" vertex="1" parent="1">
+          <mxGeometry x="80" y="88" width="2240" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="user" value="&lt;b&gt;USER&lt;/b&gt;&lt;hr&gt;&lt;br&gt;Lecturer or student account" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#222222;fontColor=#111111;strokeWidth=2;fontSize=20;align=center;verticalAlign=middle;spacing=10;" vertex="1" parent="1">
+          <mxGeometry x="80" y="190" width="700" height="150" as="geometry" />
+        </mxCell>
+        <mxCell id="course" value="&lt;b&gt;COURSE&lt;/b&gt;&lt;hr&gt;&lt;br&gt;Subject and question bank" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#222222;fontColor=#111111;strokeWidth=2;fontSize=20;align=center;verticalAlign=middle;spacing=10;" vertex="1" parent="1">
+          <mxGeometry x="850" y="190" width="700" height="150" as="geometry" />
+        </mxCell>
+        <mxCell id="question" value="&lt;b&gt;QUESTION&lt;/b&gt;&lt;hr&gt;&lt;br&gt;Viva question and Bloom level" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#222222;fontColor=#111111;strokeWidth=2;fontSize=20;align=center;verticalAlign=middle;spacing=10;" vertex="1" parent="1">
+          <mxGeometry x="1620" y="190" width="700" height="150" as="geometry" />
+        </mxCell>
+        <mxCell id="rubric" value="&lt;b&gt;RUBRIC&lt;/b&gt;&lt;hr&gt;&lt;br&gt;Scoring criteria, weight, maximum score" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#222222;fontColor=#111111;strokeWidth=2;fontSize=20;align=center;verticalAlign=middle;spacing=10;" vertex="1" parent="1">
+          <mxGeometry x="80" y="374" width="700" height="150" as="geometry" />
+        </mxCell>
+        <mxCell id="session" value="&lt;b&gt;EXAM SESSION&lt;/b&gt;&lt;hr&gt;&lt;br&gt;Scheduled oral examination" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#222222;fontColor=#111111;strokeWidth=2;fontSize=20;align=center;verticalAlign=middle;spacing=10;" vertex="1" parent="1">
+          <mxGeometry x="850" y="374" width="700" height="150" as="geometry" />
+        </mxCell>
+        <mxCell id="session-question" value="&lt;b&gt;SESSION QUESTION&lt;/b&gt;&lt;hr&gt;&lt;br&gt;Ordered question and rubric snapshot" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#222222;fontColor=#111111;strokeWidth=2;fontSize=20;align=center;verticalAlign=middle;spacing=10;" vertex="1" parent="1">
+          <mxGeometry x="1620" y="374" width="700" height="150" as="geometry" />
+        </mxCell>
+        <mxCell id="transcript" value="&lt;b&gt;TRANSCRIPT&lt;/b&gt;&lt;hr&gt;&lt;br&gt;One student’s viva attempt" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#222222;fontColor=#111111;strokeWidth=2;fontSize=20;align=center;verticalAlign=middle;spacing=10;" vertex="1" parent="1">
+          <mxGeometry x="80" y="558" width="700" height="150" as="geometry" />
+        </mxCell>
+        <mxCell id="transcript-turn" value="&lt;b&gt;TRANSCRIPT TURN&lt;/b&gt;&lt;hr&gt;&lt;br&gt;Dialogue turn, speaker, content, timestamp" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#222222;fontColor=#111111;strokeWidth=2;fontSize=20;align=center;verticalAlign=middle;spacing=10;" vertex="1" parent="1">
+          <mxGeometry x="850" y="558" width="700" height="150" as="geometry" />
+        </mxCell>
+        <mxCell id="assessment" value="&lt;b&gt;ASSESSMENT&lt;/b&gt;&lt;hr&gt;&lt;br&gt;Per-question AI suggestion and lecturer final score" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#222222;fontColor=#111111;strokeWidth=2;fontSize=20;align=center;verticalAlign=middle;spacing=10;" vertex="1" parent="1">
+          <mxGeometry x="1620" y="558" width="700" height="150" as="geometry" />
+        </mxCell>
+        <mxCell id="relations-heading" value="RELATIONSHIPS AND CARDINALITIES" style="text;html=1;align=left;verticalAlign=middle;fontStyle=1;fontSize=24;fontColor=#111111;" vertex="1" parent="1">
+          <mxGeometry x="120" y="780" width="2160" height="48" as="geometry" />
+        </mxCell>
+        <mxCell id="rel-1" value="○  A lecturer creates and owns 0..* exam sessions; each session has exactly 1 lecturer." style="text;html=1;align=left;verticalAlign=middle;whiteSpace=wrap;fontSize=17;fontColor=#222222;" vertex="1" parent="1">
+          <mxGeometry x="120" y="842" width="1050" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="rel-2" value="○  A lecturer finalizes 0..* assessments; an assessment has 0..1 finalizing lecturer." style="text;html=1;align=left;verticalAlign=middle;whiteSpace=wrap;fontSize=17;fontColor=#222222;" vertex="1" parent="1">
+          <mxGeometry x="120" y="969" width="1050" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="rel-3" value="○  A course contains 0..* questions; each question belongs to 1 course." style="text;html=1;align=left;verticalAlign=middle;whiteSpace=wrap;fontSize=17;fontColor=#222222;" vertex="1" parent="1">
+          <mxGeometry x="120" y="1096" width="1050" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="rel-4" value="○  A course has 0..* exam sessions; each session belongs to 1 course." style="text;html=1;align=left;verticalAlign=middle;whiteSpace=wrap;fontSize=17;fontColor=#222222;" vertex="1" parent="1">
+          <mxGeometry x="120" y="1223" width="1050" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="rel-5" value="○  A question has 1..* rubrics; each rubric belongs to 1 question." style="text;html=1;align=left;verticalAlign=middle;whiteSpace=wrap;fontSize=17;fontColor=#222222;" vertex="1" parent="1">
+          <mxGeometry x="120" y="1350" width="1050" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="rel-6" value="○  An exam session contains 1..* session questions; each selection belongs to 1 session." style="text;html=1;align=left;verticalAlign=middle;whiteSpace=wrap;fontSize=17;fontColor=#222222;" vertex="1" parent="1">
+          <mxGeometry x="120" y="1477" width="1050" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="rel-7" value="○  A question may be selected in 0..* session questions; each selection refers to 1 question." style="text;html=1;align=left;verticalAlign=middle;whiteSpace=wrap;fontSize=17;fontColor=#222222;" vertex="1" parent="1">
+          <mxGeometry x="1230" y="842" width="1050" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="rel-8" value="○  A student submits 0..* transcripts; each transcript belongs to 1 student and 1 exam session." style="text;html=1;align=left;verticalAlign=middle;whiteSpace=wrap;fontSize=17;fontColor=#222222;" vertex="1" parent="1">
+          <mxGeometry x="1230" y="969" width="1050" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="rel-9" value="○  An exam session has 0..* transcripts; at most 1 transcript per student per session." style="text;html=1;align=left;verticalAlign=middle;whiteSpace=wrap;fontSize=17;fontColor=#222222;" vertex="1" parent="1">
+          <mxGeometry x="1230" y="1096" width="1050" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="rel-10" value="○  A transcript stores 0..* transcript turns; each turn belongs to 1 transcript." style="text;html=1;align=left;verticalAlign=middle;whiteSpace=wrap;fontSize=17;fontColor=#222222;" vertex="1" parent="1">
+          <mxGeometry x="1230" y="1223" width="1050" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="rel-11" value="○  A transcript has 0..* assessments; each assessment evaluates 1 question in that transcript." style="text;html=1;align=left;verticalAlign=middle;whiteSpace=wrap;fontSize=17;fontColor=#222222;" vertex="1" parent="1">
+          <mxGeometry x="1230" y="1350" width="1050" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="rel-12" value="○  Assessment is per transcript/question; its lecturer final score is optional until review." style="text;html=1;align=left;verticalAlign=middle;whiteSpace=wrap;fontSize=17;fontColor=#222222;" vertex="1" parent="1">
+          <mxGeometry x="1230" y="1477" width="1050" height="100" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

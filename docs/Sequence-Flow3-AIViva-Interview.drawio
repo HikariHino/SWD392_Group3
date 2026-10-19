@@ -94,7 +94,7 @@
           <mxGeometry relative="1" as="geometry"><mxPoint x="1725" y="195" as="sourcePoint" /><mxPoint x="1725" y="2210" as="targetPoint" /></mxGeometry>
         </mxCell>
 
-        <mxCell id="f3sec1" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;fontColor=#1d2b3a;fontFamily=Arial;fontSize=13;fontStyle=1;" value="GIAI ĐOẠN 1 — KẾT NỐI PHÒNG THI &amp;amp; NHẬN CÂU HỎI ĐẦU TIÊN" vertex="1">
+        <mxCell id="f3sec1" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;fontColor=#1d2b3a;fontFamily=Arial;fontSize=13;fontStyle=1;" value="PHASE 1 — JOIN THE EXAM ROOM &amp; RECEIVE THE FIRST QUESTION" vertex="1">
           <mxGeometry height="22" width="520" x="125" y="312" as="geometry" />
         </mxCell>
 
@@ -141,7 +141,7 @@
           <mxGeometry relative="1" as="geometry"><mxPoint x="335" y="825" as="sourcePoint" /><mxPoint x="125" y="825" as="targetPoint" /></mxGeometry>
         </mxCell>
 
-        <mxCell id="f3sec2" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;fontColor=#1d2b3a;fontFamily=Arial;fontSize=13;fontStyle=1;" value="GIAI ĐOẠN 2 — VẤN ĐÁP THÍCH ỨNG &amp;amp; HỎI XOÁY (ADAPTIVE FOLLOW-UP)" vertex="1">
+        <mxCell id="f3sec2" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;fontColor=#1d2b3a;fontFamily=Arial;fontSize=13;fontStyle=1;" value="PHASE 2 — ADAPTIVE INTERVIEW &amp; FOLLOW-UP QUESTIONS" vertex="1">
           <mxGeometry height="22" width="600" x="125" y="858" as="geometry" />
         </mxCell>
 

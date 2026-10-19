@@ -6,7 +6,7 @@
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
 
-        <mxCell id="f4t1" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;fontColor=#1d2b3a;fontFamily=Arial;fontSize=31;fontStyle=1;" value="SEQUENCE DIAGRAM — AI HỖ TRỢ CHẤM ĐIỂM &amp;amp; GIẢNG VIÊN CHỐT ĐIỂM (FLOW 4)" vertex="1">
+        <mxCell id="f4t1" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;fontColor=#1d2b3a;fontFamily=Arial;fontSize=31;fontStyle=1;" value="SEQUENCE DIAGRAM — AI-ASSISTED GRADING &amp; LECTURER FINALIZATION (FLOW 4)" vertex="1">
           <mxGeometry height="42" width="1800" x="125" y="22" as="geometry" />
         </mxCell>
         <mxCell id="f4t2" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;fontColor=#52657b;fontFamily=Arial;fontSize=12;fontStyle=0;" value="Compare Transcript against Rubric · AI suggested score and feedback · Human-in-the-loop: Lecturer adjusts and decides the final score" vertex="1">
@@ -38,7 +38,7 @@
           <mxGeometry height="24" width="190" x="1470" y="100" as="geometry" />
         </mxCell>
 
-        <mxCell id="f4p1" parent="1" style="rounded=1;whiteSpace=wrap;html=1;align=center;verticalAlign=middle;strokeColor=#7391b2;fillColor=#e9f1fb;fontColor=#1d2b3a;fontFamily=Arial;fontSize=12;fontStyle=1;" value="Lecturer (Giảng viên)" vertex="1">
+        <mxCell id="f4p1" parent="1" style="rounded=1;whiteSpace=wrap;html=1;align=center;verticalAlign=middle;strokeColor=#7391b2;fillColor=#e9f1fb;fontColor=#1d2b3a;fontFamily=Arial;fontSize=12;fontStyle=1;" value="Lecturer" vertex="1">
           <mxGeometry height="50" width="160" x="35" y="145" as="geometry" />
         </mxCell>
         <mxCell id="f4p2" parent="1" style="rounded=1;whiteSpace=wrap;html=1;align=center;verticalAlign=middle;strokeColor=#7391b2;fillColor=#e9f1fb;fontColor=#1d2b3a;fontFamily=Arial;fontSize=12;fontStyle=1;" value=":GradingReviewView" vertex="1">
@@ -88,7 +88,7 @@
           <mxGeometry relative="1" as="geometry"><mxPoint x="1495" y="195" as="sourcePoint" /><mxPoint x="1495" y="2000" as="targetPoint" /></mxGeometry>
         </mxCell>
 
-        <mxCell id="f4secA" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;fontColor=#1d2b3a;fontFamily=Arial;fontSize=13;fontStyle=1;" value="PHẦN A — AI ĐỐI CHIẾU TRANSCRIPT VỚI RUBRIC &amp;amp; SINH ĐIỂM ĐỀ XUẤT (TỰ ĐỘNG KHI BÀI ĐÃ NỘP)" vertex="1">
+        <mxCell id="f4secA" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;fontColor=#1d2b3a;fontFamily=Arial;fontSize=13;fontStyle=1;" value="PART A — AI COMPARES THE TRANSCRIPT WITH THE RUBRIC AND GENERATES A PROPOSED SCORE (AUTOMATIC AFTER SUBMISSION)" vertex="1">
           <mxGeometry height="22" width="800" x="125" y="315" as="geometry" />
         </mxCell>
         <mxCell id="f4n0" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;fontColor=#52657b;fontFamily=Arial;fontSize=12;fontStyle=0;" value="Triggered when the Transcript changes to 'Submitted' (end of Flow 3) or when the lecturer requests regrading." vertex="1">
@@ -148,7 +148,7 @@
           <mxGeometry relative="1" as="geometry"><mxPoint x="1485" y="995" as="sourcePoint" /><mxPoint x="815" y="995" as="targetPoint" /></mxGeometry>
         </mxCell>
 
-        <mxCell id="f4secB" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;fontColor=#1d2b3a;fontFamily=Arial;fontSize=13;fontStyle=1;" value="PHẦN B — GIẢNG VIÊN THẨM ĐỊNH &amp;amp; CHỐT ĐIỂM CHÍNH THỨC (HUMAN-IN-THE-LOOP)" vertex="1">
+        <mxCell id="f4secB" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;fontColor=#1d2b3a;fontFamily=Arial;fontSize=13;fontStyle=1;" value="PART B — LECTURER REVIEWS AND FINALIZES THE OFFICIAL SCORE (HUMAN-IN-THE-LOOP)" vertex="1">
           <mxGeometry height="22" width="700" x="125" y="1035" as="geometry" />
         </mxCell>
 
@@ -164,7 +164,7 @@
         <mxCell id="f4m15" edge="1" parent="1" style="edgeStyle=none;html=1;rounded=0;strokeColor=#26364a;strokeWidth=2;endArrow=block;endFill=1;fontColor=#26364a;fontFamily=Arial;fontSize=12;labelBackgroundColor=#ffffff;" value="9. SELECT Transcripts, TranscriptTurns, Rubrics, Assessments">
           <mxGeometry relative="1" as="geometry"><mxPoint x="815" y="1250" as="sourcePoint" /><mxPoint x="1485" y="1250" as="targetPoint" /></mxGeometry>
         </mxCell>
-        <mxCell id="f4m16" edge="1" parent="1" style="edgeStyle=none;html=1;rounded=0;dashed=1;dashPattern=8 7;strokeColor=#52657b;strokeWidth=2;endArrow=open;endFill=0;fontColor=#26364a;fontFamily=Arial;fontSize=12;labelBackgroundColor=#ffffff;" value="Toàn bộ dữ liệu phiên thi &amp;amp; gợi ý của AI">
+        <mxCell id="f4m16" edge="1" parent="1" style="edgeStyle=none;html=1;rounded=0;dashed=1;dashPattern=8 7;strokeColor=#52657b;strokeWidth=2;endArrow=open;endFill=0;fontColor=#26364a;fontFamily=Arial;fontSize=12;labelBackgroundColor=#ffffff;" value="Complete session data and AI suggestions">
           <mxGeometry relative="1" as="geometry"><mxPoint x="1485" y="1280" as="sourcePoint" /><mxPoint x="815" y="1280" as="targetPoint" /></mxGeometry>
         </mxCell>
         <mxCell id="f4m17" edge="1" parent="1" style="edgeStyle=none;html=1;rounded=0;dashed=1;dashPattern=8 7;strokeColor=#52657b;strokeWidth=2;endArrow=open;endFill=0;fontColor=#26364a;fontFamily=Arial;fontSize=12;labelBackgroundColor=#ffffff;" value="AssessmentDetailDto">
@@ -173,7 +173,7 @@
         <mxCell id="f4m18" edge="1" parent="1" style="edgeStyle=none;html=1;rounded=0;dashed=1;dashPattern=8 7;strokeColor=#52657b;strokeWidth=2;endArrow=open;endFill=0;fontColor=#26364a;fontFamily=Arial;fontSize=12;labelBackgroundColor=#ffffff;" value="10. 200 OK (Full Transcript, AI suggested score, and feedback)">
           <mxGeometry relative="1" as="geometry"><mxPoint x="565" y="1350" as="sourcePoint" /><mxPoint x="355" y="1350" as="targetPoint" /></mxGeometry>
         </mxCell>
-        <mxCell id="f4m19" edge="1" parent="1" style="edgeStyle=none;html=1;rounded=0;dashed=1;dashPattern=8 7;strokeColor=#52657b;strokeWidth=2;endArrow=open;endFill=0;fontColor=#26364a;fontFamily=Arial;fontSize=12;labelBackgroundColor=#ffffff;" value="11. Display the review interface:&lt;br&gt;Transcript + Audio nghe lại + Điểm AI &amp;amp; Phân tích điểm mạnh/yếu">
+        <mxCell id="f4m19" edge="1" parent="1" style="edgeStyle=none;html=1;rounded=0;dashed=1;dashPattern=8 7;strokeColor=#52657b;strokeWidth=2;endArrow=open;endFill=0;fontColor=#26364a;fontFamily=Arial;fontSize=12;labelBackgroundColor=#ffffff;" value="11. Display the review interface: Transcript + audio playback + AI score and strengths/weaknesses analysis">
           <mxGeometry relative="1" as="geometry"><mxPoint x="335" y="1395" as="sourcePoint" /><mxPoint x="125" y="1395" as="targetPoint" /></mxGeometry>
         </mxCell>
 

@@ -292,7 +292,7 @@
             <mxPoint x="125" y="1435" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="v61" parent="1" style="rounded=1;whiteSpace=wrap;html=1;align=center;verticalAlign=middle;strokeColor=#d2dce6;fillColor=#f2f6fa;fontColor=#1d2b3a;fontFamily=Arial;fontSize=12;fontStyle=0;" value="Sau khi lưu: Service tải lại Question kèm Rubrics → Controller trả QuestionDto, HTTP 201 và Location → View báo tạo thành công.&lt;br&gt;Validation: ít nhất 1 rubric; Criteria không rỗng (≤500); Weight &amp;amp; MaxScore &amp;gt;0; tổng Weight = 100 (sai số &amp;lt;0,01)." vertex="1">
+        <mxCell id="v61" parent="1" style="rounded=1;whiteSpace=wrap;html=1;align=center;verticalAlign=middle;strokeColor=#d2dce6;fillColor=#f2f6fa;fontColor=#1d2b3a;fontFamily=Arial;fontSize=12;fontStyle=0;" value="After saving: the Service reloads the Question with its Rubrics → the Controller returns QuestionDto, HTTP 201, and Location → the View confirms success. Validation: at least 1 rubric; Criteria is non-empty (≤500); Weight and MaxScore &gt; 0; total Weight = 100 (tolerance &lt;0.01)." vertex="1">
           <mxGeometry height="58" width="2310" x="95" y="1460" as="geometry" />
         </mxCell>
       </root>
