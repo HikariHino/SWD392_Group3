@@ -1,2 +1,113 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<mxfile host="app.diagrams.net" agent="Codex" version="24.7.17"><diagram id="conceptual-erd-aives" name="Conceptual ERD - AIVES"><mxGraphModel dx="1208" dy="672" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1208" pageHeight="672" math="0" shadow="0"><root><mxCell id="0" /><mxCell id="1" parent="0" /><mxCell id="user" value="&lt;table cellpadding=&quot;5&quot; cellspacing=&quot;0&quot; style=&quot;width:100%;border-collapse:collapse;font-family:Arial;font-size:14px;color:#111&quot;&gt;&lt;tr&gt;&lt;th colspan=&quot;2&quot; style=&quot;border-bottom:1px solid #222;background:#eee;height:30px&quot;&gt;User&lt;/th&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;border-right:1px solid #222;border-bottom:1px solid #aaa;width:72px&quot;&gt;string&lt;/td&gt;&lt;td style=&quot;border-bottom:1px solid #aaa&quot;&gt;Role&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;border-right:1px solid #222;border-bottom:1px solid #aaa;width:72px&quot;&gt;string&lt;/td&gt;&lt;td style=&quot;border-bottom:1px solid #aaa&quot;&gt;Name&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="shape=rectangle;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#222222;strokeWidth=1;align=center;verticalAlign=middle;fontFamily=Arial;fontSize=14;" vertex="1" parent="1"><mxGeometry x="25" y="15" width="241" height="105" as="geometry" /></mxCell><mxCell id="assessment" value="&lt;table cellpadding=&quot;5&quot; cellspacing=&quot;0&quot; style=&quot;width:100%;border-collapse:collapse;font-family:Arial;font-size:14px;color:#111&quot;&gt;&lt;tr&gt;&lt;th colspan=&quot;2&quot; style=&quot;border-bottom:1px solid #222;background:#eee;height:30px&quot;&gt;Assessment&lt;/th&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;border-right:1px solid #222;border-bottom:1px solid #aaa;width:72px&quot;&gt;float&lt;/td&gt;&lt;td style=&quot;border-bottom:1px solid #aaa&quot;&gt;AISuggestedScore&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;border-right:1px solid #222;border-bottom:1px solid #aaa;width:72px&quot;&gt;string&lt;/td&gt;&lt;td style=&quot;border-bottom:1px solid #aaa&quot;&gt;AIFeedback&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;border-right:1px solid #222;border-bottom:1px solid #aaa;width:72px&quot;&gt;float&lt;/td&gt;&lt;td style=&quot;border-bottom:1px solid #aaa&quot;&gt;FinalScore&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="shape=rectangle;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#222222;strokeWidth=1;align=center;verticalAlign=middle;fontFamily=Arial;fontSize=14;" vertex="1" parent="1"><mxGeometry x="942" y="15" width="230" height="140" as="geometry" /></mxCell><mxCell id="session" value="&lt;table cellpadding=&quot;5&quot; cellspacing=&quot;0&quot; style=&quot;width:100%;border-collapse:collapse;font-family:Arial;font-size:14px;color:#111&quot;&gt;&lt;tr&gt;&lt;th colspan=&quot;2&quot; style=&quot;border-bottom:1px solid #222;background:#eee;height:30px&quot;&gt;Exam_Session&lt;/th&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;border-right:1px solid #222;border-bottom:1px solid #aaa;width:72px&quot;&gt;dateTime&lt;/td&gt;&lt;td style=&quot;border-bottom:1px solid #aaa&quot;&gt;StartTime&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;border-right:1px solid #222;border-bottom:1px solid #aaa;width:72px&quot;&gt;string&lt;/td&gt;&lt;td style=&quot;border-bottom:1px solid #aaa&quot;&gt;Status&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="shape=rectangle;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#222222;strokeWidth=1;align=center;verticalAlign=middle;fontFamily=Arial;fontSize=14;" vertex="1" parent="1"><mxGeometry x="460" y="221" width="242" height="105" as="geometry" /></mxCell><mxCell id="transcript" value="&lt;table cellpadding=&quot;5&quot; cellspacing=&quot;0&quot; style=&quot;width:100%;border-collapse:collapse;font-family:Arial;font-size:14px;color:#111&quot;&gt;&lt;tr&gt;&lt;th colspan=&quot;2&quot; style=&quot;border-bottom:1px solid #222;background:#eee;height:30px&quot;&gt;Transcript&lt;/th&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;border-right:1px solid #222;border-bottom:1px solid #aaa;width:72px&quot;&gt;string&lt;/td&gt;&lt;td style=&quot;border-bottom:1px solid #aaa&quot;&gt;Speaker&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;border-right:1px solid #222;border-bottom:1px solid #aaa;width:72px&quot;&gt;string&lt;/td&gt;&lt;td style=&quot;border-bottom:1px solid #aaa&quot;&gt;ContentText&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;border-right:1px solid #222;border-bottom:1px solid #aaa;width:72px&quot;&gt;dateTime&lt;/td&gt;&lt;td style=&quot;border-bottom:1px solid #aaa&quot;&gt;Timestamp&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="shape=rectangle;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#222222;strokeWidth=1;align=center;verticalAlign=middle;fontFamily=Arial;fontSize=14;" vertex="1" parent="1"><mxGeometry x="936" y="254" width="242" height="140" as="geometry" /></mxCell><mxCell id="course" value="&lt;table cellpadding=&quot;5&quot; cellspacing=&quot;0&quot; style=&quot;width:100%;border-collapse:collapse;font-family:Arial;font-size:14px;color:#111&quot;&gt;&lt;tr&gt;&lt;th colspan=&quot;2&quot; style=&quot;border-bottom:1px solid #222;background:#eee;height:30px&quot;&gt;Course&lt;/th&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;border-right:1px solid #222;border-bottom:1px solid #aaa;width:72px&quot;&gt;string&lt;/td&gt;&lt;td style=&quot;border-bottom:1px solid #aaa&quot;&gt;CourseName&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="shape=rectangle;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#222222;strokeWidth=1;align=center;verticalAlign=middle;fontFamily=Arial;fontSize=14;" vertex="1" parent="1"><mxGeometry x="25" y="553" width="247" height="70" as="geometry" /></mxCell><mxCell id="question" value="&lt;table cellpadding=&quot;5&quot; cellspacing=&quot;0&quot; style=&quot;width:100%;border-collapse:collapse;font-family:Arial;font-size:14px;color:#111&quot;&gt;&lt;tr&gt;&lt;th colspan=&quot;2&quot; style=&quot;border-bottom:1px solid #222;background:#eee;height:30px&quot;&gt;Question&lt;/th&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;border-right:1px solid #222;border-bottom:1px solid #aaa;width:72px&quot;&gt;string&lt;/td&gt;&lt;td style=&quot;border-bottom:1px solid #aaa&quot;&gt;Content&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;border-right:1px solid #222;border-bottom:1px solid #aaa;width:72px&quot;&gt;string&lt;/td&gt;&lt;td style=&quot;border-bottom:1px solid #aaa&quot;&gt;BloomLevel&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="shape=rectangle;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#222222;strokeWidth=1;align=center;verticalAlign=middle;fontFamily=Arial;fontSize=14;" vertex="1" parent="1"><mxGeometry x="469" y="461" width="225" height="105" as="geometry" /></mxCell><mxCell id="rubric" value="&lt;table cellpadding=&quot;5&quot; cellspacing=&quot;0&quot; style=&quot;width:100%;border-collapse:collapse;font-family:Arial;font-size:14px;color:#111&quot;&gt;&lt;tr&gt;&lt;th colspan=&quot;2&quot; style=&quot;border-bottom:1px solid #222;background:#eee;height:30px&quot;&gt;Rubric&lt;/th&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;border-right:1px solid #222;border-bottom:1px solid #aaa;width:72px&quot;&gt;string&lt;/td&gt;&lt;td style=&quot;border-bottom:1px solid #aaa&quot;&gt;Criteria&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;border-right:1px solid #222;border-bottom:1px solid #aaa;width:72px&quot;&gt;float&lt;/td&gt;&lt;td style=&quot;border-bottom:1px solid #aaa&quot;&gt;MaxScore&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="shape=rectangle;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#222222;strokeWidth=1;align=center;verticalAlign=middle;fontFamily=Arial;fontSize=14;" vertex="1" parent="1"><mxGeometry x="965" y="512" width="230" height="105" as="geometry" /></mxCell><mxCell id="r_user_assessment" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#222222;strokeWidth=1;startArrow=ERone;startFill=0;endArrow=ERzeroToMany;endFill=0;" edge="1" parent="1" source="user" target="assessment"><mxGeometry relative="1" as="geometry" /></mxCell><mxCell id="r_user_session" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#222222;strokeWidth=1;startArrow=ERone;startFill=0;endArrow=ERzeroToMany;endFill=0;" edge="1" parent="1" source="user" target="session"><mxGeometry relative="1" as="geometry" /></mxCell><mxCell id="r_user_question" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#222222;strokeWidth=1;startArrow=ERone;startFill=0;endArrow=ERzeroToMany;endFill=0;" edge="1" parent="1" source="user" target="question"><mxGeometry relative="1" as="geometry" /></mxCell><mxCell id="r_course_session" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#222222;strokeWidth=1;startArrow=ERone;startFill=0;endArrow=ERzeroToMany;endFill=0;" edge="1" parent="1" source="course" target="session"><mxGeometry relative="1" as="geometry" /></mxCell><mxCell id="r_course_question" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#222222;strokeWidth=1;startArrow=ERone;startFill=0;endArrow=ERzeroToMany;endFill=0;" edge="1" parent="1" source="course" target="question"><mxGeometry relative="1" as="geometry" /></mxCell><mxCell id="r_session_assessment" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#222222;strokeWidth=1;startArrow=ERone;startFill=0;endArrow=ERzeroToMany;endFill=0;" edge="1" parent="1" source="session" target="assessment"><mxGeometry relative="1" as="geometry" /></mxCell><mxCell id="r_session_transcript" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#222222;strokeWidth=1;startArrow=ERone;startFill=0;endArrow=ERzeroToMany;endFill=0;" edge="1" parent="1" source="session" target="transcript"><mxGeometry relative="1" as="geometry" /></mxCell><mxCell id="r_question_transcript" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#222222;strokeWidth=1;startArrow=ERone;startFill=0;endArrow=ERzeroToMany;endFill=0;" edge="1" parent="1" source="question" target="transcript"><mxGeometry relative="1" as="geometry" /></mxCell><mxCell id="r_question_rubric" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#222222;strokeWidth=1;startArrow=ERone;startFill=0;endArrow=ERzeroToMany;endFill=0;" edge="1" parent="1" source="question" target="rubric"><mxGeometry relative="1" as="geometry" /></mxCell></root></mxGraphModel></diagram></mxfile>
+<mxfile host="app.diagrams.net" agent="Codex">
+  <diagram id="conceptual-erd-aives" name="Conceptual ERD - AIVES">
+    <mxGraphModel dx="3273" dy="921" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="1000" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="title" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontFamily=Arial;fontSize=25;fontStyle=1;fontColor=#222222;" value="CONCEPTUAL ERD — AIVES" vertex="1">
+          <mxGeometry height="40" width="1000" x="290" y="50" as="geometry" />
+        </mxCell>
+        <mxCell id="user" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#222222;strokeWidth=1.5;fontFamily=Arial;fontSize=16;fontColor=#222222;spacing=12;" value="&lt;b&gt;USER&lt;/b&gt;&lt;br&gt;&lt;br&gt;Lecturer / Student account" vertex="1">
+          <mxGeometry height="100" width="230" x="20" y="220" as="geometry" />
+        </mxCell>
+        <mxCell id="course" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#222222;strokeWidth=1.5;fontFamily=Arial;fontSize=16;fontColor=#222222;spacing=12;" value="&lt;b&gt;COURSE&lt;/b&gt;&lt;br&gt;&lt;br&gt;Subject / question-bank owner" vertex="1">
+          <mxGeometry height="100" width="230" x="60" y="520" as="geometry" />
+        </mxCell>
+        <mxCell id="question" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#222222;strokeWidth=1.5;fontFamily=Arial;fontSize=16;fontColor=#222222;spacing=12;" value="&lt;b&gt;QUESTION&lt;/b&gt;&lt;br&gt;&lt;br&gt;Viva question" vertex="1">
+          <mxGeometry height="100" width="230" x="450" y="335" as="geometry" />
+        </mxCell>
+        <mxCell id="rubric" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#222222;strokeWidth=1.5;fontFamily=Arial;fontSize=16;fontColor=#222222;spacing=12;" value="&lt;b&gt;RUBRIC&lt;/b&gt;&lt;br&gt;&lt;br&gt;Scoring criteria" vertex="1">
+          <mxGeometry height="100" width="230" x="810" y="270" as="geometry" />
+        </mxCell>
+        <mxCell id="session" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#222222;strokeWidth=1.5;fontFamily=Arial;fontSize=16;fontColor=#222222;spacing=12;" value="&lt;b&gt;EXAM SESSION&lt;/b&gt;&lt;br&gt;&lt;br&gt;Organized viva examination" vertex="1">
+          <mxGeometry height="100" width="230" x="740" y="530" as="geometry" />
+        </mxCell>
+        <mxCell id="transcript" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#222222;strokeWidth=1.5;fontFamily=Arial;fontSize=16;fontColor=#222222;spacing=12;" value="&lt;b&gt;TRANSCRIPT&lt;/b&gt;&lt;br&gt;&lt;br&gt;Student viva attempt" vertex="1">
+          <mxGeometry height="100" width="240" x="1320" y="335" as="geometry" />
+        </mxCell>
+        <mxCell id="assessment" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#222222;strokeWidth=1.5;fontFamily=Arial;fontSize=16;fontColor=#222222;spacing=12;" value="&lt;b&gt;ASSESSMENT&lt;/b&gt;&lt;br&gt;&lt;br&gt;AI suggestion + Lecturer final score" vertex="1">
+          <mxGeometry height="100" width="240" x="1330" y="660" as="geometry" />
+        </mxCell>
+        <mxCell id="e1" edge="1" parent="1" source="user" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#222222;strokeWidth=1.5;startArrow=ERone;endArrow=ERmany;fontFamily=Arial;fontSize=12;labelBackgroundColor=#ffffff;" target="session" value="creates / participates in">
+          <mxGeometry relative="1" x="-0.05" as="geometry">
+            <Array as="points">
+              <mxPoint x="400" y="260" />
+              <mxPoint x="400" y="570" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e2" edge="1" parent="1" source="user" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#222222;strokeWidth=1.5;startArrow=ERone;endArrow=ERmany;fontFamily=Arial;fontSize=12;labelBackgroundColor=#ffffff;" target="question" value="manages">
+          <mxGeometry relative="1" x="-0.076" as="geometry">
+            <Array as="points">
+              <mxPoint x="-30" y="270" />
+              <mxPoint x="-30" y="360" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e3" edge="1" parent="1" source="user" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#222222;strokeWidth=1.5;startArrow=ERone;endArrow=ERmany;fontFamily=Arial;fontSize=12;labelBackgroundColor=#ffffff;" target="assessment" value="finalizes">
+          <mxGeometry relative="1" x="-0.0173" as="geometry">
+            <Array as="points">
+              <mxPoint x="220" y="150" />
+              <mxPoint x="1120" y="150" />
+              <mxPoint x="1120" y="700" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e4" edge="1" parent="1" source="course" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#222222;strokeWidth=1.5;startArrow=ERone;endArrow=ERmany;fontFamily=Arial;fontSize=12;labelBackgroundColor=#ffffff;" target="question" value="contains">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="170" y="385" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e5" edge="1" parent="1" source="course" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#222222;strokeWidth=1.5;startArrow=ERone;endArrow=ERmany;fontFamily=Arial;fontSize=12;labelBackgroundColor=#ffffff;" target="session" value="is examined in">
+          <mxGeometry relative="1" x="0.3778" as="geometry">
+            <Array as="points">
+              <mxPoint x="175" y="690" />
+              <mxPoint x="855" y="690" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e6" edge="1" parent="1" source="question" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#222222;strokeWidth=1.5;startArrow=ERone;endArrow=ERmany;fontFamily=Arial;fontSize=12;labelBackgroundColor=#ffffff;" target="rubric" value="is evaluated by">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="565" y="300" />
+              <mxPoint x="935" y="300" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e7" edge="1" parent="1" source="session" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#222222;strokeWidth=1.5;startArrow=ERone;endArrow=ERmany;fontFamily=Arial;fontSize=12;labelBackgroundColor=#ffffff;" target="transcript" value="records">
+          <mxGeometry relative="1" x="0.021" as="geometry">
+            <Array as="points">
+              <mxPoint x="1360" y="570" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e8" edge="1" parent="1" source="user" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#222222;strokeWidth=1.5;startArrow=ERone;endArrow=ERmany;fontFamily=Arial;fontSize=12;labelBackgroundColor=#ffffff;" target="transcript" value="submits">
+          <mxGeometry relative="1" x="-0.008" as="geometry">
+            <Array as="points">
+              <mxPoint x="140" y="115" />
+              <mxPoint x="1450" y="115" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e9" edge="1" parent="1" source="transcript" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#222222;strokeWidth=1.5;startArrow=ERone;endArrow=ERmany;fontFamily=Arial;fontSize=12;labelBackgroundColor=#ffffff;" target="assessment" value="has">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1450" y="480" />
+              <mxPoint x="1450" y="480" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e10" edge="1" parent="1" source="question" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#222222;strokeWidth=1.5;startArrow=ERone;endArrow=ERmany;fontFamily=Arial;fontSize=12;labelBackgroundColor=#ffffff;" target="assessment" value="is answered in">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="565" y="800" />
+              <mxPoint x="1450" y="800" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
