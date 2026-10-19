@@ -53,7 +53,8 @@ builder.Services.AddValidatorsFromAssemblyContaining<CreateQuestionRequestValida
 
 // 6. Cấu hình Database SQL Server
 builder.Services.AddDbContext<AivesDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"),
+        sqlOptions => sqlOptions.EnableRetryOnFailure(5, TimeSpan.FromSeconds(10), null)));
 
 // 7. Đăng ký Dependency Injection cho tầng Data Access (Repositories & UnitOfWork)
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
