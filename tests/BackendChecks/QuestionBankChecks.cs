@@ -37,7 +37,9 @@ internal static class QuestionBankChecks
         await Rejected(() => service.GetQuestionsAsync(new() { CourseId = courseId }), "CourseId", "missing query course returns field validation error");
         var request = new CreateQuestionRequest
         {
-            CourseId = courseId, Content = "Explain Onion", BloomLevel = BloomLevel.Understand,
+            CourseId = courseId,
+            Content = "Explain Onion",
+            BloomLevel = BloomLevel.Understand,
             Rubrics = [new() { Criteria = "Correct explanation", Weight = 100, MaxScore = 10 }]
         };
         await Rejected(() => service.CreateQuestionAsync(request), "CourseId", "create blocks nonexistent course");

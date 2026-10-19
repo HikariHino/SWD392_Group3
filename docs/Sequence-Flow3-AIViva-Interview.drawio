@@ -6,10 +6,10 @@
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
 
-        <mxCell id="f3t1" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;fontColor=#1d2b3a;fontFamily=Arial;fontSize=31;fontStyle=1;" value="SEQUENCE DIAGRAM — LÕI PHỎNG VẤN AI THỜI GIAN THỰC (FLOW 3)" vertex="1">
+        <mxCell id="f3t1" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;fontColor=#1d2b3a;fontFamily=Arial;fontSize=31;fontStyle=1;" value="SEQUENCE DIAGRAM — REAL-TIME AI INTERVIEW ENGINE (FLOW 3)" vertex="1">
           <mxGeometry height="42" width="1800" x="125" y="22" as="geometry" />
         </mxCell>
-        <mxCell id="f3t2" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;fontColor=#52657b;fontFamily=Arial;fontSize=12;fontStyle=0;" value="SignalR realtime · TTS/STT · Hỏi xoáy thích ứng (adaptive follow-up) có giới hạn thời gian và số lượt · Lưu toàn bộ TranscriptTurns" vertex="1">
+        <mxCell id="f3t2" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;fontColor=#52657b;fontFamily=Arial;fontSize=12;fontStyle=0;" value="SignalR real time · TTS/STT · Adaptive follow-up questions with time and turn limits · Save all TranscriptTurns" vertex="1">
           <mxGeometry height="28" width="1800" x="125" y="65" as="geometry" />
         </mxCell>
 
@@ -19,7 +19,7 @@
             <mxPoint x="850" y="112" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="f3legt1" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;fontColor=#52657b;fontFamily=Arial;fontSize=12;fontStyle=0;" value="Gọi đồng bộ" vertex="1">
+        <mxCell id="f3legt1" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;fontColor=#52657b;fontFamily=Arial;fontSize=12;fontStyle=0;" value="Synchronous call" vertex="1">
           <mxGeometry height="24" width="110" x="860" y="100" as="geometry" />
         </mxCell>
         <mxCell id="f3leg2" edge="1" parent="1" style="edgeStyle=none;dashed=1;dashPattern=8 7;strokeColor=#52657b;strokeWidth=2;endArrow=open;endFill=0;" value="">
@@ -28,17 +28,17 @@
             <mxPoint x="1130" y="112" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="f3legt2" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;fontColor=#52657b;fontFamily=Arial;fontSize=12;fontStyle=0;" value="Kết quả trả về / Event" vertex="1">
+        <mxCell id="f3legt2" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;fontColor=#52657b;fontFamily=Arial;fontSize=12;fontStyle=0;" value="Returned result / Event" vertex="1">
           <mxGeometry height="24" width="160" x="1140" y="100" as="geometry" />
         </mxCell>
         <mxCell id="f3leg3" parent="1" style="rounded=0;whiteSpace=wrap;html=1;align=center;verticalAlign=middle;strokeColor=#7593b4;fillColor=#eef4fb;fontColor=#1d2b3a;fontFamily=Arial;fontSize=12;fontStyle=0;" value="loop / alt" vertex="1">
           <mxGeometry height="22" width="120" x="1370" y="101" as="geometry" />
         </mxCell>
-        <mxCell id="f3legt3" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;fontColor=#52657b;fontFamily=Arial;fontSize=12;fontStyle=0;" value="Khung điều kiện / Vòng lặp" vertex="1">
+        <mxCell id="f3legt3" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;fontColor=#52657b;fontFamily=Arial;fontSize=12;fontStyle=0;" value="Condition frame / Loop" vertex="1">
           <mxGeometry height="24" width="190" x="1500" y="100" as="geometry" />
         </mxCell>
 
-        <mxCell id="f3p1" parent="1" style="rounded=1;whiteSpace=wrap;html=1;align=center;verticalAlign=middle;strokeColor=#7391b2;fillColor=#e9f1fb;fontColor=#1d2b3a;fontFamily=Arial;fontSize=12;fontStyle=1;" value="Student (Sinh viên)" vertex="1">
+        <mxCell id="f3p1" parent="1" style="rounded=1;whiteSpace=wrap;html=1;align=center;verticalAlign=middle;strokeColor=#7391b2;fillColor=#e9f1fb;fontColor=#1d2b3a;fontFamily=Arial;fontSize=12;fontStyle=1;" value="Student" vertex="1">
           <mxGeometry height="50" width="160" x="35" y="145" as="geometry" />
         </mxCell>
         <mxCell id="f3p2" parent="1" style="rounded=1;whiteSpace=wrap;html=1;align=center;verticalAlign=middle;strokeColor=#7391b2;fillColor=#e9f1fb;fontColor=#1d2b3a;fontFamily=Arial;fontSize=12;fontStyle=1;" value=":InterviewRoomView" vertex="1">
@@ -98,7 +98,7 @@
           <mxGeometry height="22" width="520" x="125" y="312" as="geometry" />
         </mxCell>
 
-        <mxCell id="f3m1" edge="1" parent="1" style="edgeStyle=none;html=1;rounded=0;strokeColor=#26364a;strokeWidth=2;endArrow=block;endFill=1;fontColor=#26364a;fontFamily=Arial;fontSize=12;labelBackgroundColor=#ffffff;" value="1. Mở phòng thi, bấm «Bắt đầu thi»">
+        <mxCell id="f3m1" edge="1" parent="1" style="edgeStyle=none;html=1;rounded=0;strokeColor=#26364a;strokeWidth=2;endArrow=block;endFill=1;fontColor=#26364a;fontFamily=Arial;fontSize=12;labelBackgroundColor=#ffffff;" value="1. Open the exam room and click “Start Exam”">
           <mxGeometry relative="1" as="geometry"><mxPoint x="125" y="355" as="sourcePoint" /><mxPoint x="335" y="355" as="targetPoint" /></mxGeometry>
         </mxCell>
         <mxCell id="f3m2" edge="1" parent="1" style="edgeStyle=none;html=1;rounded=0;strokeColor=#26364a;strokeWidth=2;endArrow=block;endFill=1;fontColor=#26364a;fontFamily=Arial;fontSize=12;labelBackgroundColor=#ffffff;" value="2. Invoke StartOrResumeAttempt(sessionId)&lt;br&gt;&lt;font color='#52657b'&gt;WebSocket /interviewHub + Bearer JWT Student&lt;/font&gt;">
@@ -107,7 +107,7 @@
         <mxCell id="f3m3" edge="1" parent="1" style="edgeStyle=none;html=1;rounded=0;strokeColor=#26364a;strokeWidth=2;endArrow=block;endFill=1;fontColor=#26364a;fontFamily=Arial;fontSize=12;labelBackgroundColor=#ffffff;" value="3. StartAttemptAsync(sessionId, studentUserId)">
           <mxGeometry relative="1" as="geometry"><mxPoint x="815" y="465" as="sourcePoint" /><mxPoint x="1025" y="465" as="targetPoint" /></mxGeometry>
         </mxCell>
-        <mxCell id="f3m4" edge="1" parent="1" style="edgeStyle=none;html=1;rounded=0;strokeColor=#26364a;strokeWidth=2;endArrow=block;endFill=1;fontColor=#26364a;fontFamily=Arial;fontSize=12;labelBackgroundColor=#ffffff;" value="4. Kiểm tra ca thi Open;&lt;br&gt;INSERT/GET Transcript (InProgress)">
+        <mxCell id="f3m4" edge="1" parent="1" style="edgeStyle=none;html=1;rounded=0;strokeColor=#26364a;strokeWidth=2;endArrow=block;endFill=1;fontColor=#26364a;fontFamily=Arial;fontSize=12;labelBackgroundColor=#ffffff;" value="4. Check that the exam session is Open;&lt;br&gt;INSERT/GET Transcript (InProgress)">
           <mxGeometry relative="1" as="geometry"><mxPoint x="1045" y="520" as="sourcePoint" /><mxPoint x="1715" y="520" as="targetPoint" /></mxGeometry>
         </mxCell>
         <mxCell id="f3m5" edge="1" parent="1" style="edgeStyle=none;html=1;rounded=0;dashed=1;dashPattern=8 7;strokeColor=#52657b;strokeWidth=2;endArrow=open;endFill=0;fontColor=#26364a;fontFamily=Arial;fontSize=12;labelBackgroundColor=#ffffff;" value="Transcript (InProgress)">
@@ -134,10 +134,10 @@
         <mxCell id="f3m9" edge="1" parent="1" style="edgeStyle=none;html=1;rounded=0;strokeColor=#26364a;strokeWidth=2;endArrow=block;endFill=1;fontColor=#26364a;fontFamily=Arial;fontSize=12;labelBackgroundColor=#ffffff;" value="7. SynthesizeSpeechAsync(questionContent) [TTS]">
           <mxGeometry relative="1" as="geometry"><mxPoint x="355" y="760" as="sourcePoint" /><mxPoint x="565" y="760" as="targetPoint" /></mxGeometry>
         </mxCell>
-        <mxCell id="f3m10" edge="1" parent="1" style="edgeStyle=none;html=1;rounded=0;dashed=1;dashPattern=8 7;strokeColor=#52657b;strokeWidth=2;endArrow=open;endFill=0;fontColor=#26364a;fontFamily=Arial;fontSize=12;labelBackgroundColor=#ffffff;" value="Audio stream (giọng đọc AI)">
+        <mxCell id="f3m10" edge="1" parent="1" style="edgeStyle=none;html=1;rounded=0;dashed=1;dashPattern=8 7;strokeColor=#52657b;strokeWidth=2;endArrow=open;endFill=0;fontColor=#26364a;fontFamily=Arial;fontSize=12;labelBackgroundColor=#ffffff;" value="Audio stream (AI voice)">
           <mxGeometry relative="1" as="geometry"><mxPoint x="565" y="790" as="sourcePoint" /><mxPoint x="355" y="790" as="targetPoint" /></mxGeometry>
         </mxCell>
-        <mxCell id="f3m11" edge="1" parent="1" style="edgeStyle=none;html=1;rounded=0;dashed=1;dashPattern=8 7;strokeColor=#52657b;strokeWidth=2;endArrow=open;endFill=0;fontColor=#26364a;fontFamily=Arial;fontSize=12;labelBackgroundColor=#ffffff;" value="8. Phát giọng đọc câu hỏi;&lt;br&gt;bắt đầu đếm ngược thời gian trả lời">
+        <mxCell id="f3m11" edge="1" parent="1" style="edgeStyle=none;html=1;rounded=0;dashed=1;dashPattern=8 7;strokeColor=#52657b;strokeWidth=2;endArrow=open;endFill=0;fontColor=#26364a;fontFamily=Arial;fontSize=12;labelBackgroundColor=#ffffff;" value="8. Play the spoken question;&lt;br&gt;start the answer countdown">
           <mxGeometry relative="1" as="geometry"><mxPoint x="335" y="825" as="sourcePoint" /><mxPoint x="125" y="825" as="targetPoint" /></mxGeometry>
         </mxCell>
 
@@ -149,13 +149,13 @@
           <mxGeometry height="1010" width="1880" x="130" y="885" as="geometry" />
         </mxCell>
 
-        <mxCell id="f3m12" edge="1" parent="1" style="edgeStyle=none;html=1;rounded=0;strokeColor=#26364a;strokeWidth=2;endArrow=block;endFill=1;fontColor=#26364a;fontFamily=Arial;fontSize=12;labelBackgroundColor=#ffffff;" value="9. Trả lời bằng giọng nói (bật micro)">
+        <mxCell id="f3m12" edge="1" parent="1" style="edgeStyle=none;html=1;rounded=0;strokeColor=#26364a;strokeWidth=2;endArrow=block;endFill=1;fontColor=#26364a;fontFamily=Arial;fontSize=12;labelBackgroundColor=#ffffff;" value="9. Answer by voice (enable microphone)">
           <mxGeometry relative="1" as="geometry"><mxPoint x="125" y="945" as="sourcePoint" /><mxPoint x="335" y="945" as="targetPoint" /></mxGeometry>
         </mxCell>
         <mxCell id="f3m13" edge="1" parent="1" style="edgeStyle=none;html=1;rounded=0;strokeColor=#26364a;strokeWidth=2;endArrow=block;endFill=1;fontColor=#26364a;fontFamily=Arial;fontSize=12;labelBackgroundColor=#ffffff;" value="10. RecognizeSpeechAsync(audioStream) [STT]">
           <mxGeometry relative="1" as="geometry"><mxPoint x="355" y="995" as="sourcePoint" /><mxPoint x="565" y="995" as="targetPoint" /></mxGeometry>
         </mxCell>
-        <mxCell id="f3m14" edge="1" parent="1" style="edgeStyle=none;html=1;rounded=0;dashed=1;dashPattern=8 7;strokeColor=#52657b;strokeWidth=2;endArrow=open;endFill=0;fontColor=#26364a;fontFamily=Arial;fontSize=12;labelBackgroundColor=#ffffff;" value="answerText (chuyển đổi near real-time)">
+        <mxCell id="f3m14" edge="1" parent="1" style="edgeStyle=none;html=1;rounded=0;dashed=1;dashPattern=8 7;strokeColor=#52657b;strokeWidth=2;endArrow=open;endFill=0;fontColor=#26364a;fontFamily=Arial;fontSize=12;labelBackgroundColor=#ffffff;" value="answerText (transcribed in near real time)">
           <mxGeometry relative="1" as="geometry"><mxPoint x="565" y="1025" as="sourcePoint" /><mxPoint x="355" y="1025" as="targetPoint" /></mxGeometry>
         </mxCell>
         <mxCell id="f3m15" edge="1" parent="1" style="edgeStyle=none;html=1;rounded=0;strokeColor=#26364a;strokeWidth=2;endArrow=block;endFill=1;fontColor=#26364a;fontFamily=Arial;fontSize=12;labelBackgroundColor=#ffffff;" value="11. Invoke SendStudentAnswer(transcriptId, questionId, answerText)">
@@ -170,13 +170,13 @@
         <mxCell id="f3m18" edge="1" parent="1" style="edgeStyle=none;html=1;rounded=0;dashed=1;dashPattern=8 7;strokeColor=#52657b;strokeWidth=2;endArrow=open;endFill=0;fontColor=#26364a;fontFamily=Arial;fontSize=12;labelBackgroundColor=#ffffff;" value="Saved turn">
           <mxGeometry relative="1" as="geometry"><mxPoint x="1715" y="1200" as="sourcePoint" /><mxPoint x="1045" y="1200" as="targetPoint" /></mxGeometry>
         </mxCell>
-        <mxCell id="f3n1" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;fontColor=#52657b;fontFamily=Arial;fontSize=12;fontStyle=0;" value="Nạp ngữ cảnh: câu hỏi gốc + BloomLevel, tiêu chí Rubrics,&lt;br&gt;ExpectedAnswer, lịch sử TranscriptTurns trước đó" vertex="1">
+        <mxCell id="f3n1" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;fontColor=#52657b;fontFamily=Arial;fontSize=12;fontStyle=0;" value="Load context: original question + BloomLevel, Rubric criteria,&lt;br&gt;ExpectedAnswer, previous TranscriptTurns history" vertex="1">
           <mxGeometry height="36" width="520" x="775" y="1220" as="geometry" />
         </mxCell>
         <mxCell id="f3m19" edge="1" parent="1" style="edgeStyle=none;html=1;rounded=0;strokeColor=#26364a;strokeWidth=2;endArrow=block;endFill=1;fontColor=#26364a;fontFamily=Arial;fontSize=12;labelBackgroundColor=#ffffff;" value="14. GenerateAdaptiveFollowUpAsync(context, answerText)">
           <mxGeometry relative="1" as="geometry"><mxPoint x="1045" y="1290" as="sourcePoint" /><mxPoint x="1255" y="1290" as="targetPoint" /></mxGeometry>
         </mxCell>
-        <mxCell id="f3m20" edge="1" parent="1" style="edgeStyle=none;html=1;rounded=0;strokeColor=#26364a;strokeWidth=2;endArrow=block;endFill=1;fontColor=#26364a;fontFamily=Arial;fontSize=12;labelBackgroundColor=#ffffff;" value="15. POST /v1/chat/completions&lt;br&gt;&lt;font color='#52657b'&gt;(Prompt: phát hiện ý còn thiếu / mơ hồ / mâu thuẫn)&lt;/font&gt;">
+        <mxCell id="f3m20" edge="1" parent="1" style="edgeStyle=none;html=1;rounded=0;strokeColor=#26364a;strokeWidth=2;endArrow=block;endFill=1;fontColor=#26364a;fontFamily=Arial;fontSize=12;labelBackgroundColor=#ffffff;" value="15. POST /v1/chat/completions&lt;br&gt;&lt;font color='#52657b'&gt;(Prompt: detect missing, ambiguous, or contradictory ideas)&lt;/font&gt;">
           <mxGeometry relative="1" as="geometry"><mxPoint x="1275" y="1340" as="sourcePoint" /><mxPoint x="1485" y="1340" as="targetPoint" /></mxGeometry>
         </mxCell>
         <mxCell id="f3m21" edge="1" parent="1" style="edgeStyle=none;html=1;rounded=0;dashed=1;dashPattern=8 7;strokeColor=#52657b;strokeWidth=2;endArrow=open;endFill=0;fontColor=#26364a;fontFamily=Arial;fontSize=12;labelBackgroundColor=#ffffff;" value="JSON { isComplete, followUpQuestion, rationale }">
@@ -192,7 +192,7 @@
         <mxCell id="f3alth" parent="1" style="rounded=0;whiteSpace=wrap;html=1;align=center;verticalAlign=middle;strokeColor=#55799d;fillColor=#e7eff8;fontColor=#1d2b3a;fontFamily=Arial;fontSize=12;fontStyle=1;" value="alt" vertex="1">
           <mxGeometry height="24" width="62" x="180" y="1440" as="geometry" />
         </mxCell>
-        <mxCell id="f3altcond" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;fontColor=#1d2b3a;fontFamily=Arial;fontSize=12;fontStyle=1;" value="[Câu trả lời còn thiếu ý / mơ hồ / mâu thuẫn → hỏi xoáy]" vertex="1">
+        <mxCell id="f3altcond" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;fontColor=#1d2b3a;fontFamily=Arial;fontSize=12;fontStyle=1;" value="[Answer is incomplete, ambiguous, or contradictory → ask a follow-up]" vertex="1">
           <mxGeometry height="24" width="480" x="300" y="1440" as="geometry" />
         </mxCell>
 
@@ -214,28 +214,28 @@
         <mxCell id="f3m28" edge="1" parent="1" style="edgeStyle=none;html=1;rounded=0;dashed=1;dashPattern=8 7;strokeColor=#52657b;strokeWidth=2;endArrow=open;endFill=0;fontColor=#26364a;fontFamily=Arial;fontSize=12;labelBackgroundColor=#ffffff;" value="Audio stream">
           <mxGeometry relative="1" as="geometry"><mxPoint x="565" y="1685" as="sourcePoint" /><mxPoint x="355" y="1685" as="targetPoint" /></mxGeometry>
         </mxCell>
-        <mxCell id="f3m29" edge="1" parent="1" style="edgeStyle=none;html=1;rounded=0;dashed=1;dashPattern=8 7;strokeColor=#52657b;strokeWidth=2;endArrow=open;endFill=0;fontColor=#26364a;fontFamily=Arial;fontSize=12;labelBackgroundColor=#ffffff;" value="20. Phát giọng hỏi xoáy của Giám khảo ảo AI">
+        <mxCell id="f3m29" edge="1" parent="1" style="edgeStyle=none;html=1;rounded=0;dashed=1;dashPattern=8 7;strokeColor=#52657b;strokeWidth=2;endArrow=open;endFill=0;fontColor=#26364a;fontFamily=Arial;fontSize=12;labelBackgroundColor=#ffffff;" value="20. Play the AI virtual examiner follow-up question">
           <mxGeometry relative="1" as="geometry"><mxPoint x="335" y="1720" as="sourcePoint" /><mxPoint x="125" y="1720" as="targetPoint" /></mxGeometry>
         </mxCell>
 
         <mxCell id="f3div" edge="1" parent="1" style="edgeStyle=none;dashed=1;dashPattern=9 7;strokeColor=#71869c;strokeWidth=1.7;endArrow=none;startArrow=none;" value="">
           <mxGeometry relative="1" as="geometry"><mxPoint x="180" y="1750" as="sourcePoint" /><mxPoint x="2010" y="1750" as="targetPoint" /></mxGeometry>
         </mxCell>
-        <mxCell id="f3altelse" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;fontColor=#1d2b3a;fontFamily=Arial;fontSize=12;fontStyle=1;" value="[else (Câu trả lời đã đạt / hết lượt hỏi xoáy / hết giờ)]" vertex="1">
+        <mxCell id="f3altelse" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;fontColor=#1d2b3a;fontFamily=Arial;fontSize=12;fontStyle=1;" value="[else (Answer is sufficient / follow-up limit reached / time expired)]" vertex="1">
           <mxGeometry height="24" width="470" x="300" y="1757" as="geometry" />
         </mxCell>
         <mxCell id="f3m30" edge="1" parent="1" style="edgeStyle=none;html=1;rounded=0;dashed=1;dashPattern=8 7;strokeColor=#52657b;strokeWidth=2;endArrow=open;endFill=0;fontColor=#26364a;fontFamily=Arial;fontSize=12;labelBackgroundColor=#ffffff;" value="21. Event QuestionCompleted(questionId, nextQuestionAvailable)">
           <mxGeometry relative="1" as="geometry"><mxPoint x="795" y="1810" as="sourcePoint" /><mxPoint x="355" y="1810" as="targetPoint" /></mxGeometry>
         </mxCell>
-        <mxCell id="f3m31" edge="1" parent="1" style="edgeStyle=none;html=1;rounded=0;dashed=1;dashPattern=8 7;strokeColor=#52657b;strokeWidth=2;endArrow=open;endFill=0;fontColor=#26364a;fontFamily=Arial;fontSize=12;labelBackgroundColor=#ffffff;" value="22. Thông báo chuyển sang câu hỏi tiếp theo">
+        <mxCell id="f3m31" edge="1" parent="1" style="edgeStyle=none;html=1;rounded=0;dashed=1;dashPattern=8 7;strokeColor=#52657b;strokeWidth=2;endArrow=open;endFill=0;fontColor=#26364a;fontFamily=Arial;fontSize=12;labelBackgroundColor=#ffffff;" value="22. Notify that the next question is starting">
           <mxGeometry relative="1" as="geometry"><mxPoint x="335" y="1845" as="sourcePoint" /><mxPoint x="125" y="1845" as="targetPoint" /></mxGeometry>
         </mxCell>
 
-        <mxCell id="f3sec3" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;fontColor=#1d2b3a;fontFamily=Arial;fontSize=13;fontStyle=1;" value="GIAI ĐOẠN 3 — NỘP BÀI THI" vertex="1">
+        <mxCell id="f3sec3" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;fontColor=#1d2b3a;fontFamily=Arial;fontSize=13;fontStyle=1;" value="PHASE 3 — SUBMIT THE EXAM" vertex="1">
           <mxGeometry height="22" width="300" x="125" y="1908" as="geometry" />
         </mxCell>
 
-        <mxCell id="f3m32" edge="1" parent="1" style="edgeStyle=none;html=1;rounded=0;strokeColor=#26364a;strokeWidth=2;endArrow=block;endFill=1;fontColor=#26364a;fontFamily=Arial;fontSize=12;labelBackgroundColor=#ffffff;" value="23. Bấm «Nộp bài» (hoặc hết giờ tự động nộp)">
+        <mxCell id="f3m32" edge="1" parent="1" style="edgeStyle=none;html=1;rounded=0;strokeColor=#26364a;strokeWidth=2;endArrow=block;endFill=1;fontColor=#26364a;fontFamily=Arial;fontSize=12;labelBackgroundColor=#ffffff;" value="23. Click “Submit Exam” (or submit automatically when time expires)">
           <mxGeometry relative="1" as="geometry"><mxPoint x="125" y="1950" as="sourcePoint" /><mxPoint x="335" y="1950" as="targetPoint" /></mxGeometry>
         </mxCell>
         <mxCell id="f3m33" edge="1" parent="1" style="edgeStyle=none;html=1;rounded=0;strokeColor=#26364a;strokeWidth=2;endArrow=block;endFill=1;fontColor=#26364a;fontFamily=Arial;fontSize=12;labelBackgroundColor=#ffffff;" value="24. Invoke SubmitAttempt(transcriptId)">
@@ -257,7 +257,7 @@
           <mxGeometry relative="1" as="geometry"><mxPoint x="795" y="2190" as="sourcePoint" /><mxPoint x="355" y="2190" as="targetPoint" /></mxGeometry>
         </mxCell>
 
-        <mxCell id="f3sum" parent="1" style="rounded=1;whiteSpace=wrap;html=1;align=center;verticalAlign=middle;strokeColor=#d2dce6;fillColor=#f2f6fa;fontColor=#1d2b3a;fontFamily=Arial;fontSize=12;fontStyle=0;" value="28. «Nộp bài thành công!» — Transcript chuyển sang trạng thái Submitted và được chuyển sang Flow 4 (AI chấm điểm).&lt;br&gt;Toàn bộ TranscriptTurns lưu theo Speaker + Seq; thời gian trả lời và số lượt hỏi xoáy được ghi nhận làm tín hiệu phụ cho việc chấm điểm." vertex="1">
+        <mxCell id="f3sum" parent="1" style="rounded=1;whiteSpace=wrap;html=1;align=center;verticalAlign=middle;strokeColor=#d2dce6;fillColor=#f2f6fa;fontColor=#1d2b3a;fontFamily=Arial;fontSize=12;fontStyle=0;" value="28. “Submission successful!” — The Transcript moves to Submitted and proceeds to Flow 4 (AI Grading).&lt;br&gt;All TranscriptTurns are saved by Speaker + Seq; response time and follow-up count are recorded as supplementary grading signals." vertex="1">
           <mxGeometry height="58" width="1930" x="95" y="2225" as="geometry" />
         </mxCell>
       </root>

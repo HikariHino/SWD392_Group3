@@ -18,7 +18,8 @@ internal static class RubricChecks
         var validator = new UpdateQuestionRequestValidator();
         UpdateQuestionRequest Request(double weight = 100) => new()
         {
-            Content = "Updated question", BloomLevel = BloomLevel.Apply,
+            Content = "Updated question",
+            BloomLevel = BloomLevel.Apply,
             Rubrics = [new() { Criteria = "Updated rubric", Weight = weight, MaxScore = 10 }]
         };
         check(validator.Validate(Request()).IsValid, "replacement rubric weight 100 accepted");
@@ -33,7 +34,9 @@ internal static class RubricChecks
         var createValidator = new CreateQuestionRequestValidator();
         check(!createValidator.Validate(new CreateQuestionRequest
         {
-            CourseId = Guid.NewGuid(), Content = "Q", Rubrics = [null!]
+            CourseId = Guid.NewGuid(),
+            Content = "Q",
+            Rubrics = [null!]
         }).IsValid, "create null rubric element rejected without exception");
 
         using var connection = new SqliteConnection("Data Source=:memory:");
@@ -51,7 +54,9 @@ internal static class RubricChecks
             context.Courses.Add(new Course { Id = courseId, Code = "C09", Name = "Rubric check" });
             context.Questions.Add(new Question
             {
-                Id = questionId, CourseId = courseId, Content = "Original question",
+                Id = questionId,
+                CourseId = courseId,
+                Content = "Original question",
                 Rubrics = [new() { Id = oldRubricId, QuestionId = questionId, Criteria = "Old rubric", Weight = 100, MaxScore = 10 }]
             });
             await context.SaveChangesAsync();

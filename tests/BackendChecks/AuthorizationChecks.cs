@@ -36,14 +36,18 @@ internal static class AuthorizationChecks
         await connection.OpenAsync();
         var settings = new JwtSettings
         {
-            Issuer = "authorization-checks", Audience = "checks-client",
+            Issuer = "authorization-checks",
+            Audience = "checks-client",
             SigningKey = Convert.ToBase64String(RandomNumberGenerator.GetBytes(48))
         };
         var hasher = new PasswordHasher();
         User Account(string username, string role) => new()
         {
-            Username = username, FullName = username, Role = role,
-            PasswordHash = hasher.HashPassword("password123"), CreatedAt = DateTime.UtcNow
+            Username = username,
+            FullName = username,
+            Role = role,
+            PasswordHash = hasher.HashPassword("password123"),
+            CreatedAt = DateTime.UtcNow
         };
         var lecturer = Account("lecturer", "Lecturer");
         var student = Account("student", "Student");
@@ -143,13 +147,19 @@ internal static class AuthorizationChecks
             await Status(HttpMethod.Put, $"/api/Users/{lecturer.Id}", new { role = "Student" }, HttpStatusCode.Forbidden, "lecturer cannot change own role");
             using var createdUser = await client.PostAsJsonAsync("/api/Users", new CreateUserDto
             {
-                Username = "new-student", Password = "password123", FullName = "New student", Role = "Student"
+                Username = "new-student",
+                Password = "password123",
+                FullName = "New student",
+                Role = "Student"
             });
             check(createdUser.StatusCode == HttpStatusCode.Created, "lecturer creates user");
             var userDto = (await createdUser.Content.ReadFromJsonAsync<UserDto>())!;
             await Status(HttpMethod.Post, "/api/Users", new CreateUserDto
             {
-                Username = "new-student", Password = "password123", FullName = "Duplicate", Role = "Student"
+                Username = "new-student",
+                Password = "password123",
+                FullName = "Duplicate",
+                Role = "Student"
             }, HttpStatusCode.Conflict, "duplicate username returns 409");
             using (var scope = app.Services.CreateScope())
                 check(await scope.ServiceProvider.GetRequiredService<AivesDbContext>().Users.CountAsync(u => u.Username == "new-student") == 1,
@@ -164,7 +174,9 @@ internal static class AuthorizationChecks
             var course = (await createdCourse.Content.ReadFromJsonAsync<CourseDto>())!;
             var questionBody = new
             {
-                courseId = course.Id, content = "Explain Onion", bloomLevel = 2,
+                courseId = course.Id,
+                content = "Explain Onion",
+                bloomLevel = 2,
                 rubrics = new[] { new { criteria = "Correct explanation", weight = 100, maxScore = 10 } }
             };
             using var createdQuestion = await client.PostAsJsonAsync("/api/questions", questionBody);
@@ -211,13 +223,13 @@ internal static class AuthorizationChecks
             using var document = JsonDocument.Parse(await swagger.Content.ReadAsStringAsync());
             var paths = document.RootElement.GetProperty("paths");
             foreach (var path in paths.EnumerateObject())
-            foreach (var operation in path.Value.EnumerateObject())
-            {
-                if (path.Name == "/api/auth/login")
-                    check(!operation.Value.TryGetProperty("security", out var security) || security.GetArrayLength() == 0, "Swagger login stays anonymous");
-                else
-                    check(operation.Value.GetProperty("security")[0].TryGetProperty("Bearer", out _), "Swagger sends Bearer: " + operation.Name + " " + path.Name);
-            }
+                foreach (var operation in path.Value.EnumerateObject())
+                {
+                    if (path.Name == "/api/auth/login")
+                        check(!operation.Value.TryGetProperty("security", out var security) || security.GetArrayLength() == 0, "Swagger login stays anonymous");
+                    else
+                        check(operation.Value.GetProperty("security")[0].TryGetProperty("Bearer", out _), "Swagger sends Bearer: " + operation.Name + " " + path.Name);
+                }
         }
         finally { await app.StopAsync(); }
     }

@@ -5,10 +5,10 @@
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
-        <mxCell id="v2" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;fontColor=#1d2b3a;fontFamily=Arial;fontSize=31;fontStyle=1;" value="SEQUENCE DIAGRAM — GIẢNG VIÊN TẠO CÂU HỎI &amp;amp; CHUẨN HÓA RUBRIC" vertex="1">
+        <mxCell id="v2" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;fontColor=#1d2b3a;fontFamily=Arial;fontSize=31;fontStyle=1;" value="SEQUENCE DIAGRAM — LECTURER CREATES A QUESTION &amp;amp; STANDARDIZES THE RUBRIC" vertex="1">
           <mxGeometry height="42" width="1800" x="350" y="22" as="geometry" />
         </mxCell>
-        <mxCell id="v3" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;fontColor=#52657b;fontFamily=Arial;fontSize=12;fontStyle=0;" value="POST /api/questions · Tổng Weight phải bằng 100% · Lưu Question và Rubric trong cùng một lần SaveChangesAsync" vertex="1">
+        <mxCell id="v3" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;fontColor=#52657b;fontFamily=Arial;fontSize=12;fontStyle=0;" value="POST /api/questions · Total Weight must equal 100% · Save Question and Rubric in a single SaveChangesAsync" vertex="1">
           <mxGeometry height="28" width="1800" x="350" y="65" as="geometry" />
         </mxCell>
         <mxCell id="e4" edge="1" parent="1" style="edgeStyle=none;strokeColor=#26364a;strokeWidth=2;endArrow=block;endFill=1;" value="">
@@ -17,7 +17,7 @@
             <mxPoint x="850" y="112" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="v5" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;fontColor=#52657b;fontFamily=Arial;fontSize=12;fontStyle=0;" value="Gọi đồng bộ" vertex="1">
+        <mxCell id="v5" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;fontColor=#52657b;fontFamily=Arial;fontSize=12;fontStyle=0;" value="Synchronous call" vertex="1">
           <mxGeometry height="24" width="110" x="860" y="100" as="geometry" />
         </mxCell>
         <mxCell id="e6" edge="1" parent="1" style="edgeStyle=none;dashed=1;dashPattern=8 7;strokeColor=#52657b;strokeWidth=2;endArrow=open;endFill=0;" value="">
@@ -26,7 +26,7 @@
             <mxPoint x="1130" y="112" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="v7" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;fontColor=#52657b;fontFamily=Arial;fontSize=12;fontStyle=0;" value="Kết quả trả về" vertex="1">
+        <mxCell id="v7" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;fontColor=#52657b;fontFamily=Arial;fontSize=12;fontStyle=0;" value="Returned result" vertex="1">
           <mxGeometry height="24" width="135" x="1140" y="100" as="geometry" />
         </mxCell>
         <mxCell id="v8" parent="1" style="rounded=0;whiteSpace=wrap;html=1;align=center;verticalAlign=middle;strokeColor=#7593b4;fillColor=#eef4fb;fontColor=#1d2b3a;fontFamily=Arial;fontSize=12;fontStyle=0;" value="alt / loop" vertex="1">
@@ -101,7 +101,7 @@
         <mxCell id="v24" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;fontColor=#52657b;fontFamily=Arial;fontSize=12;fontStyle=0;" value="Actor" vertex="1">
           <mxGeometry height="20" width="74" x="78" y="286" as="geometry" />
         </mxCell>
-        <mxCell id="e25" edge="1" parent="1" style="edgeStyle=none;html=1;rounded=0;strokeColor=#26364a;strokeWidth=2;endArrow=block;endFill=1;fontColor=#26364a;fontFamily=Arial;fontSize=12;labelBackgroundColor=#ffffff;" value="1. Nhập nội dung, môn,&lt;br&gt;Bloom Level và Rubric[]">
+        <mxCell id="e25" edge="1" parent="1" style="edgeStyle=none;html=1;rounded=0;strokeColor=#26364a;strokeWidth=2;endArrow=block;endFill=1;fontColor=#26364a;fontFamily=Arial;fontSize=12;labelBackgroundColor=#ffffff;" value="1. Enter content, course,&lt;br&gt;Bloom Level, and Rubric[]">
           <mxGeometry relative="1" as="geometry">
             <mxPoint x="125" y="330" as="sourcePoint" />
             <mxPoint x="335" y="330" as="targetPoint" />
@@ -144,7 +144,7 @@
         <mxCell id="v32" parent="1" style="rounded=0;whiteSpace=wrap;html=1;align=center;verticalAlign=middle;strokeColor=#55799d;fillColor=#e7eff8;fontColor=#1d2b3a;fontFamily=Arial;fontSize=12;fontStyle=1;" value="alt" vertex="1">
           <mxGeometry height="24" width="62" x="470" y="600" as="geometry" />
         </mxCell>
-        <mxCell id="v33" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;fontColor=#1d2b3a;fontFamily=Arial;fontSize=12;fontStyle=1;" value="[Tổng trọng số Rubric != 100%]" vertex="1">
+        <mxCell id="v33" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;fontColor=#1d2b3a;fontFamily=Arial;fontSize=12;fontStyle=1;" value="[Total Rubric weight != 100%]" vertex="1">
           <mxGeometry height="24" width="360" x="590" y="600" as="geometry" />
         </mxCell>
         <mxCell id="e34" edge="1" parent="1" style="edgeStyle=none;dashed=1;dashPattern=9 7;strokeColor=#71869c;strokeWidth=1.7;endArrow=none;startArrow=none;" value="">
@@ -159,7 +159,7 @@
             <mxPoint x="355" y="650" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="v36" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;fontColor=#1d2b3a;fontFamily=Arial;fontSize=12;fontStyle=1;" value="[else (Hợp lệ)]" vertex="1">
+        <mxCell id="v36" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;fontColor=#1d2b3a;fontFamily=Arial;fontSize=12;fontStyle=1;" value="[else (Valid)]" vertex="1">
           <mxGeometry height="30" width="170" x="600" y="699" as="geometry" />
         </mxCell>
         <mxCell id="e37" edge="1" parent="1" style="edgeStyle=none;html=1;rounded=0;strokeColor=#26364a;strokeWidth=2;endArrow=block;endFill=1;fontColor=#26364a;fontFamily=Arial;fontSize=12;labelBackgroundColor=#ffffff;" value="5b. CreateQuestionAsync(request)">
@@ -199,7 +199,7 @@
             <mxPoint x="1275" y="918" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="e43" edge="1" parent="1" style="edgeStyle=none;html=1;rounded=0;dashed=1;dashPattern=8 7;strokeColor=#52657b;strokeWidth=2;endArrow=open;endFill=0;fontColor=#26364a;fontFamily=Arial;fontSize=12;labelBackgroundColor=#ffffff;" value="Course hợp lệ">
+        <mxCell id="e43" edge="1" parent="1" style="edgeStyle=none;html=1;rounded=0;dashed=1;dashPattern=8 7;strokeColor=#52657b;strokeWidth=2;endArrow=open;endFill=0;fontColor=#26364a;fontFamily=Arial;fontSize=12;labelBackgroundColor=#ffffff;" value="Valid course">
           <mxGeometry relative="1" as="geometry">
             <mxPoint x="1275" y="946" as="sourcePoint" />
             <mxPoint x="1045" y="946" as="targetPoint" />
@@ -286,7 +286,7 @@
             <mxPoint x="355" y="1410" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="e60" edge="1" parent="1" style="edgeStyle=none;html=1;rounded=0;dashed=1;dashPattern=8 7;strokeColor=#52657b;strokeWidth=2;endArrow=open;endFill=0;fontColor=#26364a;fontFamily=Arial;fontSize=12;labelBackgroundColor=#ffffff;" value="Hiển thị tạo thành công">
+        <mxCell id="e60" edge="1" parent="1" style="edgeStyle=none;html=1;rounded=0;dashed=1;dashPattern=8 7;strokeColor=#52657b;strokeWidth=2;endArrow=open;endFill=0;fontColor=#26364a;fontFamily=Arial;fontSize=12;labelBackgroundColor=#ffffff;" value="Display success message">
           <mxGeometry relative="1" as="geometry">
             <mxPoint x="335" y="1435" as="sourcePoint" />
             <mxPoint x="125" y="1435" as="targetPoint" />
