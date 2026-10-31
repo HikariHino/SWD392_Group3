@@ -21,7 +21,7 @@ Baseline: `quang` sau C02 `fd7f6b2`, 03/10/2026. Người lập: Quang cùng Cod
 | Transcript / điểm | Transcript.TotalScore decimal; Rubric double | C03 giữ Transcript là bài thi; TotalScore phải nullable trước chốt. Decimal cho điểm/rubric là chuyển đổi dự kiến C20, không làm mất trạng thái chưa chấm |
 | Luồng thi đầy đủ | Chưa có owner/status/turn/snapshot/concurrency | Bổ sung theo phần 2–7: TranscriptTurns, ExamSessionQuestions, trạng thái, audit người chốt, snapshot rubric và version |
 
-Các quan hệ Course→Question/ExamSession, User/ExamSession→Transcript, Transcript/Question→Assessment và Question→Rubric phù hợp hướng C03. Guid và BloomLevel 1..6 cũng thống nhất. Các phần Question.Points/ExpectedAnswer/AiModel, rubric prompt, ownership và hội thoại vẫn là mở rộng dự kiến từ C03/ảnh DB, không được xem là đã chốt bởi draw.io. Sơ đồ hiện chỉ mô tả đường Question Bank và entity, chưa phải toàn bộ API/User/Auth/AI/SignalR của AIVES.
+Các quan hệ Course→Question/Rubric/ExamSession, User/ExamSession→Transcript và Transcript/Question→Assessment phù hợp hướng C03. Rubric là ma trận đánh giá chung của cả môn học, không phải dữ liệu của từng câu hỏi. Guid và BloomLevel 1..6 cũng thống nhất. Các phần Question.Points/ExpectedAnswer/AiModel, rubric prompt, ownership và hội thoại vẫn là mở rộng dự kiến từ C03/ảnh DB, không được xem là đã chốt bởi draw.io. Sơ đồ hiện chỉ mô tả đường Question Bank và entity, chưa phải toàn bộ API/User/Auth/AI/SignalR của AIVES.
 
 Thứ tự sử dụng: source/Swagger để biết hành vi đang chạy; tài liệu C03 để triển khai mục tiêu đã ghi; draw.io để tham khảo thiết kế và cập nhật theo các mốc. Khi chủ động thay quyết định C03, ghi lý do và ảnh hưởng DTO/schema/peer trong cùng commit.
 
@@ -31,7 +31,7 @@ Thứ tự sử dụng: source/Swagger để biết hành vi đang chạy; tài 
 | --- | --- | --- | --- |
 | Courses | PK `Id` Guid; Code, Name, Description; audit/soft delete | PK CourseId; cùng các trường mô tả | Giữ `Id` trong schema code mới, API id dạng UUID; DB trong ảnh cần mapping trước migration |
 | Questions | PK Id Guid; CourseId; Content; BloomLevel int; audit | PK QuestionId; thêm ExpectedAnswer, QuestionType, Points, AiModel | Giữ model hiện tại; thêm ExpectedAnswer nullable, Points decimal > 0 (mặc định 10), QuestionType=Oral, AiModel nullable khi use case cần |
-| Rubrics | PK Id Guid; QuestionId; Criteria; Weight/MaxScore double | PK RubricId; thêm AiGradingPrompt | Giữ quan hệ; chuyển số điểm/trọng số sang decimal ở mốc grading; prompt override nullable |
+| Rubrics | PK Id Guid; CourseId; Criteria; Weight/MaxScore double | PK RubricId; thêm AiGradingPrompt | Ma trận dùng chung toàn Course; chuyển số điểm/trọng số sang decimal ở mốc grading; prompt override nullable |
 | Users | Model/config có UserId Guid, Username unique, PasswordHash, FullName, Role, CreatedAt nullable, IsDeleted; migration chưa có | Cùng tên trường hiển thị | C07 bổ sung schema; không dùng password nguyên văn; DTO không trả PasswordHash |
 | ExamSessions | Chưa có | SessionId, CourseId, SessionTitle, StartTime, EndTime, IsDeleted | C13 thêm SessionId Guid, CreatedByUserId, Status, thời gian UTC, audit |
 | Transcripts | Chưa có | TranscriptId, UserId, SessionId, TotalScore, GradedAt, IsDeleted | Một bài thi của sinh viên, không phải một câu hội thoại; thêm Status, StartedAt, SubmittedAt |
@@ -46,10 +46,10 @@ Thứ tự sử dụng: source/Swagger để biết hành vi đang chạy; tài 
 - Khóa mới: Guid / SQL uniqueidentifier; JSON UUID string. UTC DateTime / SQL datetime2, JSON ISO 8601 có Z. Username tối đa 50, FullName 100; Course Code 50, Name 200, Description 1000; Question Content 2000, Rubric Criteria 500 (theo config hiện tại).
 - BloomLevel giữ integer 1..6: Remember, Understand, Apply, Analyze, Evaluate, Create. API hiện trả cả bloomLevel và bloomLevelName.
 - Role canonical: `Lecturer`, `Student`. Không có tự đăng ký được chọn Lecturer; tài khoản lecturer được cấp bởi quy trình nhóm/quản trị, chưa thêm role Admin vào MVP. Khi C06/C12 triển khai, thao tác cấp/đổi quyền không công khai.
-- Một Course có nhiều Question và ExamSession. Một Question có nhiều Rubric. Một User(Student) có nhiều Transcript; một ExamSession có nhiều Transcript. Unique `(SessionId, UserId)` cho một lần thi MVP.
+- Một Course có nhiều Question, Rubric và ExamSession. Một User(Student) có nhiều Transcript; một ExamSession có nhiều Transcript. Unique `(SessionId, UserId)` cho một lần thi MVP.
 - Một Transcript có nhiều TranscriptTurn, Sequence tăng dần, unique `(TranscriptId, Sequence)`. Một question được tính điểm có tối đa một Assessment trong bài thi: unique `(TranscriptId, QuestionId)`; lượt hỏi tiếp là hội thoại hỗ trợ, không tự tạo câu tính điểm mới.
 - Assessment lưu đáp án tổng hợp và snapshot đề/rubric/Points tại phiên thi. Lecturer chốt phải là người có quyền quản lý phiên (CreatedByUserId), không chỉ kiểm tra role.
-- Soft delete không xóa lịch sử bài thi. Khóa ngoại lịch sử dùng Restrict/NoAction; không cascade xóa kết quả khi xóa course/user/question. Model hiện cascade Rubric theo Question khi hard delete: phải giữ snapshot lịch sử trước khi mở ca thi.
+- Soft delete không xóa lịch sử bài thi. Khóa ngoại lịch sử dùng Restrict/NoAction; không cascade xóa kết quả khi xóa course/user/question. Rubric thuộc Course và chỉ được thay cả bộ, giữ bản cũ soft-delete để có lịch sử; xóa mềm Course cũng xóa mềm rubric đang hoạt động của nó.
 - Decimal mục tiêu: Points/MaxScore/Weight/scores `(18,4)`; confidence `(5,4)` trong [0,1], nullable khi provider không trả. FinalScore/AiSuggestedScore nullable để phân biệt chưa chấm với điểm 0. Confidence là output tự báo của provider, không coi là xác suất được hiệu chuẩn.
 
 ## 3. Vòng đời và quyền
@@ -85,8 +85,9 @@ Tên JSON camelCase, route không version trong baseline; giữ route hiện t�
 | --- | --- | --- |
 | GET /api/questions | courseId?, bloomLevel?, searchTerm?, pageIndex=1, pageSize=10 | 200 PagedResponse<QuestionDto> |
 | GET /api/questions/{id} | UUID | 200 QuestionDto; 404 khi thiếu |
-| POST /api/questions | content, courseId, bloomLevel, rubrics[] | 201 QuestionDto + Location |
-| PUT /api/questions/{id} | content, bloomLevel, rubrics[]; thay toàn bộ rubric | 200 QuestionDto; 404 khi thiếu |
+| POST /api/questions | content, courseId, bloomLevel | 201 QuestionDto + Location |
+| PUT /api/questions/{id} | content, bloomLevel | 200 QuestionDto; 404 khi thiếu |
+| PUT /api/courses/{id}/rubrics | rubrics[]; thay toàn bộ rubric của môn | 200 CourseDto; lecturer |
 | DELETE /api/questions/{id} | UUID | 204; soft delete |
 | GET /api/questions/courses | Không | 200 collection Domain Course (sẽ đổi CourseDto tại C10) |
 | POST /api/questions/import | Không có file thật | 200 success=true + message (mock) |
@@ -96,7 +97,7 @@ Tên JSON camelCase, route không version trong baseline; giữ route hiện t�
 | PUT /api/Users/{id} | fullName?, role? | 204 |
 | DELETE /api/Users/{id} | UUID | 204; soft delete |
 
-UserDto: id, username, fullName, role, createdAt. QuestionDto: id, content, bloomLevel, bloomLevelName, courseId, courseCode, courseName, createdAt, updatedAt, rubrics[{id,criteria,weight,maxScore}]. PagedResponse: items, totalCount, pageIndex, pageSize, totalPages, hasPreviousPage, hasNextPage. C08 giới hạn pageIndex>=1 và pageSize 1..100. C10 CourseDto: id, code, name, description; không navigation/audit nội bộ.
+UserDto: id, username, fullName, role, createdAt. QuestionDto: id, content, bloomLevel, bloomLevelName, courseId, courseCode, courseName, createdAt, updatedAt. CourseDto: id, code, name, description, rubrics[{id,criteria,weight,maxScore}]. PagedResponse: items, totalCount, pageIndex, pageSize, totalPages, hasPreviousPage, hasNextPage. C08 giới hạn pageIndex>=1 và pageSize 1..100.
 
 Ví dụ request tạo câu hỏi hợp lệ với course mẫu (chỉ dùng nếu course đã seed):
 

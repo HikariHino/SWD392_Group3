@@ -16,7 +16,6 @@ public class QuestionDto
     public DateTime CreatedAt { get; set; }
     public DateTime? UpdatedAt { get; set; }
 
-    public List<RubricDto> Rubrics { get; set; } = new List<RubricDto>();
 }
 
 public class CreateQuestionRequest
@@ -24,14 +23,12 @@ public class CreateQuestionRequest
     public Guid CourseId { get; set; }
     public string Content { get; set; } = string.Empty;
     public BloomLevel BloomLevel { get; set; } = BloomLevel.Understand;
-    public List<CreateRubricRequest> Rubrics { get; set; } = new List<CreateRubricRequest>();
 }
 
 public class UpdateQuestionRequest
 {
     public string Content { get; set; } = string.Empty;
     public BloomLevel BloomLevel { get; set; }
-    public List<CreateRubricRequest> Rubrics { get; set; } = new List<CreateRubricRequest>();
 }
 
 public class QuestionQueryParameters

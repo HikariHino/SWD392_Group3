@@ -185,7 +185,7 @@ public class GeminiService : IAiService
         AiGenerateQuestionRequest request, string apiKey)
     {
         var prompt = $@"Bạn là giám khảo và chuyên gia khảo thí đại học môn Khoa học Máy tính / Công nghệ Thông tin.
-Hãy tạo 1 câu hỏi thi vấn đáp (Viva Exam) và bảng tiêu chí Rubric đánh giá chấm điểm chuẩn dựa theo thông tin:
+Hãy tạo 1 câu hỏi thi vấn đáp (Viva Exam) dựa theo thông tin:
 - Môn học / Chủ đề: {request.Topic}
 - Cấp độ nhận thức Bloom mong muốn: {request.BloomLevel}
 
@@ -193,14 +193,9 @@ YÊU CẦU BẮT BUỘC VỀ ĐỊNH DẠNG:
 Trả về duy nhất định dạng JSON (không thêm markdown hay backtick ```json), theo cấu trúc:
 {{
   ""content"": ""Nội dung câu hỏi vấn đáp mang tính đào sâu tư duy..."",
-  ""sourceContext"": ""Tài liệu / Giáo trình môn học trích dẫn..."",
-  ""rubrics"": [
-    {{ ""criteria"": ""Tên tiêu chí 1..."", ""weight"": 30.0, ""maxScore"": 3.0 }},
-    {{ ""criteria"": ""Tên tiêu chí 2..."", ""weight"": 40.0, ""maxScore"": 4.0 }},
-    {{ ""criteria"": ""Tên tiêu chí 3..."", ""weight"": 30.0, ""maxScore"": 3.0 }}
-  ]
+  ""sourceContext"": ""Tài liệu / Giáo trình môn học trích dẫn...""
 }}
-QUY TẮC BẤT BIẾN: Tổng các trọng số (weight) của tất cả tiêu chí Rubric BẮT BUỘC PHẢI BẰNG ĐÚNG 100.0.";
+Rubric là cấu hình chung của toàn bộ môn học và không được sinh theo từng câu hỏi.";
 
         var requestBody = new
         {
@@ -241,10 +236,8 @@ QUY TẮC BẤT BIẾN: Tổng các trọng số (weight) của tất cả tiêu
         var opts = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
         var parsed = JsonSerializer.Deserialize<GeminiParsedResponse>(text, opts);
 
-        if (parsed == null || string.IsNullOrWhiteSpace(parsed.Content) || parsed.Rubrics is not { Count: > 0 })
+        if (parsed == null || string.IsNullOrWhiteSpace(parsed.Content))
             return (null, false);
-
-        NormalizeRubrics(parsed.Rubrics);
 
         return (new AiGeneratedQuestionDto
         {
@@ -252,19 +245,8 @@ QUY TẮC BẤT BIẾN: Tổng các trọng số (weight) của tất cả tiêu
             Content = parsed.Content,
             BloomLevel = request.BloomLevel,
             SourceContext = parsed.SourceContext ?? $"Tài liệu chuẩn hóa chủ đề: {request.Topic}",
-            AiConfidence = 96.5,
-            Rubrics = parsed.Rubrics
+            AiConfidence = 96.5
         }, false);
-    }
-
-    // ── Normalize rubric weights về đúng 100% ─────────────────────────────────
-    private static void NormalizeRubrics(List<CreateRubricRequest> rubrics)
-    {
-        var sum = rubrics.Sum(r => r.Weight);
-        if (Math.Abs(sum - 100.0) > 0.01 && rubrics.Count > 0)
-        {
-            rubrics[^1].Weight = Math.Round(rubrics[^1].Weight + (100.0 - sum), 2);
-        }
     }
 
     // ── RAG Fallback ───────────────────────────────────────────────────────────
@@ -277,13 +259,7 @@ QUY TẮC BẤT BIẾN: Tổng các trọng số (weight) của tất cả tiêu
             Content = $"Hãy phân tích nguyên lý hoạt động, ưu nhược điểm và ứng dụng thực tiễn của chủ đề '{topic}' trong hệ thống phần mềm hiện đại? Đưa ra ví dụ minh họa cụ thể cho cấp độ nhận thức {request.BloomLevel}.",
             BloomLevel = request.BloomLevel,
             SourceContext = $"Trích xuất từ Giáo trình & Slide bài giảng chuyên ngành (Chủ đề: {topic})",
-            AiConfidence = 95.0,
-            Rubrics =
-            [
-                new() { Criteria = $"Hiểu rõ định nghĩa cốt lõi, khái niệm và cơ chế hoạt động của {topic}", Weight = 30.0, MaxScore = 3.0 },
-                new() { Criteria = "Phân tích chuyên sâu ưu nhược điểm và so sánh với các giải pháp tương đương", Weight = 40.0, MaxScore = 4.0 },
-                new() { Criteria = "Đưa ra giải pháp thực tiễn, tối ưu hóa và liên hệ bài toán thực tế", Weight = 30.0, MaxScore = 3.0 }
-            ]
+            AiConfidence = 95.0
         };
     }
 
@@ -291,6 +267,5 @@ QUY TẮC BẤT BIẾN: Tổng các trọng số (weight) của tất cả tiêu
     {
         public string Content { get; set; } = string.Empty;
         public string? SourceContext { get; set; }
-        public List<CreateRubricRequest>? Rubrics { get; set; }
     }
 }

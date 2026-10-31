@@ -38,6 +38,11 @@ public class CoursesController : ControllerBase
     [ProducesResponseType(typeof(ProblemDetails), 409)]
     public async Task<ActionResult<CourseDto>> UpdateCourse(Guid id, UpdateCourseRequest request) => Ok(await _service.UpdateCourseAsync(id, request));
 
+    [HttpPut("{id:guid}/rubrics")]
+    [Authorize(Roles = "Lecturer")]
+    public async Task<ActionResult<CourseDto>> ReplaceRubrics(Guid id, ReplaceCourseRubricsRequest request) =>
+        Ok(await _service.ReplaceRubricsAsync(id, request));
+
     [HttpDelete("{id:guid}")]
     [Authorize(Roles = "Lecturer")]
     [ProducesResponseType(204)]

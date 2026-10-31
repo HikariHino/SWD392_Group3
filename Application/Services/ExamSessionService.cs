@@ -34,7 +34,7 @@ public class ExamSessionService(IExamSessionRepository repo, ICurrentUser user, 
             Invalid("QuestionIds", "Select a nonempty list of distinct questions.");
         if (!await repo.CourseExists(request.CourseId)) throw new NotFoundException("Course not found.");
         var questions = await repo.Questions(request.QuestionIds!);
-        ValidateQuestions(questions, request.QuestionIds!.Count, request.CourseId);
+        ValidateQuestions(questions, request.QuestionIds!.Count, request.CourseId, await repo.Rubrics(request.CourseId));
         var session = new ExamSession { CourseId = request.CourseId, CreatedByUserId = user.Id!.Value, SessionTitle = title, StartTime = request.StartTime, EndTime = request.EndTime };
         for (var i = 0; i < request.QuestionIds.Count; i++)
             session.ExamSessionQuestions.Add(new ExamSessionQuestion { QuestionId = request.QuestionIds[i], DisplayOrder = i + 1 });
@@ -42,15 +42,12 @@ public class ExamSessionService(IExamSessionRepository repo, ICurrentUser user, 
         await repo.Save();
         return Dto(session);
     }
-    static void ValidateQuestions(List<Question> questions, int count, Guid courseId)
+    static void ValidateQuestions(List<Question> questions, int count, Guid courseId, List<Rubric> rubrics)
     {
         if (questions.Count != count || questions.Any(x => x.CourseId != courseId)) Invalid("QuestionIds", "Questions must be active and belong to this course.");
-        foreach (var q in questions)
-        {
-            var rubrics = q.Rubrics.Where(x => !x.IsDeleted).ToArray();
-            if (string.IsNullOrWhiteSpace(q.Content) || q.Points <= 0 || rubrics.Length == 0 || rubrics.Any(x => string.IsNullOrWhiteSpace(x.Criteria) || !double.IsFinite(x.Weight) || !double.IsFinite(x.MaxScore) || x.Weight <= 0 || x.Weight > 100 || x.MaxScore <= 0 || x.MaxScore > 99999999999999d) || Math.Abs(rubrics.Sum(x => x.Weight) - 100) > 0.01)
-                Invalid("QuestionIds", "Every question needs positive points and valid rubrics totaling 100 percent.");
-        }
+        if (questions.Any(q => string.IsNullOrWhiteSpace(q.Content) || q.Points <= 0) ||
+            rubrics.Count == 0 || rubrics.Any(x => string.IsNullOrWhiteSpace(x.Criteria) || !double.IsFinite(x.Weight) || !double.IsFinite(x.MaxScore) || x.Weight <= 0 || x.Weight > 100 || x.MaxScore <= 0 || x.MaxScore > 99999999999999d) || Math.Abs(rubrics.Sum(x => x.Weight) - 100) > 0.01)
+            Invalid("QuestionIds", "Every question needs positive points and this course needs valid rubrics totaling 100 percent.");
     }
     public async Task<SessionDto> Transition(Guid id, string action)
     {
@@ -70,13 +67,14 @@ public class ExamSessionService(IExamSessionRepository repo, ICurrentUser user, 
             var ids = s.ExamSessionQuestions.Select(x => x.QuestionId).ToArray();
             if (ids.Length == 0) Invalid("QuestionIds", "Session needs questions.");
             var questions = await repo.Questions(ids);
-            ValidateQuestions(questions, ids.Length, s.CourseId);
+            var rubrics = await repo.Rubrics(s.CourseId);
+            ValidateQuestions(questions, ids.Length, s.CourseId, rubrics);
             foreach (var snapshot in s.ExamSessionQuestions)
             {
                 var q = questions.Single(x => x.Id == snapshot.QuestionId);
                 snapshot.Content = q.Content; snapshot.ExpectedAnswer = q.ExpectedAnswer;
                 snapshot.Points = q.Points; snapshot.BloomLevel = (int)q.BloomLevel; snapshot.AiModel = q.AiModel;
-                snapshot.RubricSnapshotJson = JsonSerializer.Serialize(q.Rubrics.Where(x => !x.IsDeleted).OrderBy(x => x.Id).Select(x => new { rubricId = x.Id, criteria = x.Criteria, weight = (decimal)x.Weight, maxScore = (decimal)x.MaxScore, aiGradingPrompt = x.AiGradingPrompt }));
+                snapshot.RubricSnapshotJson = JsonSerializer.Serialize(rubrics.OrderBy(x => x.Id).Select(x => new { rubricId = x.Id, criteria = x.Criteria, weight = (decimal)x.Weight, maxScore = (decimal)x.MaxScore, aiGradingPrompt = x.AiGradingPrompt }));
             }
         }
         if (next == ExamSessionStatus.Closed)

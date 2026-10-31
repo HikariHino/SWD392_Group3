@@ -30,8 +30,8 @@ internal static class SessionLifecycleChecks
         await db.Database.EnsureCreatedAsync();
         var owner = new User { Username = "lecturer", PasswordHash = "hash", FullName = "Lecturer", Role = "Lecturer", CreatedAt = DateTime.UtcNow };
         var course = new Course { Code = "LIFE", Name = "Lifecycle" };
-        var q = new Question { Course = course, Content = "Original", Points = 10, Rubrics = [new Rubric { Criteria = "Accuracy", Weight = 100, MaxScore = 10 }] };
-        db.AddRange(owner, q); await db.SaveChangesAsync();
+        var q = new Question { Course = course, Content = "Original", Points = 10 };
+        db.AddRange(owner, q, new Rubric { Course = course, Criteria = "Accuracy", Weight = 100, MaxScore = 10 }); await db.SaveChangesAsync();
         var service = new ExamSessionService(new ExamSessionRepository(db), new Identity(owner.Id, true), TimeProvider.System);
         CreateSessionRequest Request() => new() { CourseId = course.Id, SessionTitle = " Test ", StartTime = DateTime.UtcNow.AddMinutes(-1), EndTime = DateTime.UtcNow.AddHours(1), QuestionIds = [q.Id] };
         async Task Reject<T>(Func<Task> action, string name) where T : Exception
@@ -58,10 +58,10 @@ internal static class SessionLifecycleChecks
         await Reject<ForbiddenException>(() => stranger.Transition(draft.Id, "open"), "other lecturer cannot open session");
         await Reject<ForbiddenException>(() => stranger.Get(draft.Id), "other lecturer cannot read session");
         await Reject<ConflictException>(() => service.Transition(draft.Id, "close"), "draft cannot close");
-        q.Rubrics.Single().Weight = 50; await db.SaveChangesAsync();
+        (await db.Rubrics.SingleAsync()).Weight = 50; await db.SaveChangesAsync();
         await Reject<ValidationException>(() => service.Transition(draft.Id, "open"), "opening revalidates changed rubric");
         check((await service.Get(draft.Id)).Status == "Draft", "failed open preserves draft");
-        q.Rubrics.Single().Weight = 100; q.Content = "At opening"; await db.SaveChangesAsync();
+        (await db.Rubrics.SingleAsync()).Weight = 100; q.Content = "At opening"; await db.SaveChangesAsync();
         var opened = await service.Transition(draft.Id, "open");
         check(opened.Status == "Open" && opened.Version == 1, "draft opens and advances version");
         var snapshot = await db.ExamSessionQuestions.SingleAsync(x => x.SessionId == draft.Id);

@@ -342,6 +342,9 @@ namespace Infrastructure.Migrations
                     b.Property<string>("AiGradingPrompt")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<Guid>("CourseId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
@@ -359,9 +362,6 @@ namespace Infrastructure.Migrations
                     b.Property<decimal>("MaxScore")
                         .HasColumnType("decimal(5,2)");
 
-                    b.Property<Guid>("QuestionId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2");
 
@@ -373,7 +373,7 @@ namespace Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("QuestionId");
+                    b.HasIndex("CourseId");
 
                     b.ToTable("Rubrics");
                 });
@@ -512,13 +512,13 @@ namespace Infrastructure.Migrations
 
             modelBuilder.Entity("Domain.Entities.QuestionBank.Rubric", b =>
                 {
-                    b.HasOne("Domain.Entities.QuestionBank.Question", "Question")
+                    b.HasOne("Domain.Entities.QuestionBank.Course", "Course")
                         .WithMany("Rubrics")
-                        .HasForeignKey("QuestionId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .HasForeignKey("CourseId")
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.Navigation("Question");
+                    b.Navigation("Course");
                 });
 
             modelBuilder.Entity("Domain.Entities.Interviews.ExamSession", b =>
@@ -543,13 +543,13 @@ namespace Infrastructure.Migrations
                     b.Navigation("ExamSessions");
 
                     b.Navigation("Questions");
+
+                    b.Navigation("Rubrics");
                 });
 
             modelBuilder.Entity("Domain.Entities.QuestionBank.Question", b =>
                 {
                     b.Navigation("ExamSessionQuestions");
-
-                    b.Navigation("Rubrics");
                 });
 
             modelBuilder.Entity("Domain.Entities.UserManagement.User", b =>

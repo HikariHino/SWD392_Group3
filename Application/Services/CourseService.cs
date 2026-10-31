@@ -14,20 +14,23 @@ public class CourseService : ICourseService
     private readonly IMapper _mapper;
     private readonly IValidator<CreateCourseRequest> _createValidator;
     private readonly IValidator<UpdateCourseRequest> _updateValidator;
+    private readonly IValidator<ReplaceCourseRubricsRequest> _rubricValidator;
 
     public CourseService(IUnitOfWork unitOfWork, IMapper mapper,
-        IValidator<CreateCourseRequest> createValidator, IValidator<UpdateCourseRequest> updateValidator)
+        IValidator<CreateCourseRequest> createValidator, IValidator<UpdateCourseRequest> updateValidator,
+        IValidator<ReplaceCourseRubricsRequest> rubricValidator)
     {
         _unitOfWork = unitOfWork;
         _mapper = mapper;
         _createValidator = createValidator;
         _updateValidator = updateValidator;
+        _rubricValidator = rubricValidator;
     }
 
     public async Task<IEnumerable<CourseDto>> GetCoursesAsync() =>
-        _mapper.Map<IEnumerable<CourseDto>>((await _unitOfWork.Courses.GetAllAsync()).Where(c => !c.IsDeleted));
+        await Task.WhenAll((await _unitOfWork.Courses.GetAllAsync()).Where(c => !c.IsDeleted).Select(ToDto));
 
-    public async Task<CourseDto> GetCourseByIdAsync(Guid id) => _mapper.Map<CourseDto>(await GetActiveAsync(id));
+    public async Task<CourseDto> GetCourseByIdAsync(Guid id) => await ToDto(await GetActiveAsync(id));
 
     public async Task<CourseDto> CreateCourseAsync(CreateCourseRequest request)
     {
@@ -41,7 +44,7 @@ public class CourseService : ICourseService
         var course = new Course { Id = Guid.NewGuid(), Code = normalized.Code, Name = normalized.Name, Description = normalized.Description };
         await _unitOfWork.Courses.AddAsync(course);
         await _unitOfWork.SaveChangesAsync();
-        return _mapper.Map<CourseDto>(course);
+        return await ToDto(course);
     }
 
     public async Task<CourseDto> UpdateCourseAsync(Guid id, UpdateCourseRequest request)
@@ -58,7 +61,7 @@ public class CourseService : ICourseService
         course.Name = normalized.Name;
         course.Description = normalized.Description;
         await _unitOfWork.SaveChangesAsync();
-        return _mapper.Map<CourseDto>(course);
+        return await ToDto(course);
     }
 
     public async Task DeleteCourseAsync(Guid id)
@@ -66,8 +69,34 @@ public class CourseService : ICourseService
         var course = await GetActiveAsync(id);
         if ((await _unitOfWork.Questions.FindAsync(q => q.CourseId == id && !q.IsDeleted)).Any())
             throw new ConflictException("Delete the active questions before deleting their course.");
+        foreach (var rubric in await _unitOfWork.Rubrics.FindAsync(r => r.CourseId == id && !r.IsDeleted))
+            rubric.IsDeleted = true;
         course.IsDeleted = true;
         await _unitOfWork.SaveChangesAsync();
+    }
+
+    public async Task<CourseDto> ReplaceRubricsAsync(Guid id, ReplaceCourseRubricsRequest request)
+    {
+        ThrowIfInvalid(await _rubricValidator.ValidateAsync(request));
+        var course = await GetActiveAsync(id);
+        foreach (var rubric in await _unitOfWork.Rubrics.FindAsync(x => x.CourseId == id && !x.IsDeleted))
+            rubric.IsDeleted = true;
+        foreach (var input in request.Rubrics)
+            await _unitOfWork.Rubrics.AddAsync(new Rubric
+            {
+                Id = Guid.NewGuid(), CourseId = id, Criteria = input.Criteria.Trim(),
+                Weight = input.Weight, MaxScore = input.MaxScore
+            });
+        await _unitOfWork.SaveChangesAsync();
+        return await ToDto(course);
+    }
+
+    private async Task<CourseDto> ToDto(Course course)
+    {
+        var dto = _mapper.Map<CourseDto>(course);
+        dto.Rubrics = _mapper.Map<List<RubricDto>>(
+            await _unitOfWork.Rubrics.FindAsync(r => r.CourseId == course.Id && !r.IsDeleted));
+        return dto;
     }
 
     private async Task<Course> GetActiveAsync(Guid id)

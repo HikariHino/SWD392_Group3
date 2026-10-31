@@ -288,6 +288,12 @@ Trạng thái mới nhất 04/10: C04–C12 đã hoàn tất và SQL Server Loca
 
 ### M2 — Thi bằng văn bản chạy xuyên suốt
 
+#### Rubric cấp Course — theo review Mentor Milestone 3 (31/10/2026)
+
+Rubric được chuyển từ `QuestionId` sang `CourseId`: một bộ rubric hoạt động áp dụng cho tất cả câu hỏi của một môn. Lecturer thay toàn bộ bộ rubric bằng `PUT /api/courses/{id}/rubrics`; bộ cũ được soft-delete để giữ lịch sử. Question DTO/request không còn nhận hoặc trả rubric. Khi mở ExamSession, C14 kiểm tra bộ rubric đang hoạt động của Course và snapshot bộ đó vào từng `ExamSessionQuestion`, nên lịch sử thi/chấm không bị đổi khi rubric của môn được cập nhật sau này.
+
+Migration `MoveRubricsToCourse` thêm `CourseId`, backfill qua `Rubrics.QuestionId -> Questions.CourseId`, rồi xóa FK/cột QuestionId và tạo FK Course. Migration forward giữ dữ liệu; rollback bị chặn vì rubric dùng chung không thể suy ngược về một câu hỏi duy nhất an toàn. Chưa apply trên DB live. Regression SQLite: 324 checks pass.
+
 
 
 - [x] **C13** — Người làm: Quang cùng Codex

@@ -10,5 +10,6 @@ public class Course : AuditableEntity
     public string? Description { get; set; }
 
     public ICollection<Question> Questions { get; set; } = new List<Question>();
+    public ICollection<Rubric> Rubrics { get; set; } = new List<Rubric>();
     public ICollection<ExamSession> ExamSessions { get; set; } = new List<ExamSession>();
 }

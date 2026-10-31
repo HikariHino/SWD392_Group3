@@ -59,34 +59,13 @@ public static class DatabaseSeeder
                 Id = Guid.Parse("33333333-3333-3333-3333-333333333333"),
                 CourseId = course1.Id,
                 Content = "Trình bày sự khác biệt giữa Onion Architecture và Kiến trúc 3 tầng truyền thống (3-Tier Architecture)? Tại sao nên áp dụng Dependency Inversion Principle (DIP)?",
-                BloomLevel = BloomLevel.Analyze,
-                Rubrics = new List<Rubric>
-                {
-                    new Rubric
-                    {
-                        Id = Guid.NewGuid(),
-                        Criteria = "Hiểu đúng định nghĩa và chiều hướng phụ thuộc của Onion Architecture",
-                        Weight = 40.0,
-                        MaxScore = 4.0
-                    },
-                    new Rubric
-                    {
-                        Id = Guid.NewGuid(),
-                        Criteria = "Phân tích được nhược điểm phụ thuộc Database của kiến trúc 3 tầng",
-                        Weight = 30.0,
-                        MaxScore = 3.0
-                    },
-                    new Rubric
-                    {
-                        Id = Guid.NewGuid(),
-                        Criteria = "Giải thích rõ ràng lợi ích thực tế của Dependency Inversion Principle (DIP)",
-                        Weight = 30.0,
-                        MaxScore = 3.0
-                    }
-                }
+                BloomLevel = BloomLevel.Analyze
             };
 
-            await context.Questions.AddAsync(question);
+            await context.AddRangeAsync(question,
+                new Rubric { Id = Guid.NewGuid(), CourseId = course1.Id, Criteria = "Hiểu đúng định nghĩa và chiều hướng phụ thuộc của Onion Architecture", Weight = 40.0, MaxScore = 4.0 },
+                new Rubric { Id = Guid.NewGuid(), CourseId = course1.Id, Criteria = "Phân tích được nhược điểm phụ thuộc Database của kiến trúc 3 tầng", Weight = 30.0, MaxScore = 3.0 },
+                new Rubric { Id = Guid.NewGuid(), CourseId = course1.Id, Criteria = "Giải thích rõ ràng lợi ích thực tế của Dependency Inversion Principle (DIP)", Weight = 30.0, MaxScore = 3.0 });
             await context.SaveChangesAsync();
         }
     }

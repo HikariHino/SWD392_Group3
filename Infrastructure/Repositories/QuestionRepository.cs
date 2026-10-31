@@ -12,14 +12,6 @@ public class QuestionRepository : GenericRepository<Question>, IQuestionReposito
     {
     }
 
-    public async Task<Question?> GetWithRubricsAsync(Guid id)
-    {
-        return await _dbSet
-            .Include(q => q.Course)
-            .Include(q => q.Rubrics)
-            .FirstOrDefaultAsync(q => q.Id == id && !q.IsDeleted);
-    }
-
     public async Task<(IEnumerable<Question> Items, int TotalCount)> GetPagedQuestionsAsync(
         Guid? courseId,
         BloomLevel? bloomLevel,
@@ -29,7 +21,6 @@ public class QuestionRepository : GenericRepository<Question>, IQuestionReposito
     {
         var query = _dbSet
             .Include(q => q.Course)
-            .Include(q => q.Rubrics)
             .AsNoTracking()
             .AsQueryable();
 
