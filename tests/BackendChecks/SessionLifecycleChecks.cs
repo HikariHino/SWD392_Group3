@@ -54,7 +54,10 @@ internal static class SessionLifecycleChecks
         await Reject<ValidationException>(() => service.Create(invalid), "question from another course rejected");
         var draft = await service.Create(Request());
         check(draft.Status == "Draft" && draft.SessionTitle == "Test" && draft.CreatedByUserId == owner.Id, "create draft normalizes title and derives owner");
+        var mine = await service.ListMine();
+        check(mine.Count == 1 && mine[0].Id == draft.Id && mine[0].EndTime == draft.EndTime, "lecturer can list own sessions with scheduled end time");
         var stranger = new ExamSessionService(new ExamSessionRepository(db), new Identity(Guid.NewGuid(), true), TimeProvider.System);
+        check((await stranger.ListMine()).Count == 0, "lecturer session list does not expose another lecturer sessions");
         await Reject<ForbiddenException>(() => stranger.Transition(draft.Id, "open"), "other lecturer cannot open session");
         await Reject<ForbiddenException>(() => stranger.Get(draft.Id), "other lecturer cannot read session");
         await Reject<ConflictException>(() => service.Transition(draft.Id, "close"), "draft cannot close");
@@ -83,6 +86,8 @@ internal static class SessionLifecycleChecks
         var auth = typeof(ExamSessionsController).GetCustomAttributes(typeof(AuthorizeAttribute), true).Cast<AuthorizeAttribute>().Single();
         check(auth.Roles == "Lecturer", "session HTTP endpoints require lecturer");
         var controller = new ExamSessionsController(service);
+        var listResponse = await controller.List();
+        check(listResponse.Result is Microsoft.AspNetCore.Mvc.OkObjectResult, "GET exam sessions list returns 200");
         var response = (Microsoft.AspNetCore.Mvc.CreatedAtActionResult)(await controller.Create(Request())).Result!;
         check(response.StatusCode == 201 && response.ActionName == "Get", "session POST returns created location");
     }

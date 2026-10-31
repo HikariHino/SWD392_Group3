@@ -51,13 +51,13 @@ Swagger là hợp đồng chi tiết, các route chính:
 | Login / user hiện tại | `POST /api/auth/login`, `GET /api/auth/me` |
 | Question bank, course, course rubric | `GET /api/questions/courses`, `GET/POST /api/questions`, `PUT/DELETE /api/questions/{id}`, `PUT /api/courses/{id}/rubrics` |
 | CSV question import | `POST /api/questions/import` (`multipart/form-data`: `courseId`, `file`) |
-| Tạo/mở/đóng/hủy exam session | `/api/exam-sessions` |
-| Bắt đầu attempt, xem câu hỏi/transcript | `POST /api/exam-sessions/{id}/attempts`, `GET /api/attempts/{id}/questions`, `GET /api/attempts/{id}/turns` |
+| Liệt kê ca của giảng viên / tạo / xem / mở / đóng / hủy | `GET/POST /api/exam-sessions`, `GET /api/exam-sessions/{id}`, `POST /api/exam-sessions/{id}/{open|close|cancel}` |
+| Bắt đầu attempt, xem câu hỏi/transcript | `POST /api/exam-sessions/{id}/attempts`, `GET /api/attempts/{id}`, `GET /api/attempts/{id}/questions`, `GET /api/attempts/{id}/turns` |
 | Trả lời text, follow-up text, nộp bài | `POST /api/attempts/{id}/answers`, `POST /api/attempts/{id}/follow-up`, `POST /api/attempts/{id}/submit` |
 | Trả lời bằng giọng nói | `POST /api/attempts/{id}/voice-answers` (`multipart/form-data`: `questionId`, `clientMessageId`, `audio`) |
 | Chấm/duyệt và kết quả | `POST /api/attempts/{id}/grade`, `GET /api/attempts/{id}/assessments`, `PUT /api/assessments/{id}/final-score`, `GET /api/attempts/{id}/result` |
 
-Các route cần JWT theo role được Swagger đánh dấu. Voice response trả transcript, student turn, AI follow-up turn, `audioBase64` và `audioContentType`; nếu TTS lỗi sau khi lượt AI đã lưu, vẫn trả text/turn với `speechOutputUnavailable=true`. `clientMessageId` dùng để retry idempotent; client nên giữ nguyên id khi retry. Upload giọng nói xác thực Student, quyền sở hữu attempt, trạng thái phiên và question trước khi gửi audio sang provider. Text answer/follow-up vẫn hoạt động nếu không cấp quyền microphone hoặc Azure Speech tạm lỗi.
+Các route cần JWT theo role được Swagger đánh dấu. `GET /api/exam-sessions` chỉ trả ca do lecturer đang đăng nhập tạo; `SessionDto` có `startTime` và `endTime`. `AttemptDto` từ POST start và GET attempt có `sessionStartTime`/`sessionEndTime` để phòng thi đếm ngược. Voice response trả transcript, student turn, AI follow-up turn, `audioBase64` và `audioContentType`; nếu TTS lỗi sau khi lượt AI đã lưu, vẫn trả text/turn với `speechOutputUnavailable=true`. `clientMessageId` dùng để retry idempotent; client nên giữ nguyên id khi retry. Upload giọng nói xác thực Student, quyền sở hữu attempt, trạng thái phiên và question trước khi gửi audio sang provider. Text answer/follow-up vẫn hoạt động nếu không cấp quyền microphone hoặc Azure Speech tạm lỗi.
 
 ### SignalR
 

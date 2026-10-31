@@ -7,6 +7,7 @@ public interface IExamSessionRepository
     Task<List<Question>> Questions(IReadOnlyCollection<Guid> ids);
     Task<List<Rubric>> Rubrics(Guid courseId);
     Task<ExamSession?> Get(Guid id);
+    Task<List<ExamSession>> ListByCreator(Guid creatorId);
     void Add(ExamSession session);
     Task Save();
 }

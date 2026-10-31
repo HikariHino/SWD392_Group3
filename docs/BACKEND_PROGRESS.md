@@ -490,7 +490,15 @@ Gate M3: thi văn bản → AI đề xuất điểm → giảng viên duyệt �
 
   Hoàn thành 31/10/2026: Viết lại README theo routes/SignalR/config/migration/demo hiện có; chuyển SQL password và JWT signing key khỏi appsettings, bỏ `EnsureCreated` khỏi seeder, seed/migrate phải bật rõ ràng; ghi rõ Azure Speech setup và giới hạn demo. Lịch sử Git cũ có thể vẫn còn credential đã từng commit; cần rotate tại Azure SQL.
 
-  Kiểm tra 31/10/2026: `dotnet build SWD392_Group3.slnx --configuration Release --no-restore` PASS (0 errors); `dotnet run --project tests/BackendChecks --configuration Release --no-build` PASS (430 checks). Azure SQL/Gemini/Azure Speech live flow chưa được xác minh.
+  Kiểm tra 31/10/2026: `dotnet build SWD392_Group3.slnx --configuration Release --no-restore` PASS (0 errors); `dotnet run --project tests/BackendChecks --configuration Release --no-build` PASS (436 checks). Azure SQL/Gemini/Azure Speech live flow chưa được xác minh.
+
+#### Theo phản hồi FE sau C30 — tích hợp Flow 3
+
+Hoàn thành 31/10/2026: `GET /api/courses` trước đây tạo nhiều truy vấn rubric đồng thời trên cùng scoped DbContext; đổi sang tuần tự để tránh lỗi 500 với nhiều course. Thêm `GET /api/exam-sessions` để lecturer liệt kê các ca do mình tạo. `AttemptDto` từ start/get/submit bổ sung `sessionStartTime` và `sessionEndTime` để student FE đếm ngược. Các route mới giữ JWT Lecturer/Student theo controller.
+
+Contract bàn giao FE: gọi `GET /api/exam-sessions` bằng Lecturer token; khi start hoặc reload attempt dùng `sessionEndTime` trong response `POST /api/exam-sessions/{id}/attempts` / `GET /api/attempts/{attemptId}`. GET courses tuần tự load rubric cấp Course. CSV import backend yêu cầu đúng header `Content,BloomLevel`, không có rubric; cần bỏ validation/upload rubric bên frontend. Màn hình cấu hình rubric vẫn là hạng mục FE và dùng `PUT /api/courses/{courseId}/rubrics`.
+
+Kiểm tra: Release build 0 errors (6 NU1902/NU1903 warnings còn tồn tại); 436 backend checks pass, bao gồm nhiều course, giới hạn session ownership/list, session window trong AttemptDto. Database/provider live chưa được thử.
 
 
 Gate M4: hai máy dựng backend từ tài liệu được, các kiểm tra pass, demo voice + chấm/duyệt điểm hoàn chỉnh. Không cần đợi cuối dự án mới viết test: thêm kiểm tra nghiệp vụ/rủi ro cùng commit chức năng; C19/C24 bổ sung kiểm tra xuyên suốt.

@@ -27,8 +27,15 @@ public class CourseService : ICourseService
         _rubricValidator = rubricValidator;
     }
 
-    public async Task<IEnumerable<CourseDto>> GetCoursesAsync() =>
-        await Task.WhenAll((await _unitOfWork.Courses.GetAllAsync()).Where(c => !c.IsDeleted).Select(ToDto));
+    public async Task<IEnumerable<CourseDto>> GetCoursesAsync()
+    {
+        var courses = (await _unitOfWork.Courses.GetAllAsync()).Where(c => !c.IsDeleted).ToArray();
+        var result = new List<CourseDto>(courses.Length);
+        // All repositories in this service share one scoped DbContext; query rubrics sequentially.
+        foreach (var course in courses)
+            result.Add(await ToDto(course));
+        return result;
+    }
 
     public async Task<CourseDto> GetCourseByIdAsync(Guid id) => await ToDto(await GetActiveAsync(id));
 

@@ -48,6 +48,7 @@ internal static class CourseChecks
             check(dto.Code == "SWD392" && dto.Name == "Design" && dto.Description == "Description", "course input normalized before save");
             await Reject<ConflictException>(() => service.CreateCourseAsync(new() { Code = "swd392", Name = "Duplicate" }), "case insensitive duplicate course rejected");
             var second = await service.CreateCourseAsync(new() { Code = "PRN231", Name = "API" });
+            check((await service.GetCoursesAsync()).Count() == 2, "course list with multiple courses loads without concurrent DbContext operations");
             await Reject<ConflictException>(() => service.UpdateCourseAsync(second.Id, new() { Code = "SWD392", Name = "Changed" }), "update cannot take another course code");
             check((await service.GetCourseByIdAsync(second.Id)).Code == "PRN231", "conflicting update preserves original course");
             var updated = await service.UpdateCourseAsync(firstId, new() { Code = "swd392", Name = "New name" });

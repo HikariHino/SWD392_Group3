@@ -60,6 +60,7 @@ internal static class AttemptChecks
         var response = (CreatedAtActionResult)(await controller.Start(session.Id)).Result!;
         var attempt = (AttemptDto)response.Value!;
         check(response.StatusCode == 201 && attempt.UserId == student.Id, "attempt POST derives student and returns created location");
+        check(attempt.SessionStartTime == session.StartTime && attempt.SessionEndTime == session.EndTime, "student attempt response includes session window for countdown");
         var retry = await service.Start(session.Id);
         check(!retry.Created && retry.Attempt.Id == attempt.Id && await db.Transcripts.CountAsync() == 1, "start retry returns same attempt");
         await Reject<ForbiddenException>(() => Service(other.Id).Get(attempt.Id), "other student cannot read attempt");

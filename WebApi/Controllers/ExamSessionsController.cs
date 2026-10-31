@@ -8,6 +8,8 @@ namespace WebApi.Controllers;
 [Route("api/exam-sessions")]
 public class ExamSessionsController(IExamSessionService service) : ControllerBase
 {
+    [HttpGet]
+    public async Task<ActionResult<IReadOnlyList<SessionDto>>> List() => Ok(await service.ListMine());
     [HttpPost]
     public async Task<ActionResult<SessionDto>> Create(CreateSessionRequest request)
     {

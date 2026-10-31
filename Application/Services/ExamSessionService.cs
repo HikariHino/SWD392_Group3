@@ -22,6 +22,11 @@ public class ExamSessionService(IExamSessionRepository repo, ICurrentUser user, 
         return session;
     }
     static SessionDto Dto(ExamSession s) => new(s.Id, s.CourseId, s.SessionTitle, DateTime.SpecifyKind(s.StartTime, DateTimeKind.Utc), DateTime.SpecifyKind(s.EndTime, DateTimeKind.Utc), s.Status.ToString(), s.Version, s.CreatedByUserId, s.ExamSessionQuestions.OrderBy(x => x.DisplayOrder).Select(x => x.QuestionId).ToArray());
+    public async Task<IReadOnlyList<SessionDto>> ListMine()
+    {
+        Lecturer();
+        return (await repo.ListByCreator(user.Id!.Value)).Select(Dto).ToArray();
+    }
     public async Task<SessionDto> Get(Guid id) => Dto(await Owned(id));
     public async Task<SessionDto> Create(CreateSessionRequest request)
     {

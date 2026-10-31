@@ -12,7 +12,7 @@ public class AttemptService(IAttemptRepository repo, ICurrentUser user, TimeProv
         if (!user.IsStudent || user.Id is null) throw new ForbiddenException();
     }
     static DateTime Utc(DateTime time) => DateTime.SpecifyKind(time, DateTimeKind.Utc);
-    static AttemptDto Dto(Transcript t) => new(t.Id, t.SessionId, t.UserId, t.Status.ToString(), Utc(t.StartedAt), t.SubmittedAt is {} at ? Utc(at) : null, t.Version);
+    static AttemptDto Dto(Transcript t, ExamSession s) => new(t.Id, t.SessionId, t.UserId, t.Status.ToString(), Utc(t.StartedAt), t.SubmittedAt is {} at ? Utc(at) : null, t.Version, Utc(s.StartTime), Utc(s.EndTime));
     static TurnDto Dto(TranscriptTurn t, ExamSession s) => new(t.Id, t.TranscriptId, t.Sequence, t.Speaker, t.ContentText, Utc(t.Timestamp), s.ExamSessionQuestions.SingleOrDefault(x => x.Id == t.ExamSessionQuestionId)?.QuestionId, t.ClientMessageId);
     async Task<ExamSession> Session(Guid id) => await repo.Session(id) ?? throw new NotFoundException("Session not found.");
     async Task<(Transcript, ExamSession)> Owned(Guid id, bool write = false)
@@ -36,7 +36,7 @@ public class AttemptService(IAttemptRepository repo, ICurrentUser user, TimeProv
         var s = await Session(sessionId);
         var existing = await repo.Find(sessionId, user.Id!.Value);
         if (existing is { IsDeleted: true }) throw new ConflictException("Attempt is archived; a second attempt is not allowed.");
-        if (existing != null) return (Dto(existing), false);
+        if (existing != null) return (Dto(existing, s), false);
         Writable(s);
         if (s.ExamSessionQuestions.Count == 0 || s.ExamSessionQuestions.Any(x => string.IsNullOrWhiteSpace(x.Content)))
             throw new ConflictException("Session snapshot is incomplete.");
@@ -45,9 +45,13 @@ public class AttemptService(IAttemptRepository repo, ICurrentUser user, TimeProv
         // concurrently with a start/answer based on the old Open state.
         s.Version++;
         repo.Add(t); await repo.Save();
-        return (Dto(t), true);
+        return (Dto(t, s), true);
     }
-    public async Task<AttemptDto> Get(Guid id) => Dto((await Owned(id)).Item1);
+    public async Task<AttemptDto> Get(Guid id)
+    {
+        var (attempt, session) = await Owned(id);
+        return Dto(attempt, session);
+    }
     public async Task<IReadOnlyList<AttemptQuestionDto>> Questions(Guid id)
     {
         var (_, s) = await Owned(id);
@@ -106,11 +110,11 @@ public class AttemptService(IAttemptRepository repo, ICurrentUser user, TimeProv
     {
         var (t, s) = await Owned(id, true);
         if (s.Status == ExamSessionStatus.Cancelled) throw new ConflictException("Session was cancelled.");
-        if (t.Status != TranscriptStatus.InProgress) return Dto(t);
+        if (t.Status != TranscriptStatus.InProgress) return Dto(t, s);
         if (s.Status != ExamSessionStatus.Open) throw new ConflictException("Session is not open.");
         // Submission is allowed after EndTime so a student can finish an expired attempt.
         t.Status = TranscriptStatus.Submitted; t.SubmittedAt = clock.GetUtcNow().UtcDateTime;
         t.Version++; s.Version++;
-        await repo.Save(); return Dto(t);
+        await repo.Save(); return Dto(t, s);
     }
 }
