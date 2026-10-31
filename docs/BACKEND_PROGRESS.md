@@ -393,29 +393,35 @@ Gate M2: demo một ca thi văn bản có dữ liệu lưu thật và AI phản 
 
   Cần trước: C20
 
-- [ ] **C22** — Người làm: Chưa nhận
+- [x] **C22** — Người làm: Hưng Thái cùng Codex
 
   Commit: `feat(assessment): let lecturers review and finalize scores`
 
   Phạm vi / nghiệm thu: API giảng viên xem/chốt điểm và comment; audit ai chốt/khi nào; student không thể chốt; không âm thầm ghi đè điểm đã chốt
 
+  Kiểm tra 31/10/2026: Đã thêm GET assessments theo attempt và PUT final-score; kiểm tra lecturer owner, trạng thái AwaitingReview, FinalScore trong [0, Points], comment tối đa 2000 ký tự, Version bắt buộc/stale và chặn ghi đè assessment đã chốt. Lưu FinalizedByUserId/FinalizedAt UTC và tăng Version; không cần migration. Domain, Application, Infrastructure và WebApi build PASS 0 warning/0 error qua tham chiếu output assembly tạm; csproj được khôi phục. Bộ kiểm tra SQLite cho scoring/grading ở C24 xác nhận final score, comment, actor, thời gian và version được lưu sau khi reload EF. Chưa kiểm tra Azure SQL/API live.
+
   Cần trước: C21
 
-- [ ] **C23** — Người làm: Chưa nhận
+- [x] **C23** — Người làm: Hưng Thái cùng Codex
 
   Commit: `feat(result): calculate totals and expose authorized results`
 
   Phạm vi / nghiệm thu: Tổng điểm theo quy tắc đã chốt, phân biệt đề xuất/chính thức; quyền xem kết quả và xử lý bài chưa chấm đủ
 
+  Kiểm tra 31/10/2026: `GET /api/attempts/{attemptId}/result` cho student owner xem sau khi Finalized, lecturer owner xem draft; người khác bị từ chối. Tách AI suggested total và official total; pending count tính câu thiếu assessment/chưa chốt. Chỉ lưu TotalScore và chuyển Finalized khi mọi câu trong snapshot có FinalScore. Câu bỏ trống có placeholder không gọi AI, giảng viên có thể chốt 0; cho tới khi hoàn tất, official total vẫn null. 46/46 SQLite/parser/controller checks PASS trong harness ba suite `AssessmentChecks`, `GradingChecks`, `QuestionCsvImportChecks`. Domain/Application/Infrastructure/WebApi build 0 errors; Infrastructure/WebApi có 2 NU1902/NU1903 warnings về System.Security.Cryptography.Pkcs 9.0.11.
+
   Cần trước: C22
 
-- [ ] **C24** — Người làm: Chưa nhận
+- [x] **C24** — Người làm: Hưng Thái cùng Codex
 
   Commit: `test(grading): verify scoring and lecturer decisions`
 
   Phạm vi / nghiệm thu: Kiểm tra tính điểm, output AI sai, retry không nhân đôi assessment và quyền chốt; demo kết quả lưu DB
 
-  Cần trước: C23
+  Kiểm tra 31/10/2026: 29/29 scoring/grading checks PASS trên SQLite in-memory. Bao gồm công thức điểm và validation rubric, output AI sai không tạo assessment hoặc đổi trạng thái, retry không nhân đôi assessment, quyền lecturer owner, tách AI suggestion khỏi final score, validation điểm/version, chống ghi đè, và reload xác nhận quyết định chốt điểm đã lưu DB. Chạy harness giới hạn hai suite `AssessmentChecks` và `GradingChecks` vì lệnh build toàn bộ BackendChecks bị MSBuild SDK workload locator trong môi trường; không dùng Azure SQL hay gọi HTTP thật.
+
+  Cần trước: C23 (đã hoàn tất)
 
 
 Gate M3: thi văn bản → AI đề xuất điểm → giảng viên duyệt → sinh viên xem kết quả chính thức. Đây là MVP backend trước khi thêm voice.
@@ -424,11 +430,13 @@ Gate M3: thi văn bản → AI đề xuất điểm → giảng viên duyệt �
 
 
 
-- [ ] **C25** — Người làm: Chưa nhận
+- [x] **C25** — Người làm: Hưng Thái cùng Codex
 
   Commit: `feat(import): parse and validate question uploads`
 
   Phạm vi / nghiệm thu: Chốt định dạng; upload thật, giới hạn file, lỗi theo dòng; bỏ dummyPath; ghi rõ chính sách import một phần/toàn bộ
+
+  Kiểm tra 31/10/2026: Đã thay `dummyPath` bằng `POST /api/questions/import` multipart với file CSV UTF-8 và courseId; giới hạn 5 MiB/1000 dòng, lỗi kèm line/field/message, batch atomic all-or-nothing, HTTP 201 trả importedCount/policy. Header `Content,BloomLevel`, một câu mỗi dòng; rubric lấy từ cấu hình Course hiện có. Parser/controller checks bao gồm BOM, quoting/escaped quotes, enum sai, malformed rows, course rỗng, file rỗng, giới hạn dòng và từ chối cả batch khi một row sai. Domain/Application/Infrastructure/WebApi build 0 errors; Infrastructure/WebApi có 2 NU1902/NU1903 warnings về System.Security.Cryptography.Pkcs 9.0.11. Chưa test upload HTTP qua server hoặc Azure SQL.
 
   Cần trước: C12; có thể làm sớm nếu M2 chưa cần
 

@@ -96,12 +96,6 @@ public class QuestionBankService : IQuestionBankService
         return true;
     }
 
-    public async Task<bool> ImportQuestionsAsync(string filePath)
-    {
-        // Mock import logic - ready for expansion
-        return await Task.FromResult(true);
-    }
-
     public async Task<AiGeneratedQuestionDto> GenerateQuestionWithAiAsync(AiGenerateQuestionRequest request)
     {
         if (request.CourseId != Guid.Empty)
@@ -126,30 +120,25 @@ public class QuestionBankService : IQuestionBankService
 
     public async Task<int> ImportQuestionsBatchAsync(ImportQuestionsRequest request)
     {
-        if (request.CourseId != Guid.Empty)
-        {
-            await RequireActiveCourseAsync(request.CourseId);
-        }
+        if (request is null || request.Questions is not { Count: > 0 })
+            throw new Application.Exceptions.ValidationException(new Dictionary<string, string[]> { ["file"] = ["At least one valid question is required."] });
+        await RequireActiveCourseAsync(request.CourseId);
 
-        int count = 0;
+        var validated = new List<Question>(request.Questions.Count);
         foreach (var qReq in request.Questions)
         {
-            if (request.CourseId != Guid.Empty && qReq.CourseId == Guid.Empty)
-            {
-                qReq.CourseId = request.CourseId;
-            }
-
+            qReq.CourseId = request.CourseId;
             ThrowIfInvalid(await _createValidator.ValidateAsync(qReq));
             var question = _mapper.Map<Question>(qReq);
             question.Id = Guid.NewGuid();
             question.CourseId = qReq.CourseId;
-
-            await _unitOfWork.Questions.AddAsync(question);
-            count++;
+            validated.Add(question);
         }
 
+        foreach (var question in validated)
+            await _unitOfWork.Questions.AddAsync(question);
         await _unitOfWork.SaveChangesAsync();
-        return count;
+        return validated.Count;
     }
 
     public async Task<IEnumerable<CourseDto>> GetCoursesAsync()

@@ -4,6 +4,8 @@ using Application.Common;
 using Application.DTOs.QuestionBank;
 using Application.Interfaces.Services;
 using Microsoft.AspNetCore.Authorization;
+using System.Text;
+using WebApi.Importing;
 
 namespace WebApi.Controllers;
 
@@ -156,22 +158,57 @@ public class QuestionsController : ControllerBase
     }
 
     /// <summary>
-    /// Import danh sách câu hỏi hàng loạt (từ file JSON/CSV/Excel)
+    /// Import CSV UTF-8 theo dạng toàn bộ hoặc không import.
     /// </summary>
     [HttpPost("import")]
     [Authorize(Roles = "Lecturer")]
-    [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> ImportQuestions([FromBody] ImportQuestionsRequest? request = null)
+    [Consumes("multipart/form-data")]
+    public async Task<IActionResult> ImportQuestions([FromForm] IFormFile? file, [FromForm] Guid courseId, CancellationToken cancellationToken)
     {
-        if (request == null || request.Questions == null || request.Questions.Count == 0)
+        const long maxFileBytes = 5 * 1024 * 1024;
+        if (file is null || file.Length == 0)
+            return BadRequest(new { message = "Choose a non-empty CSV file.", errors = new[] { new { line = 0, field = "file", message = "File is required." } } });
+        if (!string.Equals(Path.GetExtension(file.FileName), ".csv", StringComparison.OrdinalIgnoreCase))
+            return BadRequest(new { message = "Only .csv files are supported.", errors = new[] { new { line = 0, field = "file", message = "Upload a .csv file." } } });
+        if (file.Length > maxFileBytes)
+            return BadRequest(new { message = "CSV file exceeds the 5 MB limit.", errors = new[] { new { line = 0, field = "file", message = "Maximum file size is 5 MB." } } });
+        if (courseId == Guid.Empty)
+            return BadRequest(new { message = "A courseId is required.", errors = new[] { new { line = 0, field = "courseId", message = "Choose a valid course." } } });
+
+        string csv;
+        try
         {
-            var dummyResult = await _questionBankService.ImportQuestionsAsync("dummyPath");
-            return Ok(new { success = dummyResult, message = "Import câu hỏi thành công!" });
+            await using var stream = new MemoryStream((int)file.Length);
+            await file.CopyToAsync(stream, cancellationToken);
+            csv = new UTF8Encoding(false, true).GetString(stream.ToArray());
+        }
+        catch (DecoderFallbackException)
+        {
+            return BadRequest(new { message = "CSV must be valid UTF-8.", errors = new[] { new { line = 0, field = "file", message = "File contains invalid UTF-8 bytes." } } });
         }
 
-        var count = await _questionBankService.ImportQuestionsBatchAsync(request);
-        return StatusCode(StatusCodes.Status201Created, new { message = $"Đã import thành công {count} câu hỏi vào ngân hàng đề thi!" });
+        var parsed = QuestionCsvParser.Parse(csv, courseId);
+        var errors = parsed.Errors.ToList();
+        foreach (var row in parsed.Rows)
+        {
+            var validation = await _createValidator.ValidateAsync(row.Request, cancellationToken);
+            errors.AddRange(validation.Errors.Select(error => new QuestionCsvError(row.Line, error.PropertyName, error.ErrorMessage)));
+        }
+        if (errors.Count > 0)
+            return BadRequest(new { message = "No questions were imported. Fix the listed CSV rows and retry.", errors });
+
+        var count = await _questionBankService.ImportQuestionsBatchAsync(new ImportQuestionsRequest
+        {
+            CourseId = courseId,
+            Questions = parsed.Rows.Select(row => row.Request).ToList()
+        });
+        return StatusCode(StatusCodes.Status201Created, new
+        {
+            importedCount = count,
+            policy = "all-or-nothing",
+            message = $"Imported {count} questions."
+        });
     }
 }

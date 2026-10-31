@@ -32,3 +32,22 @@ public class AssessmentDto
     public DateTime? FinalizedAt { get; set; }
     public int Version { get; set; }
 }
+
+public sealed class FinalizeAssessmentRequest
+{
+    public decimal FinalScore { get; set; }
+    public string? TeacherComment { get; set; }
+    public int? Version { get; set; }
+}
+
+public sealed class AttemptResultDto
+{
+    public Guid AttemptId { get; set; }
+    public string Status { get; set; } = string.Empty;
+    public decimal? AiSuggestedTotal { get; set; }
+    public decimal? TotalScore { get; set; }
+    public DateTime? GradedAt { get; set; }
+    public bool IsComplete { get; set; }
+    public int PendingQuestionCount { get; set; }
+    public IReadOnlyList<AssessmentDto> Assessments { get; set; } = [];
+}
