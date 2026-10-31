@@ -54,14 +54,6 @@ public class CreateQuestionRequestValidator : AbstractValidator<CreateQuestionRe
         RuleFor(q => q.BloomLevel)
             .IsInEnum().WithMessage("Mức độ nhận thức (Bloom Level) không hợp lệ.");
 
-        RuleFor(q => q.Rubrics)
-            .NotEmpty().WithMessage("Câu hỏi phải có ít nhất 1 tiêu chí Rubric đánh giá.")
-            .Must(RubricValidation.HasValidTotalWeight)
-            .WithMessage("Tổng trọng số (%) của tất cả các tiêu chí Rubric phải bằng đúng 100%.");
-
-        RuleForEach(q => q.Rubrics)
-            .NotNull().WithMessage("Rubric must not be null.")
-            .SetValidator(new CreateRubricRequestValidator());
     }
 }
 
@@ -76,14 +68,6 @@ public class UpdateQuestionRequestValidator : AbstractValidator<UpdateQuestionRe
         RuleFor(q => q.BloomLevel)
             .IsInEnum().WithMessage("Mức độ nhận thức (Bloom Level) không hợp lệ.");
 
-        RuleFor(q => q.Rubrics)
-            .NotEmpty().WithMessage("Câu hỏi phải có ít nhất 1 tiêu chí Rubric đánh giá.")
-            .Must(RubricValidation.HasValidTotalWeight)
-            .WithMessage("Tổng trọng số (%) của tất cả các tiêu chí Rubric phải bằng đúng 100%.");
-
-        RuleForEach(q => q.Rubrics)
-            .NotNull().WithMessage("Rubric must not be null.")
-            .SetValidator(new CreateRubricRequestValidator());
     }
 }
 

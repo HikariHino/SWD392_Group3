@@ -138,7 +138,7 @@ public class QuestionsController : ControllerBase
     }
 
     /// <summary>
-    /// Dùng AI (Google Gemini / OpenAI) sinh câu hỏi vấn đáp và ma trận Rubric 100% theo chủ đề
+    /// Dùng AI Gemini sinh câu hỏi vấn đáp theo chủ đề; rubric được cấu hình ở cấp Course.
     /// </summary>
     [HttpPost("ai-generate")]
     [Authorize(Roles = "Lecturer")]

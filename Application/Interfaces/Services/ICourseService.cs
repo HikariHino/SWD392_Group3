@@ -9,4 +9,5 @@ public interface ICourseService
     Task<CourseDto> CreateCourseAsync(CreateCourseRequest request);
     Task<CourseDto> UpdateCourseAsync(Guid id, UpdateCourseRequest request);
     Task DeleteCourseAsync(Guid id);
+    Task<CourseDto> ReplaceRubricsAsync(Guid id, ReplaceCourseRubricsRequest request);
 }

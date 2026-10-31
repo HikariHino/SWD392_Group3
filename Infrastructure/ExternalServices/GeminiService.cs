@@ -2,295 +2,159 @@ using System.Net;
 using System.Text;
 using System.Text.Json;
 using Application.DTOs.QuestionBank;
+using Application.DTOs.Interviews;
+using Application.Exceptions;
 using Application.Interfaces.ExternalServices;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 
 namespace Infrastructure.ExternalServices;
 
-/// <summary>
-/// Gọi Google Gemini API để sinh câu hỏi vấn đáp.
-/// Hỗ trợ round-robin rotation qua nhiều API key:
-/// khi một key bị 429 (quota hết) hoặc lỗi, tự động hoán đổi sang key tiếp theo.
-/// Thêm key mới vào appsettings.json: "Gemini:Keys:0", "Gemini:Keys:1", ...
-/// </summary>
-public class GeminiService : IAiService
+/// <summary>Gemini REST adapter. Secrets are supplied by IConfiguration (for example Gemini__ApiKey), never by source files.</summary>
+public sealed class GeminiService(HttpClient httpClient, IConfiguration configuration, ILogger<GeminiService> logger) : IAiService
 {
-    private readonly HttpClient _httpClient;
-    private readonly IConfiguration _configuration;
-    private readonly ILogger<GeminiService> _logger;
+    private const int DefaultTimeoutSeconds = 20;
 
-    // Chỉ số key đang được dùng — static để chia sẻ giữa các request trong cùng process
-    private static int _currentKeyIndex = 0;
-    private static readonly object _lock = new();
-
-    public GeminiService(HttpClient httpClient, IConfiguration configuration, ILogger<GeminiService> logger)
+    public async Task<AiGeneratedQuestionDto> GenerateQuestionAsync(
+        AiGenerateQuestionRequest request, CancellationToken cancellationToken = default)
     {
-        _httpClient = httpClient;
-        _configuration = configuration;
-        _logger = logger;
+        if (string.IsNullOrWhiteSpace(request.Topic))
+            throw new ValidationException(new Dictionary<string, string[]> { [nameof(request.Topic)] = ["Topic is required."] });
+
+        var prompt = $"You generate exactly one university oral-exam question.\n" +
+            $"Topic: {request.Topic}\nBloom level: {request.BloomLevel}\n" +
+            "Return JSON only, matching this schema:\n" +
+            "{ \"content\": \"nonempty question\", \"sourceContext\": \"optional source context\", \"aiConfidence\": 0.0 }\n" +
+            "Do not generate a rubric: rubrics are configured once for the whole course.";
+        var candidateText = await GenerateCandidateTextAsync(prompt, cancellationToken);
+        return ParseQuestion(candidateText, request);
     }
 
-    // ── Lấy danh sách key từ config ────────────────────────────────────────────
-    // Hỗ trợ 2 cách cấu hình:
-    //   Cũ (backwards compat): "Gemini:ApiKey" + "Gemini:ApiKeyBackup"
-    //   Mới (mảng động):       "Gemini:Keys:0", "Gemini:Keys:1", ...
-    private string[] LoadKeys()
+    public async Task<AiFollowUpDto> GenerateFollowUpAsync(AiFollowUpRequest request, CancellationToken cancellationToken = default)
     {
-        // 1. Thử đọc từ file bí mật local không commit git: gemini_keys.local.json
-        var candidates = new[]
+        if (string.IsNullOrWhiteSpace(request.QuestionContent) || request.Conversation.Count == 0)
+            throw new AiProviderResponseException();
+        var history = string.Join("\n", request.Conversation.TakeLast(12).Select(x =>
+            $"{x.Speaker}: {x.ContentText[..Math.Min(x.ContentText.Length, 1000)]}"));
+        var prompt = "You are a university oral-exam examiner. Generate one concise follow-up question only.\n" +
+            $"Course: {request.CourseName}\nQuestion being assessed: {request.QuestionContent}\n" +
+            $"Course rubric snapshot: {request.RubricSnapshotJson}\nConversation:\n{history}\n" +
+            "Return JSON only: { \"content\": \"nonempty follow-up question\", \"sourceContext\": \"optional\" }. Do not provide answers, scores, feedback, or rubric changes.";
+        var candidateText = await GenerateCandidateTextAsync(prompt, cancellationToken);
+        try
         {
-            Path.Combine(Directory.GetCurrentDirectory(), "gemini_keys.local.json"),
-            Path.Combine(Directory.GetCurrentDirectory(), "WebApi", "gemini_keys.local.json"),
-            Path.Combine(AppContext.BaseDirectory, "gemini_keys.local.json")
-        };
-
-        foreach (var path in candidates)
-        {
-            if (File.Exists(path))
-            {
-                try
-                {
-                    using var doc = JsonDocument.Parse(File.ReadAllText(path));
-                    if (doc.RootElement.TryGetProperty("Gemini", out var gemini) &&
-                        gemini.TryGetProperty("Keys", out var keysElement) &&
-                        keysElement.ValueKind == JsonValueKind.Array)
-                    {
-                        var list = new List<string>();
-                        foreach (var item in keysElement.EnumerateArray())
-                        {
-                            var s = item.GetString();
-                            if (!string.IsNullOrWhiteSpace(s) && !s.StartsWith("YOUR_GEMINI"))
-                            {
-                                list.Add(s);
-                            }
-                        }
-                        if (list.Count > 0) return list.ToArray();
-                    }
-                }
-                catch (Exception ex)
-                {
-                    _logger.LogWarning(ex, "Không thể đọc file {Path}", path);
-                }
-            }
+            var generated = JsonSerializer.Deserialize<GeneratedFollowUp>(candidateText, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+            if (generated is null || string.IsNullOrWhiteSpace(generated.Content) || generated.Content.Trim().Length > 2000)
+                throw new JsonException();
+            return new AiFollowUpDto { Content = generated.Content.Trim(), SourceContext = generated.SourceContext?.Trim() ?? string.Empty };
         }
-
-        // 2. Thử đọc mảng "Gemini:Keys:0", "Gemini:Keys:1", ... từ IConfiguration
-        var arrayKeys = new List<string>();
-        for (int i = 0; ; i++)
-        {
-            var val = _configuration[$"Gemini:Keys:{i}"];
-            if (string.IsNullOrWhiteSpace(val)) break;
-            arrayKeys.Add(val);
-        }
-
-        if (arrayKeys.Count > 0)
-        {
-            return arrayKeys
-                .Where(k => !k.StartsWith("YOUR_GEMINI"))
-                .ToArray();
-        }
-
-        // 3. Fallback: đọc 2 key riêng lẻ (backwards compat với ApiKey + ApiKeyBackup)
-        return new[]
-        {
-            _configuration["Gemini:ApiKey"],
-            _configuration["Gemini:ApiKeyBackup"]
-        }
-        .Where(k => !string.IsNullOrWhiteSpace(k) && !k.StartsWith("YOUR_GEMINI"))
-        .ToArray()!;
+        catch (JsonException) { throw new AiProviderResponseException(); }
     }
 
-    // ── Lấy key hiện tại theo chỉ số round-robin ──────────────────────────────
-    private static int GetCurrentIndex(int total)
+    private async Task<string> GenerateCandidateTextAsync(string prompt, CancellationToken cancellationToken)
     {
-        lock (_lock) { return _currentKeyIndex % total; }
-    }
-
-    // ── Chuyển sang key tiếp theo (gọi khi key hiện tại bị quota/lỗi) ─────────
-    private static void RotateToNextKey(int failedIndex, int total)
-    {
-        lock (_lock)
-        {
-            // Chỉ xoay nếu chưa có thread khác xoay trước
-            if (_currentKeyIndex % total == failedIndex)
-            {
-                _currentKeyIndex = (failedIndex + 1) % total;
-            }
-        }
-    }
-
-    // ── Entry point chính ──────────────────────────────────────────────────────
-    public async Task<AiGeneratedQuestionDto> GenerateQuestionAsync(AiGenerateQuestionRequest request)
-    {
-        var keys = LoadKeys();
-
-        if (keys.Length == 0)
-        {
-            _logger.LogWarning("Không tìm thấy Gemini API key nào trong config. Dùng RAG fallback.");
-            return GenerateFallbackQuestion(request);
-        }
-
-        int startIndex = GetCurrentIndex(keys.Length);
-        int attempts = 0;
-
-        // Thử lần lượt tất cả key, bắt đầu từ key hiện tại
-        while (attempts < keys.Length)
-        {
-            int idx = (startIndex + attempts) % keys.Length;
-            var key = keys[idx];
-            var keyLabel = key[..Math.Min(14, key.Length)] + "...";
-
-            _logger.LogInformation("Thử Gemini key [{Idx}/{Total}]: {Key}", idx + 1, keys.Length, keyLabel);
-
-            try
-            {
-                var (result, isQuotaError) = await TryCallGeminiAsync(request, key);
-
-                if (result != null)
-                {
-                    // Thành công — ghim chỉ số này cho lần sau
-                    lock (_lock) { _currentKeyIndex = idx; }
-                    _logger.LogInformation("Key [{Idx}] thành công!", idx + 1);
-                    return result;
-                }
-
-                if (isQuotaError)
-                {
-                    // 429 / quota hết → xoay ngay sang key tiếp theo
-                    _logger.LogWarning("Key [{Idx}] hết quota (429). Xoay sang key tiếp theo...", idx + 1);
-                    RotateToNextKey(idx, keys.Length);
-                }
-                else
-                {
-                    _logger.LogWarning("Key [{Idx}] trả về kết quả rỗng, thử key tiếp theo.", idx + 1);
-                }
-            }
-            catch (Exception ex)
-            {
-                _logger.LogWarning(ex, "Key [{Idx}] ném exception, thử key tiếp theo.", idx + 1);
-                RotateToNextKey(idx, keys.Length);
-            }
-
-            attempts++;
-        }
-
-        // Tất cả key đều fail → RAG fallback
-        _logger.LogWarning("Tất cả {Count} Gemini key đều thất bại. Dùng RAG fallback.", keys.Length);
-        return GenerateFallbackQuestion(request);
-    }
-
-    // ── Gọi Gemini API, trả về (result, isQuotaError) ─────────────────────────
-    private async Task<(AiGeneratedQuestionDto? Result, bool IsQuotaError)> TryCallGeminiAsync(
-        AiGenerateQuestionRequest request, string apiKey)
-    {
-        var prompt = $@"Bạn là giám khảo và chuyên gia khảo thí đại học môn Khoa học Máy tính / Công nghệ Thông tin.
-Hãy tạo 1 câu hỏi thi vấn đáp (Viva Exam) và bảng tiêu chí Rubric đánh giá chấm điểm chuẩn dựa theo thông tin:
-- Môn học / Chủ đề: {request.Topic}
-- Cấp độ nhận thức Bloom mong muốn: {request.BloomLevel}
-
-YÊU CẦU BẮT BUỘC VỀ ĐỊNH DẠNG:
-Trả về duy nhất định dạng JSON (không thêm markdown hay backtick ```json), theo cấu trúc:
-{{
-  ""content"": ""Nội dung câu hỏi vấn đáp mang tính đào sâu tư duy..."",
-  ""sourceContext"": ""Tài liệu / Giáo trình môn học trích dẫn..."",
-  ""rubrics"": [
-    {{ ""criteria"": ""Tên tiêu chí 1..."", ""weight"": 30.0, ""maxScore"": 3.0 }},
-    {{ ""criteria"": ""Tên tiêu chí 2..."", ""weight"": 40.0, ""maxScore"": 4.0 }},
-    {{ ""criteria"": ""Tên tiêu chí 3..."", ""weight"": 30.0, ""maxScore"": 3.0 }}
-  ]
-}}
-QUY TẮC BẤT BIẾN: Tổng các trọng số (weight) của tất cả tiêu chí Rubric BẮT BUỘC PHẢI BẰNG ĐÚNG 100.0.";
-
-        var requestBody = new
+        var apiKey = configuration["Gemini:ApiKey"];
+        if (string.IsNullOrWhiteSpace(apiKey) || apiKey.StartsWith("YOUR_GEMINI", StringComparison.Ordinal))
+            throw new AiProviderUnavailableException("Gemini API key is not configured.");
+        var model = configuration["Gemini:Model"] ?? "gemini-1.5-flash";
+        var timeoutSeconds = int.TryParse(configuration["Gemini:TimeoutSeconds"], out var configuredTimeout) ? configuredTimeout : DefaultTimeoutSeconds;
+        if (timeoutSeconds is < 1 or > 120) timeoutSeconds = DefaultTimeoutSeconds;
+        var payload = new
         {
             contents = new[] { new { parts = new[] { new { text = prompt } } } },
-            generationConfig = new { responseMimeType = "application/json", temperature = 0.4 }
+            generationConfig = new { responseMimeType = "application/json", temperature = 0.2 }
         };
 
-        var url = $"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key={apiKey}";
-        var httpContent = new StringContent(JsonSerializer.Serialize(requestBody), Encoding.UTF8, "application/json");
-
-        var response = await _httpClient.PostAsync(url, httpContent);
-
-        // 429 = quota hết → cờ isQuotaError = true để caller xoay key
-        if (response.StatusCode == HttpStatusCode.TooManyRequests)
+        using var requestMessage = new HttpRequestMessage(HttpMethod.Post,
+            $"v1beta/models/{Uri.EscapeDataString(model)}:generateContent?key={Uri.EscapeDataString(apiKey)}")
         {
-            _logger.LogWarning("HTTP 429 Too Many Requests — key này đã hết quota.");
-            return (null, true);
-        }
-
-        if (!response.IsSuccessStatusCode)
-        {
-            _logger.LogWarning("Gemini trả về {StatusCode}", response.StatusCode);
-            return (null, false);
-        }
-
-        var json = await response.Content.ReadAsStringAsync();
-        using var doc = JsonDocument.Parse(json);
-
-        var text = doc.RootElement
-            .GetProperty("candidates")[0]
-            .GetProperty("content")
-            .GetProperty("parts")[0]
-            .GetProperty("text")
-            .GetString();
-
-        if (string.IsNullOrWhiteSpace(text)) return (null, false);
-
-        var opts = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
-        var parsed = JsonSerializer.Deserialize<GeminiParsedResponse>(text, opts);
-
-        if (parsed == null || string.IsNullOrWhiteSpace(parsed.Content) || parsed.Rubrics is not { Count: > 0 })
-            return (null, false);
-
-        NormalizeRubrics(parsed.Rubrics);
-
-        return (new AiGeneratedQuestionDto
-        {
-            CourseId = request.CourseId,
-            Content = parsed.Content,
-            BloomLevel = request.BloomLevel,
-            SourceContext = parsed.SourceContext ?? $"Tài liệu chuẩn hóa chủ đề: {request.Topic}",
-            AiConfidence = 96.5,
-            Rubrics = parsed.Rubrics
-        }, false);
-    }
-
-    // ── Normalize rubric weights về đúng 100% ─────────────────────────────────
-    private static void NormalizeRubrics(List<CreateRubricRequest> rubrics)
-    {
-        var sum = rubrics.Sum(r => r.Weight);
-        if (Math.Abs(sum - 100.0) > 0.01 && rubrics.Count > 0)
-        {
-            rubrics[^1].Weight = Math.Round(rubrics[^1].Weight + (100.0 - sum), 2);
-        }
-    }
-
-    // ── RAG Fallback ───────────────────────────────────────────────────────────
-    private static AiGeneratedQuestionDto GenerateFallbackQuestion(AiGenerateQuestionRequest request)
-    {
-        var topic = string.IsNullOrWhiteSpace(request.Topic) ? "Kiến trúc phần mềm và hệ thống" : request.Topic;
-        return new AiGeneratedQuestionDto
-        {
-            CourseId = request.CourseId,
-            Content = $"Hãy phân tích nguyên lý hoạt động, ưu nhược điểm và ứng dụng thực tiễn của chủ đề '{topic}' trong hệ thống phần mềm hiện đại? Đưa ra ví dụ minh họa cụ thể cho cấp độ nhận thức {request.BloomLevel}.",
-            BloomLevel = request.BloomLevel,
-            SourceContext = $"Trích xuất từ Giáo trình & Slide bài giảng chuyên ngành (Chủ đề: {topic})",
-            AiConfidence = 95.0,
-            Rubrics =
-            [
-                new() { Criteria = $"Hiểu rõ định nghĩa cốt lõi, khái niệm và cơ chế hoạt động của {topic}", Weight = 30.0, MaxScore = 3.0 },
-                new() { Criteria = "Phân tích chuyên sâu ưu nhược điểm và so sánh với các giải pháp tương đương", Weight = 40.0, MaxScore = 4.0 },
-                new() { Criteria = "Đưa ra giải pháp thực tiễn, tối ưu hóa và liên hệ bài toán thực tế", Weight = 30.0, MaxScore = 3.0 }
-            ]
+            Content = new StringContent(JsonSerializer.Serialize(payload), Encoding.UTF8, "application/json")
         };
+        using var timeout = new CancellationTokenSource(TimeSpan.FromSeconds(timeoutSeconds));
+        using var linked = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken, timeout.Token);
+
+        HttpResponseMessage response;
+        try
+        {
+            response = await httpClient.SendAsync(requestMessage, HttpCompletionOption.ResponseHeadersRead, linked.Token);
+        }
+        catch (OperationCanceledException) when (!cancellationToken.IsCancellationRequested)
+        {
+            throw new AiProviderTimeoutException();
+        }
+        catch (HttpRequestException ex)
+        {
+            logger.LogWarning(ex, "Gemini request failed before a response.");
+            throw new AiProviderUnavailableException("Gemini could not be reached.");
+        }
+
+        using (response)
+        {
+            if (response.StatusCode is HttpStatusCode.TooManyRequests or HttpStatusCode.ServiceUnavailable or HttpStatusCode.GatewayTimeout)
+            {
+                logger.LogWarning("Gemini temporary failure: {StatusCode}", (int)response.StatusCode);
+                throw new AiProviderUnavailableException("Gemini is temporarily unavailable.");
+            }
+            if (!response.IsSuccessStatusCode)
+            {
+                logger.LogWarning("Gemini rejected the request: {StatusCode}", (int)response.StatusCode);
+                throw new AiProviderResponseException();
+            }
+
+            string body;
+            try { body = await response.Content.ReadAsStringAsync(linked.Token); }
+            catch (OperationCanceledException) when (!cancellationToken.IsCancellationRequested) { throw new AiProviderTimeoutException(); }
+            return ExtractCandidateText(body);
+        }
     }
 
-    private class GeminiParsedResponse
+    private static string ExtractCandidateText(string body)
     {
-        public string Content { get; set; } = string.Empty;
+        try
+        {
+            using var envelope = JsonDocument.Parse(body);
+            var candidateText = envelope.RootElement.GetProperty("candidates")[0]
+                .GetProperty("content").GetProperty("parts")[0].GetProperty("text").GetString();
+            if (string.IsNullOrWhiteSpace(candidateText)) throw new JsonException();
+            return candidateText;
+        }
+        catch (JsonException) { throw new AiProviderResponseException(); }
+        catch (KeyNotFoundException) { throw new AiProviderResponseException(); }
+        catch (IndexOutOfRangeException) { throw new AiProviderResponseException(); }
+    }
+
+    private static AiGeneratedQuestionDto ParseQuestion(string candidateText, AiGenerateQuestionRequest request)
+    {
+        try
+        {
+            var generated = JsonSerializer.Deserialize<GeneratedQuestion>(candidateText, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+            if (generated is null || string.IsNullOrWhiteSpace(generated.Content) || generated.Content.Trim().Length > 2000 ||
+                !double.IsFinite(generated.AiConfidence) || generated.AiConfidence is < 0 or > 100)
+                throw new JsonException();
+            return new AiGeneratedQuestionDto
+            {
+                CourseId = request.CourseId,
+                Content = generated.Content.Trim(),
+                BloomLevel = request.BloomLevel,
+                SourceContext = generated.SourceContext?.Trim() ?? string.Empty,
+                AiConfidence = generated.AiConfidence
+            };
+        }
+        catch (JsonException) { throw new AiProviderResponseException(); }
+        catch (KeyNotFoundException) { throw new AiProviderResponseException(); }
+        catch (IndexOutOfRangeException) { throw new AiProviderResponseException(); }
+    }
+
+    private sealed class GeneratedQuestion
+    {
+        public string? Content { get; set; }
         public string? SourceContext { get; set; }
-        public List<CreateRubricRequest>? Rubrics { get; set; }
+        public double AiConfidence { get; set; }
+    }
+
+    private sealed class GeneratedFollowUp
+    {
+        public string? Content { get; set; }
+        public string? SourceContext { get; set; }
     }
 }

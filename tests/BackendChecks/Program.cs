@@ -60,6 +60,9 @@ foreach (var (error, status) in new (Exception, int)[]
     (new ForbiddenException(), 403),
     (new ConflictException("Duplicate username"), 409),
     (new ValidationException(new Dictionary<string, string[]> { ["Username"] = ["Invalid"] }), 400),
+    (new AiProviderUnavailableException("provider private detail"), 503),
+    (new AiProviderTimeoutException(), 504),
+    (new AiProviderResponseException(), 502),
     (new InvalidOperationException("SENSITIVE_INTERNAL_DETAIL"), 500)
 })
 {
@@ -82,13 +85,25 @@ using var db = new AivesDbContext(new DbContextOptionsBuilder<AivesDbContext>()
     .UseSqlServer("Server=localhost;Database=OfflineChecks;Integrated Security=True;TrustServerCertificate=True").Options);
 var migrations = db.Database.GetMigrations().ToArray();
 Check(migrations.Contains("20260927162533_InitialCreate") && migrations.Contains("20261003125521_AddUserTable"), "both migrations discoverable after relocation");
+Check(migrations.Contains("20261031114032_MoveRubricsToCourse"), "course-level rubric migration discoverable");
+Check(migrations.Any(x => x.EndsWith("_AddAssessmentModels")), "assessment migration discoverable");
 Check(!db.Database.HasPendingModelChanges(), "migration snapshot matches EF model");
 var script = db.GetService<IMigrator>().GenerateScript("20260927162533_InitialCreate", "20261003125521_AddUserTable");
 Check(script.Contains("CREATE TABLE [Users]") && script.Contains("IX_Users_Username"), "user migration creates table and unique username index");
 Check(!script.Contains("DROP TABLE") && !script.Contains("CREATE TABLE [Courses]"), "user migration preserves existing question-bank tables");
+var rubricScript = db.GetService<IMigrator>().GenerateScript("20261031112536_AddExamSessionAndTranscriptModels", "20261031114032_MoveRubricsToCourse");
+Check(rubricScript.Contains("UPDATE r SET CourseId = q.CourseId") && rubricScript.Contains("DROP COLUMN [QuestionId]"), "rubric migration backfills course before removing question link");
 await AuthChecks.Run(Check);
 await AuthorizationChecks.Run(Check);
 await QuestionBankChecks.Run(Check);
 await RubricChecks.Run(Check);
 await CourseChecks.Run(Check);
+await InterviewChecks.Run(Check);
+await SessionLifecycleChecks.Run(Check);
+await AttemptChecks.Run(Check);
+await AiProviderChecks.Run(Check);
+await InterviewFollowUpChecks.Run(Check);
+await HubSecurityChecks.Run(Check);
+await TextVivaWorkflowChecks.Run(Check);
+await AssessmentChecks.Run(Check);
 Console.WriteLine($"{checks} checks passed. SQL Server checks are separate: run with --sql-server.");

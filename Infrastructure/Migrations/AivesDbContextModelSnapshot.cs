@@ -22,6 +22,304 @@ namespace Infrastructure.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
+            modelBuilder.Entity("Domain.Entities.Interviews.Assessment", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier")
+                        .HasColumnName("AssessmentId");
+
+                    b.Property<decimal?>("AiConfidenceLevel")
+                        .HasPrecision(5, 4)
+                        .HasColumnType("decimal(5,4)");
+
+                    b.Property<string>("AiFeedback")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<decimal?>("AiSuggestedScore")
+                        .HasPrecision(18, 4)
+                        .HasColumnType("decimal(18,4)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("CreatedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("EvaluatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid>("ExamSessionQuestionId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<decimal?>("FinalScore")
+                        .HasPrecision(18, 4)
+                        .HasColumnType("decimal(18,4)");
+
+                    b.Property<DateTime?>("FinalizedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid?>("FinalizedByUserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<decimal>("Points")
+                        .HasPrecision(18, 4)
+                        .HasColumnType("decimal(18,4)");
+
+                    b.Property<string>("RubricSnapshotJson")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("StudentAnswer")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("TeacherComment")
+                        .HasMaxLength(2000)
+                        .HasColumnType("nvarchar(2000)");
+
+                    b.Property<Guid>("TranscriptId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("UpdatedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Version")
+                        .IsConcurrencyToken()
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ExamSessionQuestionId");
+
+                    b.HasIndex("FinalizedByUserId");
+
+                    b.HasIndex("TranscriptId", "ExamSessionQuestionId")
+                        .IsUnique();
+
+                    b.ToTable("Assessments", (string)null);
+                });
+
+            modelBuilder.Entity("Domain.Entities.Interviews.ExamSession", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier")
+                        .HasColumnName("SessionId");
+
+                    b.Property<Guid>("CourseId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("CreatedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid>("CreatedByUserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("EndTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("SessionTitle")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<DateTime>("StartTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasMaxLength(30)
+                        .HasColumnType("nvarchar(30)");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("UpdatedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Version")
+                        .IsConcurrencyToken()
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CourseId");
+
+                    b.HasIndex("CreatedByUserId");
+
+                    b.ToTable("ExamSessions", (string)null);
+                });
+
+            modelBuilder.Entity("Domain.Entities.Interviews.ExamSessionQuestion", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("AiModel")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<int>("BloomLevel")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Content")
+                        .IsRequired()
+                        .HasMaxLength(2000)
+                        .HasColumnType("nvarchar(2000)");
+
+                    b.Property<int>("DisplayOrder")
+                        .HasColumnType("int");
+
+                    b.Property<string>("ExpectedAnswer")
+                        .HasMaxLength(4000)
+                        .HasColumnType("nvarchar(4000)");
+
+                    b.Property<decimal>("Points")
+                        .HasPrecision(18, 4)
+                        .HasColumnType("decimal(18,4)");
+
+                    b.Property<Guid>("QuestionId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("RubricSnapshotJson")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid>("SessionId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("QuestionId");
+
+                    b.HasIndex("SessionId", "DisplayOrder")
+                        .IsUnique();
+
+                    b.HasIndex("SessionId", "QuestionId")
+                        .IsUnique();
+
+                    b.ToTable("ExamSessionQuestions", (string)null);
+                });
+
+            modelBuilder.Entity("Domain.Entities.Interviews.Transcript", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier")
+                        .HasColumnName("TranscriptId");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("CreatedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("GradedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<Guid>("SessionId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("StartedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasMaxLength(30)
+                        .HasColumnType("nvarchar(30)");
+
+                    b.Property<DateTime?>("SubmittedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<decimal?>("TotalScore")
+                        .HasPrecision(18, 4)
+                        .HasColumnType("decimal(18,4)");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("UpdatedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("Version")
+                        .IsConcurrencyToken()
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.HasIndex("SessionId", "UserId")
+                        .IsUnique();
+
+                    b.ToTable("Transcripts", (string)null);
+                });
+
+            modelBuilder.Entity("Domain.Entities.Interviews.TranscriptTurn", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier")
+                        .HasColumnName("TurnId");
+
+                    b.Property<Guid?>("ClientMessageId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("ContentText")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid?>("ExamSessionQuestionId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("Sequence")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Speaker")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
+                    b.Property<DateTime>("Timestamp")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid>("TranscriptId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ExamSessionQuestionId");
+
+                    b.HasIndex("TranscriptId", "ClientMessageId")
+                        .IsUnique()
+                        .HasFilter("[ClientMessageId] IS NOT NULL");
+
+                    b.HasIndex("TranscriptId", "Sequence")
+                        .IsUnique();
+
+                    b.ToTable("TranscriptTurns", (string)null);
+                });
+
             modelBuilder.Entity("Domain.Entities.QuestionBank.Course", b =>
                 {
                     b.Property<Guid>("Id")
@@ -128,6 +426,9 @@ namespace Infrastructure.Migrations
                     b.Property<string>("AiGradingPrompt")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<Guid>("CourseId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
@@ -145,9 +446,6 @@ namespace Infrastructure.Migrations
                     b.Property<decimal>("MaxScore")
                         .HasColumnType("decimal(5,2)");
 
-                    b.Property<Guid>("QuestionId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2");
 
@@ -159,7 +457,7 @@ namespace Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("QuestionId");
+                    b.HasIndex("CourseId");
 
                     b.ToTable("Rubrics");
                 });
@@ -210,6 +508,107 @@ namespace Infrastructure.Migrations
                     b.ToTable("Users", (string)null);
                 });
 
+            modelBuilder.Entity("Domain.Entities.Interviews.Assessment", b =>
+                {
+                    b.HasOne("Domain.Entities.Interviews.ExamSessionQuestion", "ExamSessionQuestion")
+                        .WithMany("Assessments")
+                        .HasForeignKey("ExamSessionQuestionId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Domain.Entities.UserManagement.User", "FinalizedByUser")
+                        .WithMany("FinalizedAssessments")
+                        .HasForeignKey("FinalizedByUserId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("Domain.Entities.Interviews.Transcript", "Transcript")
+                        .WithMany("Assessments")
+                        .HasForeignKey("TranscriptId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("ExamSessionQuestion");
+
+                    b.Navigation("FinalizedByUser");
+
+                    b.Navigation("Transcript");
+                });
+
+            modelBuilder.Entity("Domain.Entities.Interviews.ExamSession", b =>
+                {
+                    b.HasOne("Domain.Entities.QuestionBank.Course", "Course")
+                        .WithMany("ExamSessions")
+                        .HasForeignKey("CourseId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Domain.Entities.UserManagement.User", "CreatedByUser")
+                        .WithMany("CreatedExamSessions")
+                        .HasForeignKey("CreatedByUserId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Course");
+
+                    b.Navigation("CreatedByUser");
+                });
+
+            modelBuilder.Entity("Domain.Entities.Interviews.ExamSessionQuestion", b =>
+                {
+                    b.HasOne("Domain.Entities.QuestionBank.Question", "Question")
+                        .WithMany("ExamSessionQuestions")
+                        .HasForeignKey("QuestionId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Domain.Entities.Interviews.ExamSession", "Session")
+                        .WithMany("ExamSessionQuestions")
+                        .HasForeignKey("SessionId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Question");
+
+                    b.Navigation("Session");
+                });
+
+            modelBuilder.Entity("Domain.Entities.Interviews.Transcript", b =>
+                {
+                    b.HasOne("Domain.Entities.Interviews.ExamSession", "Session")
+                        .WithMany("Transcripts")
+                        .HasForeignKey("SessionId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Domain.Entities.UserManagement.User", "Student")
+                        .WithMany("Transcripts")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Session");
+
+                    b.Navigation("Student");
+                });
+
+            modelBuilder.Entity("Domain.Entities.Interviews.TranscriptTurn", b =>
+                {
+                    b.HasOne("Domain.Entities.Interviews.ExamSessionQuestion", "ExamSessionQuestion")
+                        .WithMany("TranscriptTurns")
+                        .HasForeignKey("ExamSessionQuestionId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("Domain.Entities.Interviews.Transcript", "Transcript")
+                        .WithMany("Turns")
+                        .HasForeignKey("TranscriptId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("ExamSessionQuestion");
+
+                    b.Navigation("Transcript");
+                });
+
             modelBuilder.Entity("Domain.Entities.QuestionBank.Question", b =>
                 {
                     b.HasOne("Domain.Entities.QuestionBank.Course", "Course")
@@ -223,23 +622,57 @@ namespace Infrastructure.Migrations
 
             modelBuilder.Entity("Domain.Entities.QuestionBank.Rubric", b =>
                 {
-                    b.HasOne("Domain.Entities.QuestionBank.Question", "Question")
+                    b.HasOne("Domain.Entities.QuestionBank.Course", "Course")
                         .WithMany("Rubrics")
-                        .HasForeignKey("QuestionId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .HasForeignKey("CourseId")
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.Navigation("Question");
+                    b.Navigation("Course");
+                });
+
+            modelBuilder.Entity("Domain.Entities.Interviews.ExamSession", b =>
+                {
+                    b.Navigation("ExamSessionQuestions");
+
+                    b.Navigation("Transcripts");
+                });
+
+            modelBuilder.Entity("Domain.Entities.Interviews.ExamSessionQuestion", b =>
+                {
+                    b.Navigation("Assessments");
+
+                    b.Navigation("TranscriptTurns");
+                });
+
+            modelBuilder.Entity("Domain.Entities.Interviews.Transcript", b =>
+                {
+                    b.Navigation("Assessments");
+
+                    b.Navigation("Turns");
                 });
 
             modelBuilder.Entity("Domain.Entities.QuestionBank.Course", b =>
                 {
+                    b.Navigation("ExamSessions");
+
                     b.Navigation("Questions");
+
+                    b.Navigation("Rubrics");
                 });
 
             modelBuilder.Entity("Domain.Entities.QuestionBank.Question", b =>
                 {
-                    b.Navigation("Rubrics");
+                    b.Navigation("ExamSessionQuestions");
+                });
+
+            modelBuilder.Entity("Domain.Entities.UserManagement.User", b =>
+                {
+                    b.Navigation("CreatedExamSessions");
+
+                    b.Navigation("FinalizedAssessments");
+
+                    b.Navigation("Transcripts");
                 });
 #pragma warning restore 612, 618
         }

@@ -1,0 +1,23 @@
+MENTOR MILESTONE 3 REVIEW — RUBRIC SCOPE
+Date recorded: 31/10/2026
+
+Review decision
+Rubric is a grading matrix for the entire Course, not a child resource of an individual Question.
+
+Implementation decision
+- Rubrics use CourseId as their foreign key.
+- A Course owns one active rubric matrix, shared by all of its active Questions.
+- Lecturer replaces that matrix through PUT /api/courses/{courseId}/rubrics.
+- Replaced rubric rows are soft-deleted so historical configuration remains available.
+- CreateQuestionRequest, UpdateQuestionRequest, and QuestionDto do not contain rubrics.
+- AI question generation creates only a question; it does not create a per-question rubric.
+
+Exam consistency
+When a Lecturer opens an ExamSession, the system validates the active rubric matrix of the Course and snapshots it into every ExamSessionQuestion. Later edits to the Course rubric do not change an already-open session or its attempts.
+
+Data migration
+MoveRubricsToCourse adds Rubrics.CourseId, backfills it from the former Rubrics.QuestionId through Questions.CourseId, then removes the old QuestionId FK and column. The forward migration preserves existing rubric rows. Its Down migration intentionally fails because a shared Course rubric cannot be mapped back to one unique Question without inventing data.
+
+Verification
+dotnet run --project tests/BackendChecks: 326 checks pass.
+The migration has not been applied to a live database.

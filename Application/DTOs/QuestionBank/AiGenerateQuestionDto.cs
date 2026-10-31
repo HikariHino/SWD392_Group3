@@ -17,7 +17,6 @@ public class AiGeneratedQuestionDto
     public string BloomLevelName => BloomLevel.ToString();
     public string SourceContext { get; set; } = string.Empty;
     public double AiConfidence { get; set; } = 96.0;
-    public List<CreateRubricRequest> Rubrics { get; set; } = new();
 }
 
 public class ImportQuestionsRequest

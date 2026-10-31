@@ -9,6 +9,6 @@ public class Rubric : AuditableEntity
     public double MaxScore { get; set; }
     public string? AiGradingPrompt { get; set; }
 
-    public Guid QuestionId { get; set; }
-    public Question? Question { get; set; }
+    public Guid CourseId { get; set; }
+    public Course? Course { get; set; }
 }

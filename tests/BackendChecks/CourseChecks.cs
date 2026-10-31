@@ -22,7 +22,7 @@ internal static class CourseChecks
         var options = new DbContextOptionsBuilder<AivesDbContext>().UseSqlite(connection).Options;
         var mapper = new MapperConfiguration(c => c.AddProfile<MappingProfile>(), NullLoggerFactory.Instance).CreateMapper();
         CourseService Service(AivesDbContext context) => new(new UnitOfWork(context), mapper,
-            new CreateCourseRequestValidator(), new UpdateCourseRequestValidator());
+            new CreateCourseRequestValidator(), new UpdateCourseRequestValidator(), new ReplaceCourseRubricsRequestValidator());
         async Task Reject<T>(Func<Task> operation, string name) where T : Exception
         {
             try { await operation(); check(false, name); }
@@ -69,7 +69,7 @@ internal static class CourseChecks
             var questionService = new QuestionBankService(new UnitOfWork(context), mapper, new QuestionQueryParametersValidator(),
                 new CreateQuestionRequestValidator(), new UpdateQuestionRequestValidator());
             check((await questionService.GetCoursesAsync()).All(c => c.Id != firstId), "legacy courses endpoint returns active CourseDto collection");
-            check(typeof(CourseDto).GetProperties().Select(p => p.Name).Order().SequenceEqual(new[] { "Code", "Description", "Id", "Name" }.Order()), "CourseDto exposes no navigation or audit internals");
+            check(typeof(CourseDto).GetProperties().Select(p => p.Name).Order().SequenceEqual(new[] { "Code", "Description", "Id", "Name", "Rubrics" }.Order()), "CourseDto exposes course rubric collection without audit internals");
         }
         using (var context = new AivesDbContext(options))
         {

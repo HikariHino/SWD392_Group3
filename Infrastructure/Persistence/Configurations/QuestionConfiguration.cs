@@ -35,11 +35,6 @@ public class QuestionConfiguration : IEntityTypeConfiguration<Question>
             .HasForeignKey(q => q.CourseId)
             .OnDelete(DeleteBehavior.Restrict);
 
-        builder.HasMany(q => q.Rubrics)
-            .WithOne(r => r.Question)
-            .HasForeignKey(r => r.QuestionId)
-            .OnDelete(DeleteBehavior.Cascade);
-
         builder.HasQueryFilter(q => !q.IsDeleted);
     }
 }

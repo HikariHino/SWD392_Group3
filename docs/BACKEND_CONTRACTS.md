@@ -21,7 +21,7 @@ Baseline: `quang` sau C02 `fd7f6b2`, 03/10/2026. Người lập: Quang cùng Cod
 | Transcript / điểm | Transcript.TotalScore decimal; Rubric double | C03 giữ Transcript là bài thi; TotalScore phải nullable trước chốt. Decimal cho điểm/rubric là chuyển đổi dự kiến C20, không làm mất trạng thái chưa chấm |
 | Luồng thi đầy đủ | Chưa có owner/status/turn/snapshot/concurrency | Bổ sung theo phần 2–7: TranscriptTurns, ExamSessionQuestions, trạng thái, audit người chốt, snapshot rubric và version |
 
-Các quan hệ Course→Question/ExamSession, User/ExamSession→Transcript, Transcript/Question→Assessment và Question→Rubric phù hợp hướng C03. Guid và BloomLevel 1..6 cũng thống nhất. Các phần Question.Points/ExpectedAnswer/AiModel, rubric prompt, ownership và hội thoại vẫn là mở rộng dự kiến từ C03/ảnh DB, không được xem là đã chốt bởi draw.io. Sơ đồ hiện chỉ mô tả đường Question Bank và entity, chưa phải toàn bộ API/User/Auth/AI/SignalR của AIVES.
+Các quan hệ Course→Question/Rubric/ExamSession, User/ExamSession→Transcript và Transcript/Question→Assessment phù hợp hướng C03. Rubric là ma trận đánh giá chung của cả môn học, không phải dữ liệu của từng câu hỏi. Guid và BloomLevel 1..6 cũng thống nhất. Các phần Question.Points/ExpectedAnswer/AiModel, rubric prompt, ownership và hội thoại vẫn là mở rộng dự kiến từ C03/ảnh DB, không được xem là đã chốt bởi draw.io. Sơ đồ hiện chỉ mô tả đường Question Bank và entity, chưa phải toàn bộ API/User/Auth/AI/SignalR của AIVES.
 
 Thứ tự sử dụng: source/Swagger để biết hành vi đang chạy; tài liệu C03 để triển khai mục tiêu đã ghi; draw.io để tham khảo thiết kế và cập nhật theo các mốc. Khi chủ động thay quyết định C03, ghi lý do và ảnh hưởng DTO/schema/peer trong cùng commit.
 
@@ -31,7 +31,7 @@ Thứ tự sử dụng: source/Swagger để biết hành vi đang chạy; tài 
 | --- | --- | --- | --- |
 | Courses | PK `Id` Guid; Code, Name, Description; audit/soft delete | PK CourseId; cùng các trường mô tả | Giữ `Id` trong schema code mới, API id dạng UUID; DB trong ảnh cần mapping trước migration |
 | Questions | PK Id Guid; CourseId; Content; BloomLevel int; audit | PK QuestionId; thêm ExpectedAnswer, QuestionType, Points, AiModel | Giữ model hiện tại; thêm ExpectedAnswer nullable, Points decimal > 0 (mặc định 10), QuestionType=Oral, AiModel nullable khi use case cần |
-| Rubrics | PK Id Guid; QuestionId; Criteria; Weight/MaxScore double | PK RubricId; thêm AiGradingPrompt | Giữ quan hệ; chuyển số điểm/trọng số sang decimal ở mốc grading; prompt override nullable |
+| Rubrics | PK Id Guid; CourseId; Criteria; Weight/MaxScore double | PK RubricId; thêm AiGradingPrompt | Ma trận dùng chung toàn Course; chuyển số điểm/trọng số sang decimal ở mốc grading; prompt override nullable |
 | Users | Model/config có UserId Guid, Username unique, PasswordHash, FullName, Role, CreatedAt nullable, IsDeleted; migration chưa có | Cùng tên trường hiển thị | C07 bổ sung schema; không dùng password nguyên văn; DTO không trả PasswordHash |
 | ExamSessions | Chưa có | SessionId, CourseId, SessionTitle, StartTime, EndTime, IsDeleted | C13 thêm SessionId Guid, CreatedByUserId, Status, thời gian UTC, audit |
 | Transcripts | Chưa có | TranscriptId, UserId, SessionId, TotalScore, GradedAt, IsDeleted | Một bài thi của sinh viên, không phải một câu hội thoại; thêm Status, StartedAt, SubmittedAt |
@@ -46,10 +46,10 @@ Thứ tự sử dụng: source/Swagger để biết hành vi đang chạy; tài 
 - Khóa mới: Guid / SQL uniqueidentifier; JSON UUID string. UTC DateTime / SQL datetime2, JSON ISO 8601 có Z. Username tối đa 50, FullName 100; Course Code 50, Name 200, Description 1000; Question Content 2000, Rubric Criteria 500 (theo config hiện tại).
 - BloomLevel giữ integer 1..6: Remember, Understand, Apply, Analyze, Evaluate, Create. API hiện trả cả bloomLevel và bloomLevelName.
 - Role canonical: `Lecturer`, `Student`. Không có tự đăng ký được chọn Lecturer; tài khoản lecturer được cấp bởi quy trình nhóm/quản trị, chưa thêm role Admin vào MVP. Khi C06/C12 triển khai, thao tác cấp/đổi quyền không công khai.
-- Một Course có nhiều Question và ExamSession. Một Question có nhiều Rubric. Một User(Student) có nhiều Transcript; một ExamSession có nhiều Transcript. Unique `(SessionId, UserId)` cho một lần thi MVP.
+- Một Course có nhiều Question, Rubric và ExamSession. Một User(Student) có nhiều Transcript; một ExamSession có nhiều Transcript. Unique `(SessionId, UserId)` cho một lần thi MVP.
 - Một Transcript có nhiều TranscriptTurn, Sequence tăng dần, unique `(TranscriptId, Sequence)`. Một question được tính điểm có tối đa một Assessment trong bài thi: unique `(TranscriptId, QuestionId)`; lượt hỏi tiếp là hội thoại hỗ trợ, không tự tạo câu tính điểm mới.
 - Assessment lưu đáp án tổng hợp và snapshot đề/rubric/Points tại phiên thi. Lecturer chốt phải là người có quyền quản lý phiên (CreatedByUserId), không chỉ kiểm tra role.
-- Soft delete không xóa lịch sử bài thi. Khóa ngoại lịch sử dùng Restrict/NoAction; không cascade xóa kết quả khi xóa course/user/question. Model hiện cascade Rubric theo Question khi hard delete: phải giữ snapshot lịch sử trước khi mở ca thi.
+- Soft delete không xóa lịch sử bài thi. Khóa ngoại lịch sử dùng Restrict/NoAction; không cascade xóa kết quả khi xóa course/user/question. Rubric thuộc Course và chỉ được thay cả bộ, giữ bản cũ soft-delete để có lịch sử; xóa mềm Course cũng xóa mềm rubric đang hoạt động của nó.
 - Decimal mục tiêu: Points/MaxScore/Weight/scores `(18,4)`; confidence `(5,4)` trong [0,1], nullable khi provider không trả. FinalScore/AiSuggestedScore nullable để phân biệt chưa chấm với điểm 0. Confidence là output tự báo của provider, không coi là xác suất được hiệu chuẩn.
 
 ## 3. Vòng đời và quyền
@@ -85,8 +85,9 @@ Tên JSON camelCase, route không version trong baseline; giữ route hiện t�
 | --- | --- | --- |
 | GET /api/questions | courseId?, bloomLevel?, searchTerm?, pageIndex=1, pageSize=10 | 200 PagedResponse<QuestionDto> |
 | GET /api/questions/{id} | UUID | 200 QuestionDto; 404 khi thiếu |
-| POST /api/questions | content, courseId, bloomLevel, rubrics[] | 201 QuestionDto + Location |
-| PUT /api/questions/{id} | content, bloomLevel, rubrics[]; thay toàn bộ rubric | 200 QuestionDto; 404 khi thiếu |
+| POST /api/questions | content, courseId, bloomLevel | 201 QuestionDto + Location |
+| PUT /api/questions/{id} | content, bloomLevel | 200 QuestionDto; 404 khi thiếu |
+| PUT /api/courses/{id}/rubrics | rubrics[]; thay toàn bộ rubric của môn | 200 CourseDto; lecturer |
 | DELETE /api/questions/{id} | UUID | 204; soft delete |
 | GET /api/questions/courses | Không | 200 collection Domain Course (sẽ đổi CourseDto tại C10) |
 | POST /api/questions/import | Không có file thật | 200 success=true + message (mock) |
@@ -96,7 +97,7 @@ Tên JSON camelCase, route không version trong baseline; giữ route hiện t�
 | PUT /api/Users/{id} | fullName?, role? | 204 |
 | DELETE /api/Users/{id} | UUID | 204; soft delete |
 
-UserDto: id, username, fullName, role, createdAt. QuestionDto: id, content, bloomLevel, bloomLevelName, courseId, courseCode, courseName, createdAt, updatedAt, rubrics[{id,criteria,weight,maxScore}]. PagedResponse: items, totalCount, pageIndex, pageSize, totalPages, hasPreviousPage, hasNextPage. C08 giới hạn pageIndex>=1 và pageSize 1..100. C10 CourseDto: id, code, name, description; không navigation/audit nội bộ.
+UserDto: id, username, fullName, role, createdAt. QuestionDto: id, content, bloomLevel, bloomLevelName, courseId, courseCode, courseName, createdAt, updatedAt. CourseDto: id, code, name, description, rubrics[{id,criteria,weight,maxScore}]. PagedResponse: items, totalCount, pageIndex, pageSize, totalPages, hasPreviousPage, hasNextPage. C08 giới hạn pageIndex>=1 và pageSize 1..100.
 
 Ví dụ request tạo câu hỏi hợp lệ với course mẫu (chỉ dùng nếu course đã seed):
 
@@ -124,11 +125,11 @@ Bộ kiểm tra C08 nằm trong tests/BackendChecks/QuestionBankChecks.cs: query
 | C11 POST /api/auth/login | username, password | 200 {accessToken, expiresAt, user: UserDto}; sai thông tin 401 |
 | C10 GET/POST /api/courses; GET/PUT/DELETE /api/courses/{id} | Create/Update {code,name,description?} | GET 200; POST 201; PUT 200; DELETE 204; mutation lecturer |
 | C14 POST /api/exam-sessions | courseId, sessionTitle, startTime, endTime, questionIds[] | 201 SessionDto; lecturer; owner lấy từ principal |
-| C14 GET /api/exam-sessions/{id} | UUID | 200 SessionDto; lecturer owner/student được tham gia |
+| C14 GET /api/exam-sessions/{id} | UUID | 200 SessionDto; lecturer owner; student participation access deferred to C15 |
 | C14 POST /api/exam-sessions/{id}/open hoặc /close hoặc /cancel | Không | 200 SessionDto; lecturer owner; sai state 409 |
 | C15 POST /api/exam-sessions/{id}/attempts | Không; user từ principal | 201 AttemptDto, trả attempt có sẵn 200 khi retry; student |
 | C15 GET /api/attempts/{id} | UUID | 200 AttemptDto; student owner/lecturer owner phiên |
-| C15 POST /api/attempts/{id}/answers | questionId, answerText, clientMessageId UUID | 201 TurnDto; retry cùng message trả bản ghi cũ; student owner |
+| C15 POST /api/attempts/{id}/answers | questionId, answerText, clientMessageId UUID | 201 TurnDto; retry cùng message trả 200 bản ghi cũ; student owner |
 | C15 POST /api/attempts/{id}/submit | Không | 200 AttemptDto; student owner; idempotent |
 | C21 POST /api/attempts/{id}/grade | Không | 202 {attemptId,status}; lecturer owner; queue/use case chấm; không chấm đôi |
 | C22 GET /api/attempts/{id}/assessments | Không | 200 AssessmentDto[]; lecturer owner |
@@ -203,3 +204,63 @@ Cập nhật kiểm chứng M1 04/10/2026: C07 của Thai đã apply và kiểm 
 4. C13 snapshot bộ đề/rubric, thêm FK/index và trạng thái; C20 bổ sung assessment/decimal. Một người tạo migration mỗi lần, sau khi pull model chung.
 
 C03 hoàn thành ở mức tài liệu: mapping khác biệt, baseline schema mới, vòng đời, role, công thức điểm và request/response đã ghi. **Chưa xác minh schema SQL live và chưa apply migration**; đó là điều kiện trước triển khai persistence lên DB có sẵn. Người nhận C04/C08 có thể dùng contract này; người nhận C07 phải thực hiện bước xác minh DB phía trên. Ví dụ công thức đã đối chiếu: 10*(3/4*0.4+3/6*0.6)=6.
+
+## C13 — Session/attempt persistence (31/10/2026)
+
+Added ExamSessions, ExamSessionQuestions, Transcripts and TranscriptTurns with Guid keys, restricted history FKs and decimal(18,4) scores. Each student has one attempt per session (including soft-deleted attempts); session question/order and transcript sequence/clientMessageId are unique. Nullable clientMessageId uses a filtered unique index.
+
+ExamSessionQuestions stores Content, ExpectedAnswer, BloomLevel, AiModel, Points and RubricSnapshotJson (array of rubricId, criteria, weight, maxScore, aiGradingPrompt). C14 must validate and populate this snapshot transactionally before opening; C15 must validate that the selected snapshot question belongs to the attempt's session. TranscriptTurn references ExamSessionQuestionId instead of a mutable QuestionId, preserving the exact exam question. C14/C15 must increment integer Version on state/answer changes; Version is an application-managed concurrency token, not SQL rowversion. CreatedByUser is the lecturer navigation; inherited CreatedBy remains the audit string.
+
+Snapshot rows and turns deliberately have no source-dependent soft-delete filters: historical records remain queryable after source deletion. EF may warn about required navigations to filtered Question/Transcript; history reads should select snapshot fields directly and use IgnoreQueryFilters explicitly when loading archived parents. Authorization belongs to C14/C15.
+
+Migration is generated and reviewed locally; it is not applied to an existing database. Live SQL schema/history verification remains required before deployment. SQLite regression checks cover persistence, foreign keys, unique attempt/turn/message constraints, snapshot preservation, restricted question deletion and stale Version updates.
+
+## C14 — Session lifecycle (31/10/2026)
+
+POST /api/exam-sessions accepts courseId, sessionTitle, UTC startTime/endTime (Z), distinct nonempty questionIds. Returns 201 with Location and SessionDto: id, courseId, sessionTitle, startTime, endTime, status (string), version, createdByUserId, questionIds. GET /api/exam-sessions/{id} and POST /{id}/open, /close, /cancel return the same DTO. All endpoints require Lecturer; reads and transitions also require CreatedByUserId to match the authenticated principal. Student session discovery/participation is deferred to C15 rather than exposing all drafts.
+
+Creation requires an active course and active questions of that course with positive points and valid rubric weights totaling 100 (tolerance 0.01). Times must be UTC, start < end and end in the future. Open revalidates the course/questions/rubrics, rejects expired sessions, and writes the complete question/rubric snapshot in the same SaveChanges transaction as Draft -> Open. A lecturer may open before StartTime; student entry in C15 must still enforce the time window. Closed/Cancelled cannot reopen; only Open can close; Draft/Open can cancel. Cancel preserves attempts without grading. Close submits all visible InProgress attempts and advances their Version in the same transaction. C15 must coordinate attempt creation and answers with session Version to prevent concurrent entry after close.
+
+Application-managed integer Version increments on transitions; EF stale writes map to 409. Validation failures return 400, missing sessions/courses 404, non-owner 403, invalid transitions 409. No new migration is needed for C14. SQLite regression covers the service through the real repository, snapshot behavior, ownership and state guards; controller checks cover Lecturer metadata and created Location. SQL Server/live HTTP verification remains separate.
+
+## C15 — Student attempts and answers (31/10/2026)
+
+POST /api/exam-sessions/{id}/attempts requires Student and derives UserId from the authenticated principal. A new attempt requires Open and StartTime <= now < EndTime with a populated snapshot; returns 201 with Location /api/attempts/{attemptId}. Retrying returns 200 for the existing attempt even after the time window/closure, without reopening it. Archived attempts cannot be replaced. MVP has no enrollment roster; any authenticated Student knowing an open session ID can join during the window.
+
+GET /api/attempts/{id}, /{id}/questions and /{id}/turns allow only the student owner or the lecturer owning the session. Questions returns [{questionId, displayOrder, content, points}] from the frozen session snapshot. Turns returns ordered TurnDto records. Neither response includes expected answers, rubric grading prompts or AI provider configuration. Student session discovery before joining is not part of this milestone; the lecturer shares the session ID.
+
+POST /api/attempts/{id}/answers accepts {questionId, answerText, clientMessageId}. All IDs must be nonempty; answerText must contain non-whitespace text and be at most 20000 characters. The question must belong to the attempt's session snapshot. Server assigns Student speaker, timestamp and increasing Sequence. Only the owning Student can write, while the attempt is InProgress and the session is Open within its time window. Answer appends a turn; it does not overwrite previous answers. New message returns 201; retry with identical message ID/question/text returns 200, including after submission/closure. Reusing the ID with different payload returns 409.
+
+POST /api/attempts/{id}/submit requires the student owner. InProgress becomes Submitted with server time; repeated submit returns the current attempt without changes. Submission is allowed after EndTime while the session remains Open, allowing expired attempts to be finalized; Cancelled rejects submission. C14 closure already submits active attempts atomically.
+
+Start/answer/submit increment session Version alongside attempt writes in one SaveChanges transaction. This coordinates with C14 close/cancel and prevents a stale student write committing after closure; stale updates return 409 and the caller retries. Concurrent duplicate starts/messages either resolve on sequential retry or return 409 for SQL Server unique-key races; no second attempt/turn is inserted. Student writes contend on session Version across the session in this MVP. No schema change or migration required. Relational SQLite tests verify ownership, time boundaries, retry behavior, durable history and rollback of an answer racing with closure; live SQL Server and browser verification remain separate.
+
+## C16 — Structured AI provider (31/10/2026)
+
+`IAiService` is implemented by the Gemini REST adapter. `POST /api/questions/ai-generate` sends one structured JSON request and accepts only a JSON candidate with `content`, optional `sourceContext`, and finite `aiConfidence` from 0 to 100. The adapter never trusts arbitrary provider text as a question, never creates a per-question rubric, and rejects missing/empty/oversized content.
+
+Set secrets outside source using `Gemini__ApiKey` (or the configuration key `Gemini:ApiKey`); `Gemini__Model` and `Gemini__TimeoutSeconds` are optional. The checked-in configuration contains placeholders only. Default timeout is 20 seconds, with a permitted configuration range of 1–120 seconds. Calling cancellation is preserved. Missing key, network failure, 429/503/504 map to 503; timeout maps to 504; malformed/non-success provider output maps to 502. Responses do not disclose API keys or provider body text.
+
+Fake HTTP regression covers a successful structured response, bad envelopes/output, quota failure, timeout and cancellation. No live Gemini smoke test was run because no API key is configured in this workspace. To smoke-test in an authorized environment, set `Gemini__ApiKey`, start the API and invoke the existing Lecturer-only `POST /api/questions/ai-generate`; do not add the key to appsettings or source control.
+
+## C17 — AI follow-up questions (31/10/2026)
+
+`POST /api/attempts/{attemptId}/follow-up` requires Student. The server takes the authenticated student's attempt, its latest persisted Student answer, the frozen `ExamSessionQuestion`, its rubric snapshot, and the ordered stored conversation; clients cannot supply or overwrite this context. Gemini returns one structured follow-up question and the server persists it as an `AI` TranscriptTurn associated with that same snapshot question. The response is 201 with turn id, sequence, content and timestamp.
+
+The attempt must belong to the caller, remain InProgress, and its session must be Open inside its time window. Missing a prior student answer is 400; ownership is 403; terminal/time-invalid state is 409; provider errors preserve the C16 502/503/504 mapping. Regression uses a fake AI to verify persisted source context/history, ownership, state guards and AI-turn persistence.
+
+## C18 — Authorized SignalR follow-up (31/10/2026)
+
+`/interviewHub` requires an authenticated Student JWT. Browser SignalR clients may send that JWT as the `access_token` query value only for this hub handshake; normal HTTP endpoints continue using the Authorization header. `RequestFollowUp` accepts only `attemptId`; it never accepts a client-supplied student id, answer content, question content or score. It calls the C17 service, which derives the principal and verifies attempt owner, attempt/session state and time window before calling AI or writing an AI turn. Results are sent only to `Clients.Caller`.
+
+## C19 — Text viva workflow verification (31/10/2026)
+
+SQLite workflow regression covers an Open session with a snapshot, student attempt creation, persisted student answer, AI follow-up persisted as the next turn, and submission. It also verifies that a terminal attempt rejects further follow-up, and a provider failure leaves the student answer intact without writing an AI turn. Authentication/login behavior, token validation, and provider adapter failures are separately covered by the existing auth/C16 checks. Live demo remains contingent on applying migrations to a dev database and an authorized Gemini key.
+
+## C20 — Assessment model and score rules (31/10/2026)
+
+Assessment is one record per `(TranscriptId, ExamSessionQuestionId)`, so it references the frozen question snapshot instead of mutable Question data. It stores the student's consolidated answer, Points and RubricSnapshotJson again at assessment creation; AI suggestion/feedback/confidence and lecturer finalization fields are nullable until C21/C22 write them. All score fields use decimal `(18,4)`; confidence uses `(5,4)`. Assessment has an application-managed Version concurrency token, soft-delete filter, and restricted FKs to transcript, snapshot question and optional finalizing lecturer.
+
+`ScoreCalculator` is the shared pure rule implementation. It requires every snapshot criterion once, validates positive points/maxScore/weight and weight total 100 within 0.01, then calculates `Points * Σ((earned / maxScore) * (weight / 100))`. Attempt total uses every scored question's Points as denominator: `10 * Σ(questionScore) / Σ(points)`. It never rounds intermediate values; `RoundForStorage` rounds final values to two decimal places AwayFromZero. Invalid/missing/duplicate/out-of-range rubric scores fail validation; C21 must translate invalid provider output into a provider error and avoid persisting partial Assessment data.
+
+Migration `AddAssessmentModels` creates the table, unique index and FKs. SQLite checks cover the formulas, final rounding, invalid inputs, relational persistence, unique enforcement and soft-delete history. It has not been applied to a live database.

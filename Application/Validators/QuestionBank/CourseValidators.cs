@@ -15,3 +15,13 @@ public abstract class CourseRequestValidator<T> : AbstractValidator<T> where T :
 
 public sealed class CreateCourseRequestValidator : CourseRequestValidator<CreateCourseRequest> { }
 public sealed class UpdateCourseRequestValidator : CourseRequestValidator<UpdateCourseRequest> { }
+
+public sealed class ReplaceCourseRubricsRequestValidator : AbstractValidator<ReplaceCourseRubricsRequest>
+{
+    public ReplaceCourseRubricsRequestValidator()
+    {
+        RuleFor(x => x.Rubrics).NotEmpty().Must(RubricValidation.HasValidTotalWeight)
+            .WithMessage("Course rubrics must total 100%.");
+        RuleForEach(x => x.Rubrics).NotNull().SetValidator(new CreateRubricRequestValidator());
+    }
+}

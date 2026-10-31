@@ -39,8 +39,7 @@ internal static class QuestionBankChecks
         {
             CourseId = courseId,
             Content = "Explain Onion",
-            BloomLevel = BloomLevel.Understand,
-            Rubrics = [new() { Criteria = "Correct explanation", Weight = 100, MaxScore = 10 }]
+            BloomLevel = BloomLevel.Understand
         };
         await Rejected(() => service.CreateQuestionAsync(request), "CourseId", "create blocks nonexistent course");
         check(uow.SaveCalls == 0 && uow.QuestionsSpy.AddCalls == 0, "unknown course cannot persist a question");
@@ -56,7 +55,7 @@ internal static class QuestionBankChecks
         check(page.Items.Single().Content == "Explain Onion", "paged entities mapped to DTOs");
         await service.CreateQuestionAsync(request);
         check(uow.SaveCalls == 1 && uow.QuestionsSpy.AddCalls == 1, "valid course allows question persistence");
-        check(uow.QuestionsSpy.Added!.Rubrics.Single().QuestionId == uow.QuestionsSpy.Added.Id, "created rubric linked to generated question id");
+        check(uow.QuestionsSpy.Added!.CourseId == courseId, "created question retains its course id");
     }
 }
 

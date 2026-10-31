@@ -288,61 +288,81 @@ Trạng thái mới nhất 04/10: C04–C12 đã hoàn tất và SQL Server Loca
 
 ### M2 — Thi bằng văn bản chạy xuyên suốt
 
+#### Rubric cấp Course — theo review Mentor Milestone 3 (31/10/2026)
+
+Rubric được chuyển từ `QuestionId` sang `CourseId`: một bộ rubric hoạt động áp dụng cho tất cả câu hỏi của một môn. Lecturer thay toàn bộ bộ rubric bằng `PUT /api/courses/{id}/rubrics`; bộ cũ được soft-delete để giữ lịch sử. Question DTO/request không còn nhận hoặc trả rubric. Khi mở ExamSession, C14 kiểm tra bộ rubric đang hoạt động của Course và snapshot bộ đó vào từng `ExamSessionQuestion`, nên lịch sử thi/chấm không bị đổi khi rubric của môn được cập nhật sau này.
+
+Migration `MoveRubricsToCourse` thêm `CourseId`, backfill qua `Rubrics.QuestionId -> Questions.CourseId`, rồi xóa FK/cột QuestionId và tạo FK Course. Migration forward giữ dữ liệu; rollback bị chặn vì rubric dùng chung không thể suy ngược về một câu hỏi duy nhất an toàn. Chưa apply trên DB live. Regression SQLite: 324 checks pass.
 
 
-- [ ] **C13** — Người làm: Chưa nhận
+
+- [x] **C13** — Người làm: Quang cùng Codex
 
   Commit: `feat(exam): add session and student attempt models`
 
   Phạm vi / nghiệm thu: ExamSession, Transcript/bài thi, lượt hội thoại theo C03; EF configuration + migration cùng commit; kiểm tra quan hệ FK
 
+  Kiểm tra 31/10/2026: `dotnet run --project tests/BackendChecks` — 272 checks pass, gồm 8 checks quan hệ/lịch sử/concurrency C13; snapshot EF khớp model. Migration AddExamSessionAndTranscriptModels đã tạo, chưa apply DB live; commit `4b9ccaa` đã merge vào `quang`. Azure SQL không khả dụng khi EF thử đọc migration history; không có thay đổi schema live. C14 có thể bắt đầu phần lifecycle và tạo snapshot, C15 phải kiểm tra question cùng session. Contract chi tiết trong BACKEND_CONTRACTS.md mục C13.
+
   Cần trước: C12
 
-- [ ] **C14** — Người làm: Chưa nhận
+- [x] **C14** — Người làm: Quang cùng Codex
 
   Commit: `feat(exam): manage session lifecycle`
 
   Phạm vi / nghiệm thu: Tạo/mở/đóng ca thi; validate course, thời gian, trạng thái và quyền lecturer; không cho chuyển trạng thái trái quy tắc
 
+  Kiểm tra 31/10/2026: `dotnet run --project tests/BackendChecks` — 301 checks pass. Đã thêm API tạo/đọc/mở/đóng/hủy, lecturer ownership, UTC validation, snapshot khi mở, submit bài khi đóng và concurrency 409. Không thay schema; chưa chạy DB live. Contract C14 trong BACKEND_CONTRACTS.md. C15 có thể bắt đầu, cần phối hợp Version khi tạo bài/lưu câu trả lời để tránh race với đóng ca. Branch thành viên: `quang`, đã chứa `origin/main` tại thời điểm triển khai.
+
   Cần trước: C13
 
-- [ ] **C15** — Người làm: Chưa nhận
+- [x] **C15** — Người làm: Quang cùng Codex
 
   Commit: `feat(exam): start attempts and persist answer turns`
 
   Phạm vi / nghiệm thu: Student vào phiên hợp lệ; lưu câu trả lời theo đúng user/session/question; không truy cập bài thi người khác
 
+  Kiểm tra 31/10/2026: `dotnet run --project tests/BackendChecks` — 340 checks pass. API start/get/questions/turns/answers/submit; role/owner guards, UTC time window, idempotent start/message/submit, snapshot-safe student DTO và session Version phối hợp với C14 close/cancel. SQLite regression kiểm tra rollback khi ghi câu trả lời đua với đóng ca; không thay schema, chưa apply DB live. Contract chi tiết trong BACKEND_CONTRACTS.md mục C15. Branch thành viên `quang`.
+
   Cần trước: C14
 
-- [ ] **C16** — Người làm: Chưa nhận
+- [x] **C16** — Người làm: Quang cùng Codex
 
   Commit: `feat(ai): implement structured ai provider integration`
 
   Phạm vi / nghiệm thu: Adapter gọi AI thật, cấu hình secret bên ngoài, timeout/cancellation và lỗi provider; kiểm tra response hợp lệ/lỗi bằng fake provider, smoke test thật khi có key
 
+  Kiểm tra 31/10/2026: `dotnet run --project tests/BackendChecks` — 343 checks pass. Gemini REST adapter chỉ nhận structured JSON, lấy secret từ `Gemini__ApiKey`, timeout mặc định 20s và trả lỗi 502/503/504 đúng loại. Fake HTTP covers success, malformed response, 429, timeout và cancellation. Không chạy live smoke vì workspace không có key; hướng chạy đã ghi trong BACKEND_CONTRACTS.md. Branch thành viên `quang`.
+
   Cần trước: C03; merge sau C15
 
-- [ ] **C17** — Người làm: Chưa nhận
+- [x] **C17** — Người làm: Quang cùng Codex
 
   Commit: `feat(interview): generate follow-up questions from exam context`
 
   Phạm vi / nghiệm thu: InterviewService dùng abstraction AI, ngữ cảnh môn/câu hỏi/hội thoại; lưu lượt AI, không dùng chuỗi mock
 
+  Kiểm tra 31/10/2026: `dotnet run --project tests/BackendChecks` — 353 checks pass. Student-only follow-up endpoint/service lấy attempt từ principal, dùng snapshot câu hỏi/rubric và turn đã lưu, gọi `IAiService`, rồi persist AI turn có sequence phía server. Hub chỉ delegate service và chờ C18 thêm authorization/ownership. Không chạy AI live smoke trong regression.
+
   Cần trước: C15, C16
 
-- [ ] **C18** — Người làm: Chưa nhận
+- [x] **C18** — Người làm: Quang cùng Codex
 
   Commit: `feat(signalr): authorize interview messages by attempt`
 
   Phạm vi / nghiệm thu: Hub xác thực, kiểm tra ownership/state phía server; gửi đúng người/phiên; không tin studentId do client tự gửi
 
+  Kiểm tra 31/10/2026: Hub `[Authorize(Roles="Student")]`, nhận JWT `access_token` cho handshake SignalR và chỉ nhận `attemptId`; C17 service xác thực owner/state/time window trước gọi AI. Result chỉ gửi `Clients.Caller`. Regression kiểm tra metadata role và signature không chứa studentId/answer text.
+
   Cần trước: C17
 
-- [ ] **C19** — Người làm: Chưa nhận
+- [x] **C19** — Người làm: Quang cùng Codex
 
   Commit: `test(exam): cover the text viva workflow`
 
   Phạm vi / nghiệm thu: Kiểm tra login → vào ca thi → trả lời → nhận câu hỏi tiếp → lưu hội thoại → kết thúc; cả đường lỗi quyền/state/provider
+
+  Kiểm tra 31/10/2026: `dotnet run --project tests/BackendChecks` — 360 checks pass. SQLite workflow kiểm tra Open session → attempt → answer → AI turn → submit; terminal state và provider fail không ghi AI turn. Login/token checks và C16 fake provider tests đã chạy trong cùng suite. Demo live vẫn cần migration DB dev và Gemini key hợp lệ.
 
   Cần trước: C18
 
@@ -353,11 +373,13 @@ Gate M2: demo một ca thi văn bản có dữ liệu lưu thật và AI phản 
 
 
 
-- [ ] **C20** — Người làm: Chưa nhận
+- [x] **C20** — Người làm: Quang cùng Codex
 
   Commit: `feat(grading): add assessment contracts and score rules`
 
   Phạm vi / nghiệm thu: Entity Assessment, DTO và quy tắc điểm theo rubric/C03; Người còn lại review schema; tích hợp configuration/migration trong cùng commit
+
+  Kiểm tra 31/10/2026: `dotnet run --project tests/BackendChecks` — 370 checks pass. Assessment model/config/migration, FK/index/filter/concurrency và `ScoreCalculator` decimal theo công thức C03 đã có. SQLite kiểm tra snapshot/FK, unique transcript-question, soft delete, công thức, range/duplicate rubric score và rounding. Chưa apply migration DB live; C21 có thể bắt đầu persist AI suggestions.
 
   Cần trước: C19
 

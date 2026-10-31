@@ -25,6 +25,11 @@ public class RubricConfiguration : IEntityTypeConfiguration<Rubric>
 
         builder.Property(r => r.AiGradingPrompt);
 
+        builder.HasOne(r => r.Course)
+            .WithMany(c => c.Rubrics)
+            .HasForeignKey(r => r.CourseId)
+            .OnDelete(DeleteBehavior.Restrict);
+
         builder.HasQueryFilter(r => !r.IsDeleted);
     }
 }

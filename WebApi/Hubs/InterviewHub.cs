@@ -1,9 +1,11 @@
 using Microsoft.AspNetCore.SignalR;
+using Microsoft.AspNetCore.Authorization;
 using Application.Interfaces.Services;
 using System.Threading.Tasks;
 
 namespace WebApi.Hubs
 {
+    [Authorize(Roles = "Student")]
     public class InterviewHub : Hub
     {
         private readonly IInterviewService _interviewService;
@@ -14,15 +16,13 @@ namespace WebApi.Hubs
             _interviewService = interviewService;
         }
 
-        // Frontend (React/Vue) sẽ gọi hàm này khi sinh viên trả lời
-        public async Task SendStudentAnswer(string studentId, string answerText)
+        // C15 persists the answer first. The service derives ownership from the authenticated principal.
+        public async Task RequestFollowUp(Guid attemptId)
         {
-            // 1. Nhờ tầng Application gọi API OpenAI xử lý
-            var aiResponse = await _interviewService.ProcessStudentAnswerAsync(studentId, answerText);
-
-            // 2. Gửi câu trả lời của AI ngược lại cho đúng người vừa gửi
-            // Bắt sự kiện "ReceiveAIFollowUp" ở dưới Frontend
-            await Clients.Caller.SendAsync("ReceiveAIFollowUp", aiResponse);
+            if (!Guid.TryParse(Context.User?.FindFirst("sub")?.Value, out var studentId))
+                throw new HubException("Authentication required.");
+            var followUp = await _interviewService.GenerateFollowUpForStudentAsync(attemptId, studentId, Context.ConnectionAborted);
+            await Clients.Caller.SendAsync("ReceiveAIFollowUp", followUp, Context.ConnectionAborted);
         }
     }
 }
