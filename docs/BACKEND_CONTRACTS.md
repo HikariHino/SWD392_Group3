@@ -203,3 +203,13 @@ Cập nhật kiểm chứng M1 04/10/2026: C07 của Thai đã apply và kiểm 
 4. C13 snapshot bộ đề/rubric, thêm FK/index và trạng thái; C20 bổ sung assessment/decimal. Một người tạo migration mỗi lần, sau khi pull model chung.
 
 C03 hoàn thành ở mức tài liệu: mapping khác biệt, baseline schema mới, vòng đời, role, công thức điểm và request/response đã ghi. **Chưa xác minh schema SQL live và chưa apply migration**; đó là điều kiện trước triển khai persistence lên DB có sẵn. Người nhận C04/C08 có thể dùng contract này; người nhận C07 phải thực hiện bước xác minh DB phía trên. Ví dụ công thức đã đối chiếu: 10*(3/4*0.4+3/6*0.6)=6.
+
+## C13 — Session/attempt persistence (31/10/2026)
+
+Added ExamSessions, ExamSessionQuestions, Transcripts and TranscriptTurns with Guid keys, restricted history FKs and decimal(18,4) scores. Each student has one attempt per session (including soft-deleted attempts); session question/order and transcript sequence/clientMessageId are unique. Nullable clientMessageId uses a filtered unique index.
+
+ExamSessionQuestions stores Content, ExpectedAnswer, BloomLevel, AiModel, Points and RubricSnapshotJson (array of rubricId, criteria, weight, maxScore, aiGradingPrompt). C14 must validate and populate this snapshot transactionally before opening; C15 must validate that the selected snapshot question belongs to the attempt's session. TranscriptTurn references ExamSessionQuestionId instead of a mutable QuestionId, preserving the exact exam question. C14/C15 must increment integer Version on state/answer changes; Version is an application-managed concurrency token, not SQL rowversion. CreatedByUser is the lecturer navigation; inherited CreatedBy remains the audit string.
+
+Snapshot rows and turns deliberately have no source-dependent soft-delete filters: historical records remain queryable after source deletion. EF may warn about required navigations to filtered Question/Transcript; history reads should select snapshot fields directly and use IgnoreQueryFilters explicitly when loading archived parents. Authorization belongs to C14/C15.
+
+Migration is generated and reviewed locally; it is not applied to an existing database. Live SQL schema/history verification remains required before deployment. SQLite regression checks cover persistence, foreign keys, unique attempt/turn/message constraints, snapshot preservation, restricted question deletion and stale Version updates.

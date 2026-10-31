@@ -1,4 +1,5 @@
 using Domain.Common;
+using Domain.Entities.Interviews;
 
 namespace Domain.Entities.QuestionBank;
 
@@ -9,4 +10,5 @@ public class Course : AuditableEntity
     public string? Description { get; set; }
 
     public ICollection<Question> Questions { get; set; } = new List<Question>();
+    public ICollection<ExamSession> ExamSessions { get; set; } = new List<ExamSession>();
 }

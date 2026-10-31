@@ -290,11 +290,13 @@ Trạng thái mới nhất 04/10: C04–C12 đã hoàn tất và SQL Server Loca
 
 
 
-- [ ] **C13** — Người làm: Chưa nhận
+- [x] **C13** — Người làm: Quang cùng Codex
 
   Commit: `feat(exam): add session and student attempt models`
 
   Phạm vi / nghiệm thu: ExamSession, Transcript/bài thi, lượt hội thoại theo C03; EF configuration + migration cùng commit; kiểm tra quan hệ FK
+
+  Kiểm tra 31/10/2026: `dotnet run --project tests/BackendChecks` — 272 checks pass, gồm 8 checks quan hệ/lịch sử/concurrency C13; snapshot EF khớp model. Migration AddExamSessionAndTranscriptModels đã tạo, chưa apply DB live/chưa commit. Azure SQL không khả dụng khi EF thử đọc migration history; không có thay đổi schema live. C14 có thể bắt đầu phần lifecycle và tạo snapshot, C15 phải kiểm tra question cùng session. Contract chi tiết trong BACKEND_CONTRACTS.md mục C13.
 
   Cần trước: C12
 
