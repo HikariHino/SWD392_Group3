@@ -124,7 +124,7 @@ Bộ kiểm tra C08 nằm trong tests/BackendChecks/QuestionBankChecks.cs: query
 | C11 POST /api/auth/login | username, password | 200 {accessToken, expiresAt, user: UserDto}; sai thông tin 401 |
 | C10 GET/POST /api/courses; GET/PUT/DELETE /api/courses/{id} | Create/Update {code,name,description?} | GET 200; POST 201; PUT 200; DELETE 204; mutation lecturer |
 | C14 POST /api/exam-sessions | courseId, sessionTitle, startTime, endTime, questionIds[] | 201 SessionDto; lecturer; owner lấy từ principal |
-| C14 GET /api/exam-sessions/{id} | UUID | 200 SessionDto; lecturer owner/student được tham gia |
+| C14 GET /api/exam-sessions/{id} | UUID | 200 SessionDto; lecturer owner; student participation access deferred to C15 |
 | C14 POST /api/exam-sessions/{id}/open hoặc /close hoặc /cancel | Không | 200 SessionDto; lecturer owner; sai state 409 |
 | C15 POST /api/exam-sessions/{id}/attempts | Không; user từ principal | 201 AttemptDto, trả attempt có sẵn 200 khi retry; student |
 | C15 GET /api/attempts/{id} | UUID | 200 AttemptDto; student owner/lecturer owner phiên |
@@ -213,3 +213,11 @@ ExamSessionQuestions stores Content, ExpectedAnswer, BloomLevel, AiModel, Points
 Snapshot rows and turns deliberately have no source-dependent soft-delete filters: historical records remain queryable after source deletion. EF may warn about required navigations to filtered Question/Transcript; history reads should select snapshot fields directly and use IgnoreQueryFilters explicitly when loading archived parents. Authorization belongs to C14/C15.
 
 Migration is generated and reviewed locally; it is not applied to an existing database. Live SQL schema/history verification remains required before deployment. SQLite regression checks cover persistence, foreign keys, unique attempt/turn/message constraints, snapshot preservation, restricted question deletion and stale Version updates.
+
+## C14 — Session lifecycle (31/10/2026)
+
+POST /api/exam-sessions accepts courseId, sessionTitle, UTC startTime/endTime (Z), distinct nonempty questionIds. Returns 201 with Location and SessionDto: id, courseId, sessionTitle, startTime, endTime, status (string), version, createdByUserId, questionIds. GET /api/exam-sessions/{id} and POST /{id}/open, /close, /cancel return the same DTO. All endpoints require Lecturer; reads and transitions also require CreatedByUserId to match the authenticated principal. Student session discovery/participation is deferred to C15 rather than exposing all drafts.
+
+Creation requires an active course and active questions of that course with positive points and valid rubric weights totaling 100 (tolerance 0.01). Times must be UTC, start < end and end in the future. Open revalidates the course/questions/rubrics, rejects expired sessions, and writes the complete question/rubric snapshot in the same SaveChanges transaction as Draft -> Open. A lecturer may open before StartTime; student entry in C15 must still enforce the time window. Closed/Cancelled cannot reopen; only Open can close; Draft/Open can cancel. Cancel preserves attempts without grading. Close submits all visible InProgress attempts and advances their Version in the same transaction. C15 must coordinate attempt creation and answers with session Version to prevent concurrent entry after close.
+
+Application-managed integer Version increments on transitions; EF stale writes map to 409. Validation failures return 400, missing sessions/courses 404, non-owner 403, invalid transitions 409. No new migration is needed for C14. SQLite regression covers the service through the real repository, snapshot behavior, ownership and state guards; controller checks cover Lecturer metadata and created Location. SQL Server/live HTTP verification remains separate.

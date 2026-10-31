@@ -296,15 +296,17 @@ Trạng thái mới nhất 04/10: C04–C12 đã hoàn tất và SQL Server Loca
 
   Phạm vi / nghiệm thu: ExamSession, Transcript/bài thi, lượt hội thoại theo C03; EF configuration + migration cùng commit; kiểm tra quan hệ FK
 
-  Kiểm tra 31/10/2026: `dotnet run --project tests/BackendChecks` — 272 checks pass, gồm 8 checks quan hệ/lịch sử/concurrency C13; snapshot EF khớp model. Migration AddExamSessionAndTranscriptModels đã tạo, chưa apply DB live/chưa commit. Azure SQL không khả dụng khi EF thử đọc migration history; không có thay đổi schema live. C14 có thể bắt đầu phần lifecycle và tạo snapshot, C15 phải kiểm tra question cùng session. Contract chi tiết trong BACKEND_CONTRACTS.md mục C13.
+  Kiểm tra 31/10/2026: `dotnet run --project tests/BackendChecks` — 272 checks pass, gồm 8 checks quan hệ/lịch sử/concurrency C13; snapshot EF khớp model. Migration AddExamSessionAndTranscriptModels đã tạo, chưa apply DB live; commit `4b9ccaa` đã merge vào `quang`. Azure SQL không khả dụng khi EF thử đọc migration history; không có thay đổi schema live. C14 có thể bắt đầu phần lifecycle và tạo snapshot, C15 phải kiểm tra question cùng session. Contract chi tiết trong BACKEND_CONTRACTS.md mục C13.
 
   Cần trước: C12
 
-- [ ] **C14** — Người làm: Chưa nhận
+- [x] **C14** — Người làm: Quang cùng Codex
 
   Commit: `feat(exam): manage session lifecycle`
 
   Phạm vi / nghiệm thu: Tạo/mở/đóng ca thi; validate course, thời gian, trạng thái và quyền lecturer; không cho chuyển trạng thái trái quy tắc
+
+  Kiểm tra 31/10/2026: `dotnet run --project tests/BackendChecks` — 301 checks pass. Đã thêm API tạo/đọc/mở/đóng/hủy, lecturer ownership, UTC validation, snapshot khi mở, submit bài khi đóng và concurrency 409. Không thay schema; chưa chạy DB live. Contract C14 trong BACKEND_CONTRACTS.md. C15 có thể bắt đầu, cần phối hợp Version khi tạo bài/lưu câu trả lời để tránh race với đóng ca. Branch thành viên: `quang`, đã chứa `origin/main` tại thời điểm triển khai.
 
   Cần trước: C13
 
