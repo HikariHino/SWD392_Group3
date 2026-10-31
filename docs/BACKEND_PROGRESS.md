@@ -373,11 +373,13 @@ Gate M2: demo một ca thi văn bản có dữ liệu lưu thật và AI phản 
 
 
 
-- [ ] **C20** — Người làm: Chưa nhận
+- [x] **C20** — Người làm: Quang cùng Codex
 
   Commit: `feat(grading): add assessment contracts and score rules`
 
   Phạm vi / nghiệm thu: Entity Assessment, DTO và quy tắc điểm theo rubric/C03; Người còn lại review schema; tích hợp configuration/migration trong cùng commit
+
+  Kiểm tra 31/10/2026: `dotnet run --project tests/BackendChecks` — 370 checks pass. Assessment model/config/migration, FK/index/filter/concurrency và `ScoreCalculator` decimal theo công thức C03 đã có. SQLite kiểm tra snapshot/FK, unique transcript-question, soft delete, công thức, range/duplicate rubric score và rounding. Chưa apply migration DB live; C21 có thể bắt đầu persist AI suggestions.
 
   Cần trước: C19
 

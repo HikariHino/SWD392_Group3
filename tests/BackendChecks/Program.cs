@@ -86,6 +86,7 @@ using var db = new AivesDbContext(new DbContextOptionsBuilder<AivesDbContext>()
 var migrations = db.Database.GetMigrations().ToArray();
 Check(migrations.Contains("20260927162533_InitialCreate") && migrations.Contains("20261003125521_AddUserTable"), "both migrations discoverable after relocation");
 Check(migrations.Contains("20261031114032_MoveRubricsToCourse"), "course-level rubric migration discoverable");
+Check(migrations.Any(x => x.EndsWith("_AddAssessmentModels")), "assessment migration discoverable");
 Check(!db.Database.HasPendingModelChanges(), "migration snapshot matches EF model");
 var script = db.GetService<IMigrator>().GenerateScript("20260927162533_InitialCreate", "20261003125521_AddUserTable");
 Check(script.Contains("CREATE TABLE [Users]") && script.Contains("IX_Users_Username"), "user migration creates table and unique username index");
@@ -104,4 +105,5 @@ await AiProviderChecks.Run(Check);
 await InterviewFollowUpChecks.Run(Check);
 await HubSecurityChecks.Run(Check);
 await TextVivaWorkflowChecks.Run(Check);
+await AssessmentChecks.Run(Check);
 Console.WriteLine($"{checks} checks passed. SQL Server checks are separate: run with --sql-server.");

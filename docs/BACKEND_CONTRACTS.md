@@ -256,3 +256,11 @@ The attempt must belong to the caller, remain InProgress, and its session must b
 ## C19 — Text viva workflow verification (31/10/2026)
 
 SQLite workflow regression covers an Open session with a snapshot, student attempt creation, persisted student answer, AI follow-up persisted as the next turn, and submission. It also verifies that a terminal attempt rejects further follow-up, and a provider failure leaves the student answer intact without writing an AI turn. Authentication/login behavior, token validation, and provider adapter failures are separately covered by the existing auth/C16 checks. Live demo remains contingent on applying migrations to a dev database and an authorized Gemini key.
+
+## C20 — Assessment model and score rules (31/10/2026)
+
+Assessment is one record per `(TranscriptId, ExamSessionQuestionId)`, so it references the frozen question snapshot instead of mutable Question data. It stores the student's consolidated answer, Points and RubricSnapshotJson again at assessment creation; AI suggestion/feedback/confidence and lecturer finalization fields are nullable until C21/C22 write them. All score fields use decimal `(18,4)`; confidence uses `(5,4)`. Assessment has an application-managed Version concurrency token, soft-delete filter, and restricted FKs to transcript, snapshot question and optional finalizing lecturer.
+
+`ScoreCalculator` is the shared pure rule implementation. It requires every snapshot criterion once, validates positive points/maxScore/weight and weight total 100 within 0.01, then calculates `Points * Σ((earned / maxScore) * (weight / 100))`. Attempt total uses every scored question's Points as denominator: `10 * Σ(questionScore) / Σ(points)`. It never rounds intermediate values; `RoundForStorage` rounds final values to two decimal places AwayFromZero. Invalid/missing/duplicate/out-of-range rubric scores fail validation; C21 must translate invalid provider output into a provider error and avoid persisting partial Assessment data.
+
+Migration `AddAssessmentModels` creates the table, unique index and FKs. SQLite checks cover the formulas, final rounding, invalid inputs, relational persistence, unique enforcement and soft-delete history. It has not been applied to a live database.

@@ -31,4 +31,5 @@ public class Transcript : AuditableEntity
 
     // Navigation
     public ICollection<TranscriptTurn> Turns { get; set; } = new List<TranscriptTurn>();
+    public ICollection<Assessment> Assessments { get; set; } = new List<Assessment>();
 }

@@ -31,4 +31,5 @@ public class ExamSessionQuestion : BaseEntity
 
     // Navigation
     public ICollection<TranscriptTurn> TranscriptTurns { get; set; } = new List<TranscriptTurn>();
+    public ICollection<Assessment> Assessments { get; set; } = new List<Assessment>();
 }

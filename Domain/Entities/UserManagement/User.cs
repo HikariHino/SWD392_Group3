@@ -16,4 +16,5 @@ public class User : BaseEntity
     public ICollection<ExamSession> CreatedExamSessions { get; set; } = new List<ExamSession>();
     // Navigation – Transcript của sinh viên
     public ICollection<Transcript> Transcripts { get; set; } = new List<Transcript>();
+    public ICollection<Assessment> FinalizedAssessments { get; set; } = new List<Assessment>();
 }

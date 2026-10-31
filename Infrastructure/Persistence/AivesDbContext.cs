@@ -17,6 +17,7 @@ public class AivesDbContext : DbContext
     public DbSet<ExamSessionQuestion> ExamSessionQuestions => Set<ExamSessionQuestion>();
     public DbSet<Transcript> Transcripts => Set<Transcript>();
     public DbSet<TranscriptTurn> TranscriptTurns => Set<TranscriptTurn>();
+    public DbSet<Assessment> Assessments => Set<Assessment>();
 
     public DbSet<Course> Courses => Set<Course>();
     public DbSet<Question> Questions => Set<Question>();

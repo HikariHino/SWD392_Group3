@@ -54,3 +54,26 @@ public class TranscriptTurnConfiguration : IEntityTypeConfiguration<TranscriptTu
         b.HasOne(x => x.ExamSessionQuestion).WithMany(x => x.TranscriptTurns).HasForeignKey(x => x.ExamSessionQuestionId).OnDelete(DeleteBehavior.Restrict);
     }
 }
+
+public class AssessmentConfiguration : IEntityTypeConfiguration<Assessment>
+{
+    public void Configure(EntityTypeBuilder<Assessment> b)
+    {
+        b.ToTable("Assessments");
+        b.HasKey(x => x.Id);
+        b.Property(x => x.Id).HasColumnName("AssessmentId");
+        b.Property(x => x.StudentAnswer).IsRequired();
+        b.Property(x => x.Points).HasPrecision(18, 4);
+        b.Property(x => x.RubricSnapshotJson).IsRequired();
+        b.Property(x => x.AiSuggestedScore).HasPrecision(18, 4);
+        b.Property(x => x.AiConfidenceLevel).HasPrecision(5, 4);
+        b.Property(x => x.FinalScore).HasPrecision(18, 4);
+        b.Property(x => x.TeacherComment).HasMaxLength(2000);
+        b.Property(x => x.Version).IsConcurrencyToken();
+        b.HasIndex(x => new { x.TranscriptId, x.ExamSessionQuestionId }).IsUnique();
+        b.HasOne(x => x.Transcript).WithMany(x => x.Assessments).HasForeignKey(x => x.TranscriptId).OnDelete(DeleteBehavior.Restrict);
+        b.HasOne(x => x.ExamSessionQuestion).WithMany(x => x.Assessments).HasForeignKey(x => x.ExamSessionQuestionId).OnDelete(DeleteBehavior.Restrict);
+        b.HasOne(x => x.FinalizedByUser).WithMany(x => x.FinalizedAssessments).HasForeignKey(x => x.FinalizedByUserId).OnDelete(DeleteBehavior.Restrict);
+        b.HasQueryFilter(x => !x.IsDeleted);
+    }
+}

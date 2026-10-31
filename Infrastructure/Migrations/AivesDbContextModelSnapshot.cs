@@ -22,6 +22,90 @@ namespace Infrastructure.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
+            modelBuilder.Entity("Domain.Entities.Interviews.Assessment", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier")
+                        .HasColumnName("AssessmentId");
+
+                    b.Property<decimal?>("AiConfidenceLevel")
+                        .HasPrecision(5, 4)
+                        .HasColumnType("decimal(5,4)");
+
+                    b.Property<string>("AiFeedback")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<decimal?>("AiSuggestedScore")
+                        .HasPrecision(18, 4)
+                        .HasColumnType("decimal(18,4)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("CreatedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("EvaluatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid>("ExamSessionQuestionId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<decimal?>("FinalScore")
+                        .HasPrecision(18, 4)
+                        .HasColumnType("decimal(18,4)");
+
+                    b.Property<DateTime?>("FinalizedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid?>("FinalizedByUserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<decimal>("Points")
+                        .HasPrecision(18, 4)
+                        .HasColumnType("decimal(18,4)");
+
+                    b.Property<string>("RubricSnapshotJson")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("StudentAnswer")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("TeacherComment")
+                        .HasMaxLength(2000)
+                        .HasColumnType("nvarchar(2000)");
+
+                    b.Property<Guid>("TranscriptId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("UpdatedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Version")
+                        .IsConcurrencyToken()
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ExamSessionQuestionId");
+
+                    b.HasIndex("FinalizedByUserId");
+
+                    b.HasIndex("TranscriptId", "ExamSessionQuestionId")
+                        .IsUnique();
+
+                    b.ToTable("Assessments", (string)null);
+                });
+
             modelBuilder.Entity("Domain.Entities.Interviews.ExamSession", b =>
                 {
                     b.Property<Guid>("Id")
@@ -424,6 +508,32 @@ namespace Infrastructure.Migrations
                     b.ToTable("Users", (string)null);
                 });
 
+            modelBuilder.Entity("Domain.Entities.Interviews.Assessment", b =>
+                {
+                    b.HasOne("Domain.Entities.Interviews.ExamSessionQuestion", "ExamSessionQuestion")
+                        .WithMany("Assessments")
+                        .HasForeignKey("ExamSessionQuestionId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Domain.Entities.UserManagement.User", "FinalizedByUser")
+                        .WithMany("FinalizedAssessments")
+                        .HasForeignKey("FinalizedByUserId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("Domain.Entities.Interviews.Transcript", "Transcript")
+                        .WithMany("Assessments")
+                        .HasForeignKey("TranscriptId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("ExamSessionQuestion");
+
+                    b.Navigation("FinalizedByUser");
+
+                    b.Navigation("Transcript");
+                });
+
             modelBuilder.Entity("Domain.Entities.Interviews.ExamSession", b =>
                 {
                     b.HasOne("Domain.Entities.QuestionBank.Course", "Course")
@@ -530,11 +640,15 @@ namespace Infrastructure.Migrations
 
             modelBuilder.Entity("Domain.Entities.Interviews.ExamSessionQuestion", b =>
                 {
+                    b.Navigation("Assessments");
+
                     b.Navigation("TranscriptTurns");
                 });
 
             modelBuilder.Entity("Domain.Entities.Interviews.Transcript", b =>
                 {
+                    b.Navigation("Assessments");
+
                     b.Navigation("Turns");
                 });
 
@@ -555,6 +669,8 @@ namespace Infrastructure.Migrations
             modelBuilder.Entity("Domain.Entities.UserManagement.User", b =>
                 {
                     b.Navigation("CreatedExamSessions");
+
+                    b.Navigation("FinalizedAssessments");
 
                     b.Navigation("Transcripts");
                 });
