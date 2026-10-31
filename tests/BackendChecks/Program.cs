@@ -93,4 +93,5 @@ await RubricChecks.Run(Check);
 await CourseChecks.Run(Check);
 await InterviewChecks.Run(Check);
 await SessionLifecycleChecks.Run(Check);
+await AttemptChecks.Run(Check);
 Console.WriteLine($"{checks} checks passed. SQL Server checks are separate: run with --sql-server.");

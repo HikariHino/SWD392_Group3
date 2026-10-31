@@ -310,11 +310,13 @@ Trạng thái mới nhất 04/10: C04–C12 đã hoàn tất và SQL Server Loca
 
   Cần trước: C13
 
-- [ ] **C15** — Người làm: Chưa nhận
+- [x] **C15** — Người làm: Quang cùng Codex
 
   Commit: `feat(exam): start attempts and persist answer turns`
 
   Phạm vi / nghiệm thu: Student vào phiên hợp lệ; lưu câu trả lời theo đúng user/session/question; không truy cập bài thi người khác
+
+  Kiểm tra 31/10/2026: `dotnet run --project tests/BackendChecks` — 340 checks pass. API start/get/questions/turns/answers/submit; role/owner guards, UTC time window, idempotent start/message/submit, snapshot-safe student DTO và session Version phối hợp với C14 close/cancel. SQLite regression kiểm tra rollback khi ghi câu trả lời đua với đóng ca; không thay schema, chưa apply DB live. Contract chi tiết trong BACKEND_CONTRACTS.md mục C15. Branch thành viên `quang`.
 
   Cần trước: C14
 
