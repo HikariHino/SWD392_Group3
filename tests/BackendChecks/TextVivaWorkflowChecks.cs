@@ -28,6 +28,7 @@ internal static class TextVivaWorkflowChecks
             if (fail) throw new AiProviderUnavailableException("fake provider unavailable");
             return Task.FromResult(new AiFollowUpDto { Content = "Can you justify that boundary?" });
         }
+        public Task<AiAssessmentResponse> GenerateAssessmentAsync(AiAssessmentRequest request, CancellationToken cancellationToken = default) => throw new NotSupportedException();
     }
     public static async Task Run(Action<bool, string> check)
     {

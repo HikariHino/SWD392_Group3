@@ -32,6 +32,7 @@ internal static class InterviewFollowUpChecks
             Request = request;
             return Task.FromResult(new AiFollowUpDto { Content = "What trade-off would change your design?", SourceContext = "Fake provider" });
         }
+        public Task<AiAssessmentResponse> GenerateAssessmentAsync(AiAssessmentRequest request, CancellationToken cancellationToken = default) => throw new NotSupportedException();
     }
 
     public static async Task Run(Action<bool, string> check)

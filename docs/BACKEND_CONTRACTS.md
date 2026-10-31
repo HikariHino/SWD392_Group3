@@ -131,7 +131,7 @@ Bộ kiểm tra C08 nằm trong tests/BackendChecks/QuestionBankChecks.cs: query
 | C15 GET /api/attempts/{id} | UUID | 200 AttemptDto; student owner/lecturer owner phiên |
 | C15 POST /api/attempts/{id}/answers | questionId, answerText, clientMessageId UUID | 201 TurnDto; retry cùng message trả 200 bản ghi cũ; student owner |
 | C15 POST /api/attempts/{id}/submit | Không | 200 AttemptDto; student owner; idempotent |
-| C21 POST /api/attempts/{id}/grade | Không | 202 {attemptId,status}; lecturer owner; queue/use case chấm; không chấm đôi |
+| C21 POST /api/attempts/{id}/grade | Không | 202 AssessmentDto[]; lecturer owner; không chấm đôi |
 | C22 GET /api/attempts/{id}/assessments | Không | 200 AssessmentDto[]; lecturer owner |
 | C22 PUT /api/assessments/{id}/final-score | finalScore, teacherComment?, version | 200 AssessmentDto; lecturer owner |
 | C23 GET /api/attempts/{id}/result | Không | 200 ResultDto; student owner chỉ khi Finalized, lecturer owner xem draft |
@@ -262,5 +262,11 @@ SQLite workflow regression covers an Open session with a snapshot, student attem
 Assessment is one record per `(TranscriptId, ExamSessionQuestionId)`, so it references the frozen question snapshot instead of mutable Question data. It stores the student's consolidated answer, Points and RubricSnapshotJson again at assessment creation; AI suggestion/feedback/confidence and lecturer finalization fields are nullable until C21/C22 write them. All score fields use decimal `(18,4)`; confidence uses `(5,4)`. Assessment has an application-managed Version concurrency token, soft-delete filter, and restricted FKs to transcript, snapshot question and optional finalizing lecturer.
 
 `ScoreCalculator` is the shared pure rule implementation. It requires every snapshot criterion once, validates positive points/maxScore/weight and weight total 100 within 0.01, then calculates `Points * Σ((earned / maxScore) * (weight / 100))`. Attempt total uses every scored question's Points as denominator: `10 * Σ(questionScore) / Σ(points)`. It never rounds intermediate values; `RoundForStorage` rounds final values to two decimal places AwayFromZero. Invalid/missing/duplicate/out-of-range rubric scores fail validation; C21 must translate invalid provider output into a provider error and avoid persisting partial Assessment data.
+
+## C21 — AI assessment persistence (31/10/2026)
+
+`POST /api/attempts/{attemptId}/grade` requires the Lecturer who created the attempt's session. The attempt must be `Submitted`. The server aggregates persisted Student turns per frozen question, sends question/expected answer/rubric snapshot/answer to `IAiService`, then verifies returned criterion IDs, completeness, uniqueness, ranges, feedback length and confidence `[0,1]`. It calculates `AiSuggestedScore` itself with `ScoreCalculator`; it never accepts an AI total.
+
+All AI calls for an attempt finish before a single `SaveChanges` writes new assessments. Provider errors or invalid output leave the attempt `Submitted` and create no partial assessment. Success creates one assessment per answered snapshot question, sets `EvaluatedAt`, and moves the attempt to `AwaitingReview`. Repeating grade once `AwaitingReview` returns existing assessments without provider calls or duplicate rows. The endpoint returns `202` with `AssessmentDto` records; C22 adds lecturer final scores and C23 calculates the result.
 
 Migration `AddAssessmentModels` creates the table, unique index and FKs. SQLite checks cover the formulas, final rounding, invalid inputs, relational persistence, unique enforcement and soft-delete history. It has not been applied to a live database.

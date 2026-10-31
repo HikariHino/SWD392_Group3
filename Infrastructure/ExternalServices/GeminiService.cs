@@ -51,6 +51,26 @@ public sealed class GeminiService(HttpClient httpClient, IConfiguration configur
         catch (JsonException) { throw new AiProviderResponseException(); }
     }
 
+    public async Task<AiAssessmentResponse> GenerateAssessmentAsync(AiAssessmentRequest request, CancellationToken cancellationToken = default)
+    {
+        if (string.IsNullOrWhiteSpace(request.QuestionContent) || string.IsNullOrWhiteSpace(request.StudentAnswer) || request.Rubric.Count == 0)
+            throw new AiProviderResponseException();
+        var rubric = JsonSerializer.Serialize(request.Rubric.Select(x => new { rubricId = x.RubricId, criteria = x.Criteria, maxScore = x.MaxScore, weight = x.Weight }));
+        var prompt = "Grade this university oral-exam answer. Return JSON only.\n" +
+            $"Question: {request.QuestionContent}\nExpected answer: {request.ExpectedAnswer}\nStudent answer: {request.StudentAnswer}\nRubric: {rubric}\n" +
+            "Schema: { \"rubricScores\": [{ \"rubricId\": \"uuid\", \"earnedScore\": 0.0 }], \"feedback\": \"concise feedback\", \"confidenceLevel\": 0.0 }. Return each rubricId exactly once. confidenceLevel must be from 0 to 1.";
+        var candidateText = await GenerateCandidateTextAsync(prompt, cancellationToken);
+        try
+        {
+            var generated = JsonSerializer.Deserialize<GeneratedAssessment>(candidateText, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+            if (generated?.RubricScores is null || generated.RubricScores.Count == 0 || generated.Feedback is null || generated.Feedback.Length > 4000 ||
+                generated.ConfidenceLevel is < 0m or > 1m)
+                throw new JsonException();
+            return new AiAssessmentResponse { RubricScores = generated.RubricScores, Feedback = generated.Feedback.Trim(), ConfidenceLevel = generated.ConfidenceLevel };
+        }
+        catch (JsonException) { throw new AiProviderResponseException(); }
+    }
+
     private async Task<string> GenerateCandidateTextAsync(string prompt, CancellationToken cancellationToken)
     {
         var apiKey = configuration["Gemini:ApiKey"];
@@ -156,5 +176,12 @@ public sealed class GeminiService(HttpClient httpClient, IConfiguration configur
     {
         public string? Content { get; set; }
         public string? SourceContext { get; set; }
+    }
+
+    private sealed class GeneratedAssessment
+    {
+        public List<RubricEarnedScore>? RubricScores { get; set; }
+        public string? Feedback { get; set; }
+        public decimal? ConfidenceLevel { get; set; }
     }
 }

@@ -69,6 +69,8 @@ builder.Services.AddScoped<IExamSessionService, ExamSessionService>();
 builder.Services.AddScoped<IAttemptRepository, AttemptRepository>();
 builder.Services.AddScoped<IAttemptService, AttemptService>();
 builder.Services.AddScoped<IInterviewService, InterviewService>();
+builder.Services.AddScoped<IGradingRepository, GradingRepository>();
+builder.Services.AddScoped<IGradingService, GradingService>();
 builder.Services.AddScoped<IPasswordHasher, Infrastructure.Security.PasswordHasher>();
 
 // 9. Đăng ký Gemini AI Service (HttpClient + IAiService)

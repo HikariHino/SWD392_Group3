@@ -2,6 +2,19 @@ namespace Application.DTOs.Interviews;
 
 public record RubricSnapshotCriterion(Guid RubricId, string Criteria, decimal Weight, decimal MaxScore, string? AiGradingPrompt);
 public record RubricEarnedScore(Guid RubricId, decimal EarnedScore);
+public class AiAssessmentRequest
+{
+    public string QuestionContent { get; set; } = string.Empty;
+    public string? ExpectedAnswer { get; set; }
+    public string StudentAnswer { get; set; } = string.Empty;
+    public IReadOnlyList<RubricSnapshotCriterion> Rubric { get; set; } = [];
+}
+public class AiAssessmentResponse
+{
+    public IReadOnlyList<RubricEarnedScore> RubricScores { get; set; } = [];
+    public string Feedback { get; set; } = string.Empty;
+    public decimal? ConfidenceLevel { get; set; }
+}
 
 public class AssessmentDto
 {

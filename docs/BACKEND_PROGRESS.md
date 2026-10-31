@@ -383,11 +383,13 @@ Gate M2: demo một ca thi văn bản có dữ liệu lưu thật và AI phản 
 
   Cần trước: C19
 
-- [ ] **C21** — Người làm: Chưa nhận
+- [x] **C21** — Người làm: Quang cùng Codex
 
   Commit: `feat(grading): persist ai scores and feedback per answer`
 
   Phạm vi / nghiệm thu: GradingService bỏ 8.5 cố định; lưu điểm đề xuất/feedback/confidence; kiểm tra cấu trúc và khoảng điểm AI trả về
+
+  Kiểm tra 31/10/2026: `dotnet run --project tests/BackendChecks` — 380 checks pass. Lecturer owner grade `Submitted` attempt; server gộp turn, gửi context snapshot cho AI, validate criterion outputs và tự tính suggested score. Success lưu Assessment/AwaitingReview; retry idempotent. Provider/invalid score output không tạo partial assessment và giữ Submitted. Không migration mới; C22 có thể bắt đầu lecturer review/finalization.
 
   Cần trước: C20
 

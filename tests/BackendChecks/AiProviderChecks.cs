@@ -45,6 +45,20 @@ internal static class AiProviderChecks
             Conversation = [new AiConversationTurn("Student", "It separates concerns.")]
         });
         check(followUp.Content.StartsWith("Why does") && followUpBody!.Contains("It separates concerns"), "structured Gemini follow-up uses persisted conversation context");
+        var criterionId = Guid.NewGuid();
+        var assessmentText = JsonSerializer.Serialize(new
+        {
+            rubricScores = new[] { new { rubricId = criterionId, earnedScore = 3m } },
+            feedback = "Good explanation.",
+            confidenceLevel = 0.8m
+        });
+        var assessment = await Service(new Handler(_ => Json(Envelope(assessmentText))), Config(("Gemini:ApiKey", "test-key"))).GenerateAssessmentAsync(new AiAssessmentRequest
+        {
+            QuestionContent = "Explain DIP", StudentAnswer = "Depend on abstractions.",
+            Rubric = [new RubricSnapshotCriterion(criterionId, "Accuracy", 100m, 10m, null)]
+        });
+        check(assessment.RubricScores.Single().EarnedScore == 3m && assessment.ConfidenceLevel == 0.8m,
+            "structured Gemini assessment maps rubric scores");
         await Reject<AiProviderResponseException>(() => Service(new Handler(_ => Json("{}")), Config(("Gemini:ApiKey", "test-key"))).GenerateQuestionAsync(Request()), "malformed provider envelope rejected");
         await Reject<AiProviderResponseException>(() => Service(new Handler(_ => Json(Envelope("{}"))), Config(("Gemini:ApiKey", "test-key"))).GenerateQuestionAsync(Request()), "invalid structured output rejected");
         await Reject<AiProviderUnavailableException>(() => Service(new Handler(_ => new(HttpStatusCode.TooManyRequests)), Config(("Gemini:ApiKey", "test-key"))).GenerateQuestionAsync(Request()), "provider quota failure is unavailable");
