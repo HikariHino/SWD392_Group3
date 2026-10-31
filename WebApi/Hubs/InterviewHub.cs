@@ -14,15 +14,11 @@ namespace WebApi.Hubs
             _interviewService = interviewService;
         }
 
-        // Frontend (React/Vue) sẽ gọi hàm này khi sinh viên trả lời
-        public async Task SendStudentAnswer(string studentId, string answerText)
+        // C15 persists the answer first. C18 adds Hub authorization and ownership checks.
+        public async Task RequestFollowUp(Guid attemptId)
         {
-            // 1. Nhờ tầng Application gọi API OpenAI xử lý
-            var aiResponse = await _interviewService.ProcessStudentAnswerAsync(studentId, answerText);
-
-            // 2. Gửi câu trả lời của AI ngược lại cho đúng người vừa gửi
-            // Bắt sự kiện "ReceiveAIFollowUp" ở dưới Frontend
-            await Clients.Caller.SendAsync("ReceiveAIFollowUp", aiResponse);
+            var followUp = await _interviewService.GenerateFollowUpAsync(attemptId, Context.ConnectionAborted);
+            await Clients.Caller.SendAsync("ReceiveAIFollowUp", followUp, Context.ConnectionAborted);
         }
     }
 }

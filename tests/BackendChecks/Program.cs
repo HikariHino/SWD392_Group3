@@ -101,4 +101,5 @@ await InterviewChecks.Run(Check);
 await SessionLifecycleChecks.Run(Check);
 await AttemptChecks.Run(Check);
 await AiProviderChecks.Run(Check);
+await InterviewFollowUpChecks.Run(Check);
 Console.WriteLine($"{checks} checks passed. SQL Server checks are separate: run with --sql-server.");

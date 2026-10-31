@@ -1,14 +1,56 @@
-using System.Threading.Tasks;
+using Application.DTOs.Interviews;
+using Application.Exceptions;
+using Application.Interfaces.ExternalServices;
+using Application.Interfaces.Repositories;
 using Application.Interfaces.Services;
+using Domain.Entities.Interviews;
+using Domain.Enums;
 
-namespace Application.Services
+namespace Application.Services;
+
+public sealed class InterviewService(IAttemptRepository attempts, IAiService ai, ICurrentUser user, TimeProvider clock) : IInterviewService
 {
-    public class InterviewService : IInterviewService
+    public async Task<FollowUpTurnDto> GenerateFollowUpAsync(Guid attemptId, CancellationToken cancellationToken = default)
     {
-        public async Task<string> ProcessStudentAnswerAsync(string studentId, string answerText)
+        if (!user.IsStudent || user.Id is null) throw new ForbiddenException();
+        var attempt = await attempts.Get(attemptId) ?? throw new NotFoundException("Attempt not found.");
+        if (attempt.UserId != user.Id) throw new ForbiddenException();
+        var session = await attempts.Session(attempt.SessionId) ?? throw new NotFoundException("Session not found.");
+        var now = clock.GetUtcNow().UtcDateTime;
+        if (attempt.Status != TranscriptStatus.InProgress || session.Status != ExamSessionStatus.Open || now < session.StartTime || now >= session.EndTime)
+            throw new ConflictException("Attempt does not currently accept an AI follow-up.");
+
+        var lastStudentTurn = attempt.Turns.Where(x => x.Speaker == "Student" && x.ExamSessionQuestionId.HasValue)
+            .OrderByDescending(x => x.Sequence).FirstOrDefault()
+            ?? throw new ValidationException(new Dictionary<string, string[]> { ["Attempt"] = ["Save a student answer before requesting a follow-up."] });
+        var question = session.ExamSessionQuestions.SingleOrDefault(x => x.Id == lastStudentTurn.ExamSessionQuestionId)
+            ?? throw new ConflictException("The answer does not reference this session's question snapshot.");
+
+        var conversation = attempt.Turns.OrderBy(x => x.Sequence)
+            .Select(x => new AiConversationTurn(x.Speaker, x.ContentText)).ToArray();
+        var response = await ai.GenerateFollowUpAsync(new AiFollowUpRequest
         {
-            // Logic: Gọi OpenAI tạo câu hỏi tiếp theo
-            return await Task.FromResult("Đây là câu hỏi tiếp theo từ AI (Chưa code ruột)");
-        }
+            CourseName = session.Course?.Name ?? session.CourseId.ToString(),
+            QuestionContent = question.Content,
+            RubricSnapshotJson = question.RubricSnapshotJson,
+            Conversation = conversation
+        }, cancellationToken);
+
+        if (string.IsNullOrWhiteSpace(response.Content) || response.Content.Length > 2000)
+            throw new AiProviderResponseException();
+        var turn = new TranscriptTurn
+        {
+            TranscriptId = attempt.Id,
+            ExamSessionQuestionId = question.Id,
+            Sequence = attempt.Turns.Select(x => x.Sequence).DefaultIfEmpty(0).Max() + 1,
+            Speaker = "AI",
+            ContentText = response.Content.Trim(),
+            Timestamp = clock.GetUtcNow().UtcDateTime
+        };
+        attempts.AddTurn(turn);
+        attempt.Version++;
+        session.Version++;
+        await attempts.Save();
+        return new FollowUpTurnDto(turn.Id, attempt.Id, turn.Sequence, turn.ContentText, turn.Timestamp, question.QuestionId);
     }
 }

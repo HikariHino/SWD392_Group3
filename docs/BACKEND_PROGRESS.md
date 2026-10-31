@@ -336,11 +336,13 @@ Migration `MoveRubricsToCourse` thêm `CourseId`, backfill qua `Rubrics.Question
 
   Cần trước: C03; merge sau C15
 
-- [ ] **C17** — Người làm: Chưa nhận
+- [x] **C17** — Người làm: Quang cùng Codex
 
   Commit: `feat(interview): generate follow-up questions from exam context`
 
   Phạm vi / nghiệm thu: InterviewService dùng abstraction AI, ngữ cảnh môn/câu hỏi/hội thoại; lưu lượt AI, không dùng chuỗi mock
+
+  Kiểm tra 31/10/2026: `dotnet run --project tests/BackendChecks` — 353 checks pass. Student-only follow-up endpoint/service lấy attempt từ principal, dùng snapshot câu hỏi/rubric và turn đã lưu, gọi `IAiService`, rồi persist AI turn có sequence phía server. Hub chỉ delegate service và chờ C18 thêm authorization/ownership. Không chạy AI live smoke trong regression.
 
   Cần trước: C15, C16
 

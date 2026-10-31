@@ -2,6 +2,7 @@ using System.Net;
 using System.Text;
 using System.Text.Json;
 using Application.DTOs.QuestionBank;
+using Application.DTOs.Interviews;
 using Application.Exceptions;
 using Infrastructure.ExternalServices;
 using Microsoft.Extensions.Configuration;
@@ -13,7 +14,7 @@ internal static class AiProviderChecks
     {
         AiGenerateQuestionRequest Request() => new() { CourseId = Guid.NewGuid(), Topic = "Onion Architecture" };
         IConfiguration Config(params (string Key, string Value)[] values) => new ConfigurationBuilder()
-            .AddInMemoryCollection(values.ToDictionary(x => x.Key, x => x.Value)).Build();
+            .AddInMemoryCollection(values.ToDictionary(x => x.Key, x => (string?)x.Value)).Build();
         GeminiService Service(HttpMessageHandler handler, IConfiguration config) =>
             new(new HttpClient(handler) { BaseAddress = new Uri("https://example.test/") }, config, NullLogger<GeminiService>.Instance);
         async Task Reject<T>(Func<Task> operation, string name) where T : Exception
@@ -33,6 +34,17 @@ internal static class AiProviderChecks
         }), Config(("Gemini:ApiKey", "test-key"))).GenerateQuestionAsync(Request());
         check(success.Content == "Explain dependency direction" && success.AiConfidence == 91.5, "structured Gemini response maps to question DTO");
         check(requestUri!.Contains("generateContent?key=test-key") && body!.Contains("Do not generate a rubric"), "Gemini request uses configured key and course-level rubric prompt");
+        string? followUpBody = null;
+        var followUp = await Service(new Handler(async request =>
+        {
+            followUpBody = await request.Content!.ReadAsStringAsync();
+            return Json(Envelope("""{"content":"Why does that boundary matter?","sourceContext":"Exam context"}"""));
+        }), Config(("Gemini:ApiKey", "test-key"))).GenerateFollowUpAsync(new AiFollowUpRequest
+        {
+            CourseName = "Architecture", QuestionContent = "Explain Onion", RubricSnapshotJson = "[]",
+            Conversation = [new AiConversationTurn("Student", "It separates concerns.")]
+        });
+        check(followUp.Content.StartsWith("Why does") && followUpBody!.Contains("It separates concerns"), "structured Gemini follow-up uses persisted conversation context");
         await Reject<AiProviderResponseException>(() => Service(new Handler(_ => Json("{}")), Config(("Gemini:ApiKey", "test-key"))).GenerateQuestionAsync(Request()), "malformed provider envelope rejected");
         await Reject<AiProviderResponseException>(() => Service(new Handler(_ => Json(Envelope("{}"))), Config(("Gemini:ApiKey", "test-key"))).GenerateQuestionAsync(Request()), "invalid structured output rejected");
         await Reject<AiProviderUnavailableException>(() => Service(new Handler(_ => new(HttpStatusCode.TooManyRequests)), Config(("Gemini:ApiKey", "test-key"))).GenerateQuestionAsync(Request()), "provider quota failure is unavailable");
