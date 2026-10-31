@@ -65,6 +65,21 @@ public class ExceptionMiddleware
                 errors = validationEx.Errors;
                 detail = validationEx.Message;
                 break;
+            case AiProviderTimeoutException:
+                statusCode = StatusCodes.Status504GatewayTimeout;
+                title = "AI provider timed out.";
+                detail = "The AI provider did not respond in time. Please retry.";
+                break;
+            case AiProviderUnavailableException:
+                statusCode = StatusCodes.Status503ServiceUnavailable;
+                title = "AI provider is unavailable.";
+                detail = "The AI provider is not configured or is temporarily unavailable.";
+                break;
+            case AiProviderResponseException:
+                statusCode = StatusCodes.Status502BadGateway;
+                title = "AI provider returned an invalid response.";
+                detail = "The AI provider response could not be used. Please retry.";
+                break;
             default:
                 statusCode = StatusCodes.Status500InternalServerError;
                 title = "An unexpected system error occurred.";

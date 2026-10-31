@@ -72,7 +72,8 @@ builder.Services.AddScoped<IInterviewService, InterviewService>();
 builder.Services.AddScoped<IPasswordHasher, Infrastructure.Security.PasswordHasher>();
 
 // 9. Đăng ký Gemini AI Service (HttpClient + IAiService)
-builder.Services.AddHttpClient<Application.Interfaces.ExternalServices.IAiService, Infrastructure.ExternalServices.GeminiService>();
+builder.Services.AddHttpClient<Application.Interfaces.ExternalServices.IAiService, Infrastructure.ExternalServices.GeminiService>(client =>
+    client.BaseAddress = new Uri("https://generativelanguage.googleapis.com/"));
 
 var app = builder.Build();
 

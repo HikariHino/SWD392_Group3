@@ -326,11 +326,13 @@ Migration `MoveRubricsToCourse` thêm `CourseId`, backfill qua `Rubrics.Question
 
   Cần trước: C14
 
-- [ ] **C16** — Người làm: Chưa nhận
+- [x] **C16** — Người làm: Quang cùng Codex
 
   Commit: `feat(ai): implement structured ai provider integration`
 
   Phạm vi / nghiệm thu: Adapter gọi AI thật, cấu hình secret bên ngoài, timeout/cancellation và lỗi provider; kiểm tra response hợp lệ/lỗi bằng fake provider, smoke test thật khi có key
+
+  Kiểm tra 31/10/2026: `dotnet run --project tests/BackendChecks` — 343 checks pass. Gemini REST adapter chỉ nhận structured JSON, lấy secret từ `Gemini__ApiKey`, timeout mặc định 20s và trả lỗi 502/503/504 đúng loại. Fake HTTP covers success, malformed response, 429, timeout và cancellation. Không chạy live smoke vì workspace không có key; hướng chạy đã ghi trong BACKEND_CONTRACTS.md. Branch thành viên `quang`.
 
   Cần trước: C03; merge sau C15
 

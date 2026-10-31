@@ -60,6 +60,9 @@ foreach (var (error, status) in new (Exception, int)[]
     (new ForbiddenException(), 403),
     (new ConflictException("Duplicate username"), 409),
     (new ValidationException(new Dictionary<string, string[]> { ["Username"] = ["Invalid"] }), 400),
+    (new AiProviderUnavailableException("provider private detail"), 503),
+    (new AiProviderTimeoutException(), 504),
+    (new AiProviderResponseException(), 502),
     (new InvalidOperationException("SENSITIVE_INTERNAL_DETAIL"), 500)
 })
 {
@@ -97,4 +100,5 @@ await CourseChecks.Run(Check);
 await InterviewChecks.Run(Check);
 await SessionLifecycleChecks.Run(Check);
 await AttemptChecks.Run(Check);
+await AiProviderChecks.Run(Check);
 Console.WriteLine($"{checks} checks passed. SQL Server checks are separate: run with --sql-server.");

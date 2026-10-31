@@ -4,5 +4,5 @@ namespace Application.Interfaces.ExternalServices;
 
 public interface IAiService
 {
-    Task<AiGeneratedQuestionDto> GenerateQuestionAsync(AiGenerateQuestionRequest request);
+    Task<AiGeneratedQuestionDto> GenerateQuestionAsync(AiGenerateQuestionRequest request, CancellationToken cancellationToken = default);
 }
