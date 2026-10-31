@@ -6,6 +6,16 @@ namespace WebApi.Security;
 
 public sealed class ActiveUserJwtEvents(IUnitOfWork unitOfWork) : JwtBearerEvents
 {
+    public override Task MessageReceived(MessageReceivedContext context)
+    {
+        if (context.HttpContext.Request.Path.StartsWithSegments("/interviewHub"))
+        {
+            var token = context.Request.Query["access_token"].FirstOrDefault();
+            if (!string.IsNullOrWhiteSpace(token)) context.Token = token;
+        }
+        return Task.CompletedTask;
+    }
+
     public override Task Challenge(JwtBearerChallengeContext context)
     {
         context.HandleResponse();

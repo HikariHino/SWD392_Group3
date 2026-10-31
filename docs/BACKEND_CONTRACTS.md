@@ -247,4 +247,12 @@ Fake HTTP regression covers a successful structured response, bad envelopes/outp
 
 `POST /api/attempts/{attemptId}/follow-up` requires Student. The server takes the authenticated student's attempt, its latest persisted Student answer, the frozen `ExamSessionQuestion`, its rubric snapshot, and the ordered stored conversation; clients cannot supply or overwrite this context. Gemini returns one structured follow-up question and the server persists it as an `AI` TranscriptTurn associated with that same snapshot question. The response is 201 with turn id, sequence, content and timestamp.
 
-The attempt must belong to the caller, remain InProgress, and its session must be Open inside its time window. Missing a prior student answer is 400; ownership is 403; terminal/time-invalid state is 409; provider errors preserve the C16 502/503/504 mapping. The current SignalR method delegates to this service but does not yet carry Hub authorization; C18 must add `[Authorize]` and server-side attempt ownership before frontend SignalR use. Regression uses a fake AI to verify persisted source context/history, ownership, state guards and AI-turn persistence.
+The attempt must belong to the caller, remain InProgress, and its session must be Open inside its time window. Missing a prior student answer is 400; ownership is 403; terminal/time-invalid state is 409; provider errors preserve the C16 502/503/504 mapping. Regression uses a fake AI to verify persisted source context/history, ownership, state guards and AI-turn persistence.
+
+## C18 — Authorized SignalR follow-up (31/10/2026)
+
+`/interviewHub` requires an authenticated Student JWT. Browser SignalR clients may send that JWT as the `access_token` query value only for this hub handshake; normal HTTP endpoints continue using the Authorization header. `RequestFollowUp` accepts only `attemptId`; it never accepts a client-supplied student id, answer content, question content or score. It calls the C17 service, which derives the principal and verifies attempt owner, attempt/session state and time window before calling AI or writing an AI turn. Results are sent only to `Clients.Caller`.
+
+## C19 — Text viva workflow verification (31/10/2026)
+
+SQLite workflow regression covers an Open session with a snapshot, student attempt creation, persisted student answer, AI follow-up persisted as the next turn, and submission. It also verifies that a terminal attempt rejects further follow-up, and a provider failure leaves the student answer intact without writing an AI turn. Authentication/login behavior, token validation, and provider adapter failures are separately covered by the existing auth/C16 checks. Live demo remains contingent on applying migrations to a dev database and an authorized Gemini key.

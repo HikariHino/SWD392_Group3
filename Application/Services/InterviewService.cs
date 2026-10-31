@@ -13,8 +13,19 @@ public sealed class InterviewService(IAttemptRepository attempts, IAiService ai,
     public async Task<FollowUpTurnDto> GenerateFollowUpAsync(Guid attemptId, CancellationToken cancellationToken = default)
     {
         if (!user.IsStudent || user.Id is null) throw new ForbiddenException();
+        return await GenerateForStudentAsync(attemptId, user.Id.Value, cancellationToken);
+    }
+
+    public Task<FollowUpTurnDto> GenerateFollowUpForStudentAsync(Guid attemptId, Guid studentId, CancellationToken cancellationToken = default)
+    {
+        if (studentId == Guid.Empty) throw new ForbiddenException();
+        return GenerateForStudentAsync(attemptId, studentId, cancellationToken);
+    }
+
+    private async Task<FollowUpTurnDto> GenerateForStudentAsync(Guid attemptId, Guid studentId, CancellationToken cancellationToken)
+    {
         var attempt = await attempts.Get(attemptId) ?? throw new NotFoundException("Attempt not found.");
-        if (attempt.UserId != user.Id) throw new ForbiddenException();
+        if (attempt.UserId != studentId) throw new ForbiddenException();
         var session = await attempts.Session(attempt.SessionId) ?? throw new NotFoundException("Session not found.");
         var now = clock.GetUtcNow().UtcDateTime;
         if (attempt.Status != TranscriptStatus.InProgress || session.Status != ExamSessionStatus.Open || now < session.StartTime || now >= session.EndTime)

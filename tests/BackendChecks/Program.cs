@@ -102,4 +102,6 @@ await SessionLifecycleChecks.Run(Check);
 await AttemptChecks.Run(Check);
 await AiProviderChecks.Run(Check);
 await InterviewFollowUpChecks.Run(Check);
+await HubSecurityChecks.Run(Check);
+await TextVivaWorkflowChecks.Run(Check);
 Console.WriteLine($"{checks} checks passed. SQL Server checks are separate: run with --sql-server.");

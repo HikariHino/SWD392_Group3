@@ -346,19 +346,23 @@ Migration `MoveRubricsToCourse` thêm `CourseId`, backfill qua `Rubrics.Question
 
   Cần trước: C15, C16
 
-- [ ] **C18** — Người làm: Chưa nhận
+- [x] **C18** — Người làm: Quang cùng Codex
 
   Commit: `feat(signalr): authorize interview messages by attempt`
 
   Phạm vi / nghiệm thu: Hub xác thực, kiểm tra ownership/state phía server; gửi đúng người/phiên; không tin studentId do client tự gửi
 
+  Kiểm tra 31/10/2026: Hub `[Authorize(Roles="Student")]`, nhận JWT `access_token` cho handshake SignalR và chỉ nhận `attemptId`; C17 service xác thực owner/state/time window trước gọi AI. Result chỉ gửi `Clients.Caller`. Regression kiểm tra metadata role và signature không chứa studentId/answer text.
+
   Cần trước: C17
 
-- [ ] **C19** — Người làm: Chưa nhận
+- [x] **C19** — Người làm: Quang cùng Codex
 
   Commit: `test(exam): cover the text viva workflow`
 
   Phạm vi / nghiệm thu: Kiểm tra login → vào ca thi → trả lời → nhận câu hỏi tiếp → lưu hội thoại → kết thúc; cả đường lỗi quyền/state/provider
+
+  Kiểm tra 31/10/2026: `dotnet run --project tests/BackendChecks` — 360 checks pass. SQLite workflow kiểm tra Open session → attempt → answer → AI turn → submit; terminal state và provider fail không ghi AI turn. Login/token checks và C16 fake provider tests đã chạy trong cùng suite. Demo live vẫn cần migration DB dev và Gemini key hợp lệ.
 
   Cần trước: C18
 
