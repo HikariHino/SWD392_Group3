@@ -165,7 +165,7 @@ public class QuestionsController : ControllerBase
     [ProducesResponseType(StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [Consumes("multipart/form-data")]
-    public async Task<IActionResult> ImportQuestions([FromForm] IFormFile? file, [FromForm] Guid courseId, CancellationToken cancellationToken)
+    public async Task<IActionResult> ImportQuestions(IFormFile? file, [FromForm] Guid courseId, CancellationToken cancellationToken)
     {
         const long maxFileBytes = 5 * 1024 * 1024;
         if (file is null || file.Length == 0)

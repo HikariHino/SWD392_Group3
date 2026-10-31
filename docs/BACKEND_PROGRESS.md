@@ -440,23 +440,27 @@ Gate M3: thi văn bản → AI đề xuất điểm → giảng viên duyệt �
 
   Cần trước: C12; có thể làm sớm nếu M2 chưa cần
 
-- [ ] **C26** — Người làm: Chưa nhận
+- [x] **C26** — Người làm: Hưng Thái
 
   Commit: `feat(speech): add speech-to-text provider adapter`
 
   Phạm vi / nghiệm thu: Contract ở Application, adapter Infrastructure; kiểm tra audio hợp lệ/lỗi/timeout và tiếng Việt
 
-  Cần trước: C24; chốt provider
+  Cần trước: C24; provider: Azure AI Speech REST (STT fast transcription API `2025-10-15`), locale mặc định `vi-VN`.
 
-- [ ] **C27** — Người làm: Chưa nhận
+  Hoàn thành 31/10/2026: Thêm contract Application và adapter Infrastructure; validate WAV/MP3/OGG/WebM/MP4 <=10 MiB, API key qua config, timeout/cancel, lỗi provider và parse tiếng Việt. Mock HTTP checks: audio sai bị chặn trước network, success, outage, timeout, locale và body. Không gọi Speech resource thật do không có secret.
+
+- [x] **C27** — Người làm: Hưng Thái
 
   Commit: `feat(speech): add text-to-speech provider adapter`
 
   Phạm vi / nghiệm thu: Nhận text và tạo audio; kiểm tra cấu hình, lỗi provider và định dạng frontend nhận được
 
-  Cần trước: C26
+  Cần trước: C26; Azure AI Speech REST TTS.
 
-- [ ] **C28** — Người làm: Chưa nhận
+  Hoàn thành 31/10/2026: Thêm TTS adapter, escape SSML, giới hạn text 2.000 ký tự, timeout/provider errors; WAV PCM 24 kHz mono mặc định trả về `audio/wav`. Mock checks cho config thiếu, format, bytes và SSML. Chưa gọi Azure thật.
+
+- [x] **C28** — Người làm: Hưng Thái
 
   Commit: `feat(interview): connect voice input and spoken responses`
 
@@ -464,7 +468,9 @@ Gate M3: thi văn bản → AI đề xuất điểm → giảng viên duyệt �
 
   Cần trước: C27
 
-- [ ] **C29** — Người làm: Chưa nhận
+  Hoàn thành 31/10/2026: Thêm `POST /api/attempts/{id}/voice-answers` (JWT Student, multipart `questionId`, `clientMessageId`, `audio`), kiểm tra owner/session trước STT, lưu transcript qua use case answer, tạo/lưu AI follow-up rồi synthesize. Retry tái sử dụng turn đã lưu; lỗi TTS vẫn trả transcript/AI text để FE dùng fallback. Voice checks và SignalR/text endpoint cũ vẫn được giữ; chưa live-test microphone/Azure/SQL.
+
+- [x] **C29** — Người làm: Hưng Thái
 
   Commit: `chore(ci): automate backend build and verification`
 
@@ -472,13 +478,19 @@ Gate M3: thi văn bản → AI đề xuất điểm → giảng viên duyệt �
 
   Cần trước: C24, C25, C28
 
-- [ ] **C30** — Người làm: Chưa nhận
+  Hoàn thành 31/10/2026: Thêm GitHub Actions restore/build/check trên Windows + .NET 10, không cần provider secrets. Thêm `/health/live` và `/health/ready`; migration/seeding startup chỉ chạy khi Development và bật cờ riêng. Release build: 0 errors, 6 NU1902/NU1903 warnings về transitive `System.Security.Cryptography.Pkcs 9.0.11`; chưa có SQL/Azure service trong CI.
+
+- [x] **C30** — Người làm: Hưng Thái
 
   Commit: `docs: publish backend setup and demo acceptance checklist`
 
   Phạm vi / nghiệm thu: README đúng code, hướng dẫn migration/config, API/SignalR contract, kết quả demo và giới hạn còn lại
 
   Cần trước: C29
+
+  Hoàn thành 31/10/2026: Viết lại README theo routes/SignalR/config/migration/demo hiện có; chuyển SQL password và JWT signing key khỏi appsettings, bỏ `EnsureCreated` khỏi seeder, seed/migrate phải bật rõ ràng; ghi rõ Azure Speech setup và giới hạn demo. Lịch sử Git cũ có thể vẫn còn credential đã từng commit; cần rotate tại Azure SQL.
+
+  Kiểm tra 31/10/2026: `dotnet build SWD392_Group3.slnx --configuration Release --no-restore` PASS (0 errors); `dotnet run --project tests/BackendChecks --configuration Release --no-build` PASS (430 checks). Azure SQL/Gemini/Azure Speech live flow chưa được xác minh.
 
 
 Gate M4: hai máy dựng backend từ tài liệu được, các kiểm tra pass, demo voice + chấm/duyệt điểm hoàn chỉnh. Không cần đợi cuối dự án mới viết test: thêm kiểm tra nghiệp vụ/rủi ro cùng commit chức năng; C19/C24 bổ sung kiểm tra xuyên suốt.

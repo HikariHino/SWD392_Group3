@@ -7,5 +7,7 @@ public interface IAttemptService
     Task<IReadOnlyList<AttemptQuestionDto>> Questions(Guid id);
     Task<IReadOnlyList<TurnDto>> Turns(Guid id);
     Task<(TurnDto Turn, bool Created)> Answer(Guid id, AnswerRequest request);
+    Task ValidateAnswerAsync(Guid id, Guid questionId, CancellationToken cancellationToken = default);
+    Task<TurnDto?> FindExistingAnswerAsync(Guid id, Guid questionId, Guid clientMessageId, CancellationToken cancellationToken = default);
     Task<AttemptDto> Submit(Guid id);
 }

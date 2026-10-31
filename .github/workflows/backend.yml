@@ -1,0 +1,26 @@
+name: Backend verification
+
+on:
+  push:
+    branches: [main, thai]
+  pull_request:
+    branches: [main, thai]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build-and-check:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 10.0.x
+      - name: Restore
+        run: dotnet restore SWD392_Group3.slnx
+      - name: Build
+        run: dotnet build SWD392_Group3.slnx --configuration Release --no-restore
+      - name: Backend checks
+        run: dotnet run --project tests/BackendChecks/BackendChecks.csproj --configuration Release --no-build

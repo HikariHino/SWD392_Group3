@@ -72,6 +72,9 @@ builder.Services.AddScoped<IInterviewService, InterviewService>();
 builder.Services.AddScoped<IGradingRepository, GradingRepository>();
 builder.Services.AddScoped<IGradingService, GradingService>();
 builder.Services.AddScoped<IPasswordHasher, Infrastructure.Security.PasswordHasher>();
+builder.Services.AddScoped<IVoiceInterviewService, VoiceInterviewService>();
+builder.Services.AddHttpClient<Application.Interfaces.ExternalServices.ISpeechToTextService, Infrastructure.ExternalServices.AzureSpeechToTextService>();
+builder.Services.AddHttpClient<Application.Interfaces.ExternalServices.ITextToSpeechService, Infrastructure.ExternalServices.AzureTextToSpeechService>();
 
 // 9. Đăng ký Gemini AI Service (HttpClient + IAiService)
 builder.Services.AddHttpClient<Application.Interfaces.ExternalServices.IAiService, Infrastructure.ExternalServices.GeminiService>(client =>
@@ -91,16 +94,18 @@ if (app.Environment.IsDevelopment())
         c.RoutePrefix = string.Empty; // Mở thẳng Swagger UI ngay tại trang chủ localhost:5110
     });
 
-    // Tự động Seed dữ liệu mẫu Course và Question khi khởi động lần đầu
-    try
+    if (builder.Configuration.GetValue<bool>("Database:ApplyMigrationsOnStartup"))
+    {
+        using var scope = app.Services.CreateScope();
+        var dbContext = scope.ServiceProvider.GetRequiredService<AivesDbContext>();
+        await dbContext.Database.MigrateAsync();
+    }
+
+    if (builder.Configuration.GetValue<bool>("Database:SeedDevelopmentData"))
     {
         using var scope = app.Services.CreateScope();
         var dbContext = scope.ServiceProvider.GetRequiredService<AivesDbContext>();
         await DatabaseSeeder.SeedAsync(dbContext);
-    }
-    catch (Exception ex)
-    {
-        Console.WriteLine($"[DatabaseSeeder Error]: {ex.Message}");
     }
 }
 
@@ -117,5 +122,11 @@ app.UseAuthorization();
 // Ánh xạ Endpoint cho Controllers và SignalR Hub
 app.MapControllers();
 app.MapHub<InterviewHub>("/interviewHub");
+app.MapGet("/health/live", () => Results.Ok(new { status = "live" })).AllowAnonymous();
+app.MapGet("/health/ready", async (AivesDbContext db, CancellationToken ct) =>
+{
+    try { return await db.Database.CanConnectAsync(ct) ? Results.Ok(new { status = "ready" }) : Results.StatusCode(StatusCodes.Status503ServiceUnavailable); }
+    catch { return Results.StatusCode(StatusCodes.Status503ServiceUnavailable); }
+}).AllowAnonymous();
 
 app.Run();

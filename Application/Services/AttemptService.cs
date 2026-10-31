@@ -79,6 +79,29 @@ public class AttemptService(IAttemptRepository repo, ICurrentUser user, TimeProv
         await repo.Save();
         return (Dto(turn, s), true);
     }
+    public async Task ValidateAnswerAsync(Guid id, Guid questionId, CancellationToken cancellationToken = default)
+    {
+        cancellationToken.ThrowIfCancellationRequested();
+        var (t, s) = await Owned(id, true);
+        if (questionId == Guid.Empty || !s.ExamSessionQuestions.Any(x => x.QuestionId == questionId))
+            throw new ValidationException(new Dictionary<string, string[]> { ["QuestionId"] = ["Question does not belong to this session."] });
+        Writable(s);
+        if (t.Status != TranscriptStatus.InProgress) throw new ConflictException("Attempt no longer accepts answers.");
+    }
+    public async Task<TurnDto?> FindExistingAnswerAsync(Guid id, Guid questionId, Guid clientMessageId, CancellationToken cancellationToken = default)
+    {
+        cancellationToken.ThrowIfCancellationRequested();
+        var (t, s) = await Owned(id, true);
+        if (questionId == Guid.Empty || clientMessageId == Guid.Empty)
+            throw new ValidationException(new Dictionary<string, string[]> { ["Request"] = ["questionId and clientMessageId are required."] });
+        var snapshot = s.ExamSessionQuestions.SingleOrDefault(x => x.QuestionId == questionId)
+            ?? throw new ValidationException(new Dictionary<string, string[]> { ["QuestionId"] = ["Question does not belong to this session."] });
+        var existing = t.Turns.SingleOrDefault(x => x.ClientMessageId == clientMessageId);
+        if (existing is null) return null;
+        if (existing.Speaker != "Student" || existing.ExamSessionQuestionId != snapshot.Id)
+            throw new ConflictException("clientMessageId was already used for a different answer.");
+        return Dto(existing, s);
+    }
     public async Task<AttemptDto> Submit(Guid id)
     {
         var (t, s) = await Owned(id, true);

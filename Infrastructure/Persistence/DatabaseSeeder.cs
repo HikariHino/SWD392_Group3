@@ -9,8 +9,7 @@ public static class DatabaseSeeder
 {
     public static async Task SeedAsync(AivesDbContext context)
     {
-        // Creates a development schema only; does not apply EF migrations.
-        await context.Database.EnsureCreatedAsync();
+        // Seeder is intentionally data-only; the host must apply reviewed migrations first.
 
         // Bootstrap a development Lecturer so a clean database can log in
         // before protected user-management endpoints are available.

@@ -106,9 +106,22 @@ internal static class AuthorizationChecks
             async Task Status(HttpMethod method, string path, object? body, HttpStatusCode expected, string name)
             {
                 using var request = new HttpRequestMessage(method, path);
-                if (body != null) request.Content = JsonContent.Create(body);
+                if (path == "/api/questions/import" || path.EndsWith("/voice-answers", StringComparison.Ordinal))
+                {
+                    var form = new MultipartFormDataContent();
+                    form.Add(new StringContent(Guid.NewGuid().ToString()), "courseId");
+                    form.Add(new StringContent(Guid.NewGuid().ToString()), "questionId");
+                    form.Add(new StringContent(Guid.NewGuid().ToString()), "clientMessageId");
+                    var bytes = path == "/api/questions/import" ? "Content,BloomLevel\nQuestion,Understand"u8.ToArray() : "RIFF0000WAVEdata"u8.ToArray();
+                    var file = new ByteArrayContent(bytes);
+                    file.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("application/octet-stream");
+                    form.Add(file, path == "/api/questions/import" ? "file" : "audio", path == "/api/questions/import" ? "items.csv" : "answer.wav");
+                    request.Content = form;
+                }
+                else if (body != null) request.Content = JsonContent.Create(body);
                 using var response = await client.SendAsync(request);
-                check(response.StatusCode == expected, name + $" ({(int)response.StatusCode})");
+                var responseBody = response.StatusCode == expected ? "" : await response.Content.ReadAsStringAsync();
+                check(response.StatusCode == expected, name + $" ({(int)response.StatusCode}) {responseBody}");
                 if (expected is HttpStatusCode.Unauthorized or HttpStatusCode.Forbidden)
                 {
                     using var problem = JsonDocument.Parse(await response.Content.ReadAsStringAsync());
@@ -219,8 +232,9 @@ internal static class AuthorizationChecks
 
             Token(null);
             using var swagger = await client.GetAsync("/swagger/v1/swagger.json");
-            check(swagger.StatusCode == HttpStatusCode.OK, "Swagger JSON remains public for local demo");
-            using var document = JsonDocument.Parse(await swagger.Content.ReadAsStringAsync());
+            var swaggerBody = await swagger.Content.ReadAsStringAsync();
+            check(swagger.StatusCode == HttpStatusCode.OK, "Swagger JSON remains public for local demo (" + (int)swagger.StatusCode + ") " + swaggerBody);
+            using var document = JsonDocument.Parse(swaggerBody);
             var paths = document.RootElement.GetProperty("paths");
             foreach (var path in paths.EnumerateObject())
                 foreach (var operation in path.Value.EnumerateObject())

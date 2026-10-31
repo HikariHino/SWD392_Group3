@@ -108,4 +108,6 @@ await TextVivaWorkflowChecks.Run(Check);
 await AssessmentChecks.Run(Check);
 await GradingChecks.Run(Check);
 await QuestionCsvImportChecks.Run(Check);
+await SpeechProviderChecks.Run(Check);
+await VoiceInterviewChecks.Run(Check);
 Console.WriteLine($"{checks} checks passed. SQL Server checks are separate: run with --sql-server.");
