@@ -28,6 +28,14 @@ public class ExamSessionService(IExamSessionRepository repo, ICurrentUser user, 
         return (await repo.ListByCreator(user.Id!.Value)).Select(Dto).ToArray();
     }
     public async Task<SessionDto> Get(Guid id) => Dto(await Owned(id));
+    public async Task<IReadOnlyList<SessionAttemptDto>> Attempts(Guid id)
+    {
+        var session = await Owned(id);
+        return session.Transcripts.OrderByDescending(x => x.SubmittedAt ?? x.StartedAt).Select(x => new SessionAttemptDto(
+            x.Id, x.UserId, x.Student?.Username ?? x.UserId.ToString(), x.Student?.FullName ?? "Sinh viên",
+            x.Status.ToString(), DateTime.SpecifyKind(x.StartedAt, DateTimeKind.Utc),
+            x.SubmittedAt is null ? null : DateTime.SpecifyKind(x.SubmittedAt.Value, DateTimeKind.Utc), x.TotalScore)).ToArray();
+    }
     public async Task<SessionDto> Create(CreateSessionRequest request)
     {
         Lecturer();

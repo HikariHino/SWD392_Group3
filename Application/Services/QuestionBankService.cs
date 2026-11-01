@@ -105,7 +105,14 @@ public class QuestionBankService : IQuestionBankService
 
         if (_aiService != null)
         {
-            return await _aiService.GenerateQuestionAsync(request);
+            try
+            {
+                return await _aiService.GenerateQuestionAsync(request);
+            }
+            catch (Application.Exceptions.AiProviderException)
+            {
+                // Keep authoring usable during a temporary provider outage; the UI labels this as a draft.
+            }
         }
 
         return new AiGeneratedQuestionDto
@@ -113,8 +120,8 @@ public class QuestionBankService : IQuestionBankService
             CourseId = request.CourseId,
             Content = $"Hãy giải thích và phân tích nguyên lý, ưu nhược điểm của chủ đề '{request.Topic}' ở mức độ nhận thức {request.BloomLevel}?",
             BloomLevel = request.BloomLevel,
-            SourceContext = "Giáo trình & Slide bài giảng chuyên ngành",
-            AiConfidence = 95.0
+            SourceContext = "Bản nháp dự phòng: Gemini chưa phản hồi; hãy kiểm tra và chỉnh sửa trước khi lưu.",
+            AiConfidence = 0.0
         };
     }
 

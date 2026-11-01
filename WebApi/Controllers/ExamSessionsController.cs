@@ -18,6 +18,8 @@ public class ExamSessionsController(IExamSessionService service) : ControllerBas
     }
     [HttpGet("{id:guid}")]
     public async Task<ActionResult<SessionDto>> Get(Guid id) => Ok(await service.Get(id));
+    [HttpGet("{id:guid}/attempts")]
+    public async Task<ActionResult<IReadOnlyList<SessionAttemptDto>>> Attempts(Guid id) => Ok(await service.Attempts(id));
     [HttpPost("{id:guid}/open")]
     public async Task<ActionResult<SessionDto>> Open(Guid id) => Ok(await service.Transition(id, "open"));
     [HttpPost("{id:guid}/close")]

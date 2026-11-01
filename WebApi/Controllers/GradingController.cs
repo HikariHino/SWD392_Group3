@@ -13,4 +13,8 @@ public sealed class GradingController(IGradingService service) : ControllerBase
     [HttpPost]
     public async Task<ActionResult<IReadOnlyList<AssessmentDto>>> Grade(Guid attemptId, CancellationToken cancellationToken) =>
         Accepted(await service.GradeAttemptAsync(attemptId, cancellationToken));
+
+    [HttpPost("manual-review")]
+    public async Task<ActionResult<IReadOnlyList<AssessmentDto>>> PrepareManualReview(Guid attemptId, CancellationToken cancellationToken) =>
+        Ok(await service.PrepareManualReviewAsync(attemptId, cancellationToken));
 }

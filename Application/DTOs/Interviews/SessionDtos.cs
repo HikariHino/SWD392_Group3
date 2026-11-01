@@ -9,3 +9,4 @@ public class CreateSessionRequest
     public List<Guid> QuestionIds { get; set; } = [];
 }
 public record SessionDto(Guid Id, Guid CourseId, string SessionTitle, DateTime StartTime, DateTime EndTime, string Status, int Version, Guid CreatedByUserId, IReadOnlyList<Guid> QuestionIds);
+public record SessionAttemptDto(Guid Id, Guid UserId, string Username, string FullName, string Status, DateTime StartedAt, DateTime? SubmittedAt, decimal? TotalScore);

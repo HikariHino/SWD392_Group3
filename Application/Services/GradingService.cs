@@ -134,24 +134,21 @@ public sealed class GradingService(IGradingRepository grading, IAiService ai, IC
         if (candidates.Length == 0)
             return existing.Select(x => ToDto(x, session)).ToArray();
 
-        attempt.Status = TranscriptStatus.Grading;
         var created = new List<Assessment>();
-        try
+        foreach (var item in candidates)
         {
-            foreach (var item in candidates)
+            var assessment = new Assessment
             {
-                if (string.IsNullOrWhiteSpace(item.Answer))
+                TranscriptId = attempt.Id,
+                ExamSessionQuestionId = item.Question.Id,
+                StudentAnswer = item.Answer,
+                Points = item.Question.Points,
+                RubricSnapshotJson = item.Question.RubricSnapshotJson
+            };
+            if (!string.IsNullOrWhiteSpace(item.Answer))
+            {
+                try
                 {
-                    created.Add(new Assessment
-                    {
-                        TranscriptId = attempt.Id,
-                        ExamSessionQuestionId = item.Question.Id,
-                        StudentAnswer = string.Empty,
-                        Points = item.Question.Points,
-                        RubricSnapshotJson = item.Question.RubricSnapshotJson
-                    });
-                    continue;
-                }
                 var rubric = ParseRubric(item.Question.RubricSnapshotJson);
                 var response = await ai.GenerateAssessmentAsync(new AiAssessmentRequest
                 {
@@ -165,20 +162,44 @@ public sealed class GradingService(IGradingRepository grading, IAiService ai, IC
                 catch (ArgumentException) { throw new AiProviderResponseException(); }
                 if (response.ConfidenceLevel is < 0m or > 1m || response.Feedback?.Length > 4000)
                     throw new AiProviderResponseException();
-                created.Add(new Assessment
+                    assessment.AiSuggestedScore = ScoreCalculator.RoundForStorage(score);
+                    assessment.AiFeedback = response.Feedback?.Trim();
+                    assessment.AiConfidenceLevel = response.ConfidenceLevel;
+                    assessment.EvaluatedAt = clock.GetUtcNow().UtcDateTime;
+                }
+                catch (AiProviderException) when (!cancellationToken.IsCancellationRequested)
                 {
-                    TranscriptId = attempt.Id, ExamSessionQuestionId = item.Question.Id,
-                    StudentAnswer = item.Answer, Points = item.Question.Points, RubricSnapshotJson = item.Question.RubricSnapshotJson,
-                    AiSuggestedScore = ScoreCalculator.RoundForStorage(score), AiFeedback = response.Feedback?.Trim(),
-                    AiConfidenceLevel = response.ConfidenceLevel, EvaluatedAt = clock.GetUtcNow().UtcDateTime
-                });
+                    // AI is advisory only. The lecturer can always review and finalize manually.
+                }
             }
+            created.Add(assessment);
         }
-        catch
+        grading.AddRange(created);
+        attempt.Status = TranscriptStatus.AwaitingReview;
+        attempt.GradedAt = clock.GetUtcNow().UtcDateTime;
+        attempt.Version++; session.Version++;
+        await grading.Save();
+        return existing.Concat(created).Select(x => ToDto(x, session)).ToArray();
+    }
+
+    public async Task<IReadOnlyList<AssessmentDto>> PrepareManualReviewAsync(Guid attemptId, CancellationToken cancellationToken = default)
+    {
+        var (attempt, session) = await OwnedAttempt(attemptId);
+        if (attempt.Status == TranscriptStatus.AwaitingReview)
+            return (await grading.Assessments(attempt.Id)).Select(x => ToDto(x, session)).ToArray();
+        if (attempt.Status != TranscriptStatus.Submitted)
+            throw new ConflictException("Only submitted attempts can be reviewed.");
+
+        var existing = await grading.Assessments(attempt.Id);
+        var existingIds = existing.Select(x => x.ExamSessionQuestionId).ToHashSet();
+        var created = session.ExamSessionQuestions.Where(x => !existingIds.Contains(x.Id)).Select(question => new Assessment
         {
-            attempt.Status = TranscriptStatus.Submitted;
-            throw;
-        }
+            TranscriptId = attempt.Id,
+            ExamSessionQuestionId = question.Id,
+            StudentAnswer = string.Join("\n", attempt.Turns.Where(t => t.Speaker == "Student" && t.ExamSessionQuestionId == question.Id).OrderBy(t => t.Sequence).Select(t => t.ContentText)),
+            Points = question.Points,
+            RubricSnapshotJson = question.RubricSnapshotJson
+        }).ToArray();
         grading.AddRange(created);
         attempt.Status = TranscriptStatus.AwaitingReview;
         attempt.GradedAt = clock.GetUtcNow().UtcDateTime;
