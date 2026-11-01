@@ -439,6 +439,18 @@ Icon
 # Thumbnails
 ._*
 
+# Local Codex previews and intermediate artifact builds
+/.codex-build/
+/tmp/pdfs/design-patterns-review/
+
+# Personal Design Patterns presentation artifacts (separate assignment)
+/docs/Design_Patterns_Dang_Khoi*/
+/docs/Design_Patterns_Dang_Khoi*.pptx
+/docs/Design_Patterns_Dang_Khoi*.drawio
+
+# diagrams.net autosave backups
+/docs/.$*.bkp
+
 # Files that might appear in the root of a volume
 .DocumentRevisions-V100
 .fseventsd

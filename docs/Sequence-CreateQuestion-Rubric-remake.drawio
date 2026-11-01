@@ -5,10 +5,10 @@
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
-        <mxCell id="v2" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;fontColor=#1d2b3a;fontFamily=Arial;fontSize=31;fontStyle=1;" value="SEQUENCE DIAGRAM — LECTURER CREATES A QUESTION &amp; STANDARDIZES THE RUBRIC" vertex="1">
+        <mxCell id="v2" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;fontColor=#1d2b3a;fontFamily=Arial;fontSize=31;fontStyle=1;" value="SEQUENCE DIAGRAM — GIẢNG VIÊN TẠO CÂU HỎI &amp;amp; CHUẨN HÓA RUBRIC" vertex="1">
           <mxGeometry height="42" width="1800" x="350" y="22" as="geometry" />
         </mxCell>
-        <mxCell id="v3" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;fontColor=#52657b;fontFamily=Arial;fontSize=12;fontStyle=0;" value="POST /api/questions · Rubric weights total 100% · Persist Question and Rubrics atomically" vertex="1">
+        <mxCell id="v3" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;fontColor=#52657b;fontFamily=Arial;fontSize=12;fontStyle=0;" value="POST /api/questions · Tổng Weight = 100% (|ΣWeight − 100| &lt; 0,01) · Lưu Question và Rubric trong cùng một lần SaveChangesAsync" vertex="1">
           <mxGeometry height="28" width="1800" x="350" y="65" as="geometry" />
         </mxCell>
         <mxCell id="e4" edge="1" parent="1" style="edgeStyle=none;strokeColor=#26364a;strokeWidth=2;endArrow=block;endFill=1;" value="">
@@ -17,7 +17,7 @@
             <mxPoint x="850" y="112" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="v5" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;fontColor=#52657b;fontFamily=Arial;fontSize=12;fontStyle=0;" value="Synchronous call" vertex="1">
+        <mxCell id="v5" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;fontColor=#52657b;fontFamily=Arial;fontSize=12;fontStyle=0;" value="Gọi đồng bộ" vertex="1">
           <mxGeometry height="24" width="110" x="860" y="100" as="geometry" />
         </mxCell>
         <mxCell id="e6" edge="1" parent="1" style="edgeStyle=none;dashed=1;dashPattern=8 7;strokeColor=#52657b;strokeWidth=2;endArrow=open;endFill=0;" value="">
@@ -26,7 +26,7 @@
             <mxPoint x="1130" y="112" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="v7" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;fontColor=#52657b;fontFamily=Arial;fontSize=12;fontStyle=0;" value="Returned result" vertex="1">
+        <mxCell id="v7" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;fontColor=#52657b;fontFamily=Arial;fontSize=12;fontStyle=0;" value="Kết quả trả về" vertex="1">
           <mxGeometry height="24" width="135" x="1140" y="100" as="geometry" />
         </mxCell>
         <mxCell id="v8" parent="1" style="rounded=0;whiteSpace=wrap;html=1;align=center;verticalAlign=middle;strokeColor=#7593b4;fillColor=#eef4fb;fontColor=#1d2b3a;fontFamily=Arial;fontSize=12;fontStyle=0;" value="alt / loop" vertex="1">
@@ -101,7 +101,7 @@
         <mxCell id="v24" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;fontColor=#52657b;fontFamily=Arial;fontSize=12;fontStyle=0;" value="Actor" vertex="1">
           <mxGeometry height="20" width="74" x="78" y="286" as="geometry" />
         </mxCell>
-        <mxCell id="e25" edge="1" parent="1" style="edgeStyle=none;html=1;rounded=0;strokeColor=#26364a;strokeWidth=2;endArrow=block;endFill=1;fontColor=#26364a;fontFamily=Arial;fontSize=12;labelBackgroundColor=#ffffff;" value="1. Enter content, course, Bloom level, and Rubric[]">
+        <mxCell id="e25" edge="1" parent="1" style="edgeStyle=none;html=1;rounded=0;strokeColor=#26364a;strokeWidth=2;endArrow=block;endFill=1;fontColor=#26364a;fontFamily=Arial;fontSize=12;labelBackgroundColor=#ffffff;" value="1. Nhập nội dung, môn,&lt;br&gt;Bloom Level và Rubric[]">
           <mxGeometry relative="1" as="geometry">
             <mxPoint x="125" y="330" as="sourcePoint" />
             <mxPoint x="335" y="330" as="targetPoint" />
@@ -159,7 +159,7 @@
             <mxPoint x="355" y="650" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="v36" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;fontColor=#1d2b3a;fontFamily=Arial;fontSize=12;fontStyle=1;" value="[else (valid)]" vertex="1">
+        <mxCell id="v36" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;fontColor=#1d2b3a;fontFamily=Arial;fontSize=12;fontStyle=1;" value="[else (Hợp lệ)]" vertex="1">
           <mxGeometry height="30" width="170" x="600" y="699" as="geometry" />
         </mxCell>
         <mxCell id="e37" edge="1" parent="1" style="edgeStyle=none;html=1;rounded=0;strokeColor=#26364a;strokeWidth=2;endArrow=block;endFill=1;fontColor=#26364a;fontFamily=Arial;fontSize=12;labelBackgroundColor=#ffffff;" value="5b. CreateQuestionAsync(request)">
@@ -199,7 +199,7 @@
             <mxPoint x="1275" y="918" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="e43" edge="1" parent="1" style="edgeStyle=none;html=1;rounded=0;dashed=1;dashPattern=8 7;strokeColor=#52657b;strokeWidth=2;endArrow=open;endFill=0;fontColor=#26364a;fontFamily=Arial;fontSize=12;labelBackgroundColor=#ffffff;" value="Course is active">
+        <mxCell id="e43" edge="1" parent="1" style="edgeStyle=none;html=1;rounded=0;dashed=1;dashPattern=8 7;strokeColor=#52657b;strokeWidth=2;endArrow=open;endFill=0;fontColor=#26364a;fontFamily=Arial;fontSize=12;labelBackgroundColor=#ffffff;" value="Course hợp lệ">
           <mxGeometry relative="1" as="geometry">
             <mxPoint x="1275" y="946" as="sourcePoint" />
             <mxPoint x="1045" y="946" as="targetPoint" />
@@ -286,13 +286,13 @@
             <mxPoint x="355" y="1410" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="e60" edge="1" parent="1" style="edgeStyle=none;html=1;rounded=0;dashed=1;dashPattern=8 7;strokeColor=#52657b;strokeWidth=2;endArrow=open;endFill=0;fontColor=#26364a;fontFamily=Arial;fontSize=12;labelBackgroundColor=#ffffff;" value="Show creation success">
+        <mxCell id="e60" edge="1" parent="1" style="edgeStyle=none;html=1;rounded=0;dashed=1;dashPattern=8 7;strokeColor=#52657b;strokeWidth=2;endArrow=open;endFill=0;fontColor=#26364a;fontFamily=Arial;fontSize=12;labelBackgroundColor=#ffffff;" value="Hiển thị tạo thành công">
           <mxGeometry relative="1" as="geometry">
             <mxPoint x="335" y="1435" as="sourcePoint" />
             <mxPoint x="125" y="1435" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="v61" parent="1" style="rounded=1;whiteSpace=wrap;html=1;align=center;verticalAlign=middle;strokeColor=#d2dce6;fillColor=#f2f6fa;fontColor=#1d2b3a;fontFamily=Arial;fontSize=12;fontStyle=0;" value="Success: return QuestionDto (HTTP 201 + Location). Validate ≥1 rubric, non-empty criteria (≤500), positive Weight/MaxScore, and total Weight=100% (tolerance &lt;0.01)." vertex="1">
+        <mxCell id="v61" parent="1" style="rounded=1;whiteSpace=wrap;html=1;align=center;verticalAlign=middle;strokeColor=#d2dce6;fillColor=#f2f6fa;fontColor=#1d2b3a;fontFamily=Arial;fontSize=12;fontStyle=0;" value="Sau khi lưu: Service tải lại Question kèm Rubrics → Controller trả QuestionDto, HTTP 201 và Location → View báo tạo thành công. Validation: ít nhất 1 rubric; Criteria không rỗng (≤500); Weight &amp; MaxScore &gt;0; chấp nhận tổng Weight khi |ΣWeight − 100| &lt; 0,01." vertex="1">
           <mxGeometry height="58" width="2310" x="95" y="1460" as="geometry" />
         </mxCell>
       </root>
