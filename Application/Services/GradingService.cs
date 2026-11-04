@@ -120,16 +120,20 @@ public sealed class GradingService(IGradingRepository grading, IAiService ai, IC
     public async Task<IReadOnlyList<AssessmentDto>> GradeAttemptAsync(Guid attemptId, CancellationToken cancellationToken = default)
     {
         var (attempt, session) = await OwnedAttempt(attemptId);
-        if (attempt.Status == TranscriptStatus.AwaitingReview)
-            return (await grading.Assessments(attempt.Id)).Select(x => ToDto(x, session)).ToArray();
-        if (attempt.Status != TranscriptStatus.Submitted)
+        if (attempt.Status is not (TranscriptStatus.Submitted or TranscriptStatus.AwaitingReview))
             throw new ConflictException("Only submitted attempts can be graded.");
 
         var existing = await grading.Assessments(attempt.Id);
         var existingByQuestion = existing.ToDictionary(x => x.ExamSessionQuestionId);
         var candidates = session.ExamSessionQuestions
-            .Select(question => new { Question = question, Answer = string.Join("\n", attempt.Turns.Where(t => t.Speaker == "Student" && t.ExamSessionQuestionId == question.Id).OrderBy(t => t.Sequence).Select(t => t.ContentText)) })
-            .Where(x => !existingByQuestion.ContainsKey(x.Question.Id))
+            .Select(question => new
+            {
+                Question = question,
+                Answer = string.Join("\n", attempt.Turns.Where(t => t.Speaker == "Student" && t.ExamSessionQuestionId == question.Id).OrderBy(t => t.Sequence).Select(t => t.ContentText)),
+                Existing = existingByQuestion.GetValueOrDefault(question.Id)
+            })
+            .Where(x => x.Existing is null ||
+                (x.Existing.AiSuggestedScore is null && x.Existing.FinalScore is null && !string.IsNullOrWhiteSpace(x.Answer)))
             .ToArray();
         if (candidates.Length == 0)
             return existing.Select(x => ToDto(x, session)).ToArray();
@@ -137,7 +141,7 @@ public sealed class GradingService(IGradingRepository grading, IAiService ai, IC
         var created = new List<Assessment>();
         foreach (var item in candidates)
         {
-            var assessment = new Assessment
+            var assessment = item.Existing ?? new Assessment
             {
                 TranscriptId = attempt.Id,
                 ExamSessionQuestionId = item.Question.Id,
@@ -169,10 +173,12 @@ public sealed class GradingService(IGradingRepository grading, IAiService ai, IC
                 }
                 catch (AiProviderException) when (!cancellationToken.IsCancellationRequested)
                 {
-                    // AI is advisory only. The lecturer can always review and finalize manually.
+                    // Do not report a successful AI grading request when the provider supplied no score.
+                    // Manual review remains available through the separate manual-review endpoint.
+                    throw;
                 }
             }
-            created.Add(assessment);
+            if (item.Existing is null) created.Add(assessment);
         }
         grading.AddRange(created);
         attempt.Status = TranscriptStatus.AwaitingReview;

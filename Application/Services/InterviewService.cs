@@ -37,6 +37,11 @@ public sealed class InterviewService(IAttemptRepository attempts, IAiService ai,
         var question = session.ExamSessionQuestions.SingleOrDefault(x => x.Id == lastStudentTurn.ExamSessionQuestionId)
             ?? throw new ConflictException("The answer does not reference this session's question snapshot.");
 
+        if (attempt.Turns.Count(x => x.Speaker == "AI" && x.ExamSessionQuestionId == question.Id) >= 2)
+            throw new ConflictException("This question already has the maximum of two AI follow-ups.");
+        if (attempt.Turns.Any(x => x.Speaker == "AI" && x.Sequence > lastStudentTurn.Sequence))
+            throw new ConflictException("The latest answer already has an AI follow-up.");
+
         var conversation = attempt.Turns.OrderBy(x => x.Sequence)
             .Select(x => new AiConversationTurn(x.Speaker, x.ContentText)).ToArray();
         var response = await ai.GenerateFollowUpAsync(new AiFollowUpRequest
