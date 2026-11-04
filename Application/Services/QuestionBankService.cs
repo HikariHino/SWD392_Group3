@@ -109,6 +109,19 @@ public class QuestionBankService : IQuestionBankService
             {
                 return await _aiService.GenerateQuestionAsync(request);
             }
+            catch (Application.Exceptions.AiProviderResponseException)
+            {
+                // A model can occasionally return a truncated/invalid candidate despite structured output.
+                // Retry once with a fresh request before degrading to the editable local draft.
+                try
+                {
+                    return await _aiService.GenerateQuestionAsync(request);
+                }
+                catch (Application.Exceptions.AiProviderException)
+                {
+                    // Keep authoring usable during a provider outage; the UI labels this as a draft.
+                }
+            }
             catch (Application.Exceptions.AiProviderException)
             {
                 // Keep authoring usable during a temporary provider outage; the UI labels this as a draft.

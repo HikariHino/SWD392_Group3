@@ -33,7 +33,10 @@ internal static class AiProviderChecks
             return Json(Envelope("""{"content":"Explain dependency direction","sourceContext":"Course notes","aiConfidence":91.5}"""));
         }), Config(("Gemini:ApiKey", "test-key"))).GenerateQuestionAsync(Request());
         check(success.Content == "Explain dependency direction" && success.AiConfidence == 91.5, "structured Gemini response maps to question DTO");
-        check(requestUri!.Contains("generateContent?key=test-key") && body!.Contains("Do not generate a rubric"), "Gemini request uses configured key and course-level rubric prompt");
+        var promptText = JsonDocument.Parse(body!).RootElement.GetProperty("contents")[0].GetProperty("parts")[0].GetProperty("text").GetString();
+        check(requestUri!.Contains("generateContent?key=test-key") && promptText!.Contains("Không tạo rubric") && body!.Contains("responseJsonSchema"), "Gemini request uses configured JSON schema and Vietnamese course-level rubric prompt");
+        var fenced = await Service(new Handler(_ => Json(Envelope("```json\n{\"content\":\"Explain DI\",\"aiConfidence\":80}\n```"))), Config(("Gemini:ApiKey", "test-key"))).GenerateQuestionAsync(Request());
+        check(fenced.Content == "Explain DI" && fenced.AiConfidence == 80, "fenced JSON candidate remains usable");
         string? followUpBody = null;
         var followUp = await Service(new Handler(async request =>
         {

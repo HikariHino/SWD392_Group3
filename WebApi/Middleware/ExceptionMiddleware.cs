@@ -70,10 +70,10 @@ public class ExceptionMiddleware
                 title = "AI provider timed out.";
                 detail = "The AI provider did not respond in time. Please retry.";
                 break;
-            case AiProviderUnavailableException:
+            case AiProviderUnavailableException unavailableEx:
                 statusCode = StatusCodes.Status503ServiceUnavailable;
                 title = "AI provider is unavailable.";
-                detail = "The AI provider is not configured or is temporarily unavailable.";
+                detail = unavailableEx.Message;
                 break;
             case AiProviderResponseException:
                 statusCode = StatusCodes.Status502BadGateway;
